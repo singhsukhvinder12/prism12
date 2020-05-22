@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <RelativeLayout
+        android:background="@color/colorWhite"
+        android:id="@+id/layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/includeView"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/toolbar_line"
+            android:layout_below="@+id/includeView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/color_grey_toolbar"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/topLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_50"
+            android:paddingRight="@dimen/dp_20"
+            android:paddingBottom="@dimen/dp_50"
+            android:layout_below="@+id/toolbar_line">
+
+            <EditText
+                android:id="@+id/edEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:background="@drawable/rectangle_blue_stroke"
+                android:drawableTint="@color/colorPrimaryDark"
+                android:hint="Email"
+                android:drawableRight="@drawable/ic_mail"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:singleLine="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_goneMarginEnd="@dimen/dp_10"
+                tools:ignore="Autofill,RtlHardcoded,UnusedAttribute" />
+            <!--android:afterTextChanged="@{(editable)->viewModel.afterEmailTextChanged(editable)}"
+            app:layout_goneMarginStart="@dimen/dp_10"-->
+            <Button
+                android:id="@+id/btnSubmit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_32"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:background="@drawable/rectangle_blue"
+                android:padding="@dimen/bid_padding_left"
+                android:text="Submit"
+                android:textColor="@color/colorWhite"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edEmail"
+                android:fontFamily="@font/opensans_regular"
+                android:textStyle="bold" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
+</layout>

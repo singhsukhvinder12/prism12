@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#232323"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <ImageView
+        android:id="@+id/ivClear"
+        android:visibility="gone"
+        android:padding="5dp"
+        android:layout_margin="@dimen/_20sdp"
+        android:src="@drawable/aar_ic_clear"
+        android:layout_width="40dp"
+        android:layout_height="40dp">
+
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/ivCheck"
+        android:visibility="gone"
+        android:padding="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/_20sdp"
+        android:src="@drawable/aar_ic_check"
+        android:layout_width="40dp"
+        android:layout_height="40dp">
+
+    </ImageView>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-10dp"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-light"
+
+            />
+
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="60sp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-thin"
+            android:text="00:00:00"/>
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_centerInParent="true"
+        android:id="@+id/gif_image_view"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_120"
+        android:background="#010607"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/restart"
+            android:layout_width="80dp"
+            android:visibility="gone"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/recordAudio"
+            android:layout_toLeftOf="@+id/recordAudio"
+            android:layout_marginTop="50dp"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/aar_ic_restart"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+        <ImageView
+            android:id="@+id/recordAudio"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="50dp"
+            android:layout_margin="15dp"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/aar_ic_rec"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+        <ImageView
+            android:id="@+id/play"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/recordAudio"
+            android:layout_toRightOf="@+id/recordAudio"
+            android:layout_marginTop="50dp"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/aar_ic_play"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

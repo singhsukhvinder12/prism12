@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/img_relative"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="5dp"
+            >
+
+            <ImageView
+                android:layout_marginLeft="2dp"
+                android:id="@+id/img_school"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher_round"
+                android:visibility="visible" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/cross_icon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_alignTop="@+id/img_relative"
+            android:layout_alignRight="@+id/img_relative"
+            android:background="@drawable/ic_dlt"
+            />
+
+        <TextView
+            android:id="@+id/tv_file_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_relative"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:maxLength="12"
+            android:visibility="gone"
+            android:textSize="@dimen/sp_12" />
+    </RelativeLayout>
+</layout>

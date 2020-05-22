@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.view.CommentActivity">
+
+    <include
+        android:id="@+id/includeView"
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPublic"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/includeView"
+        android:layout_height="wrap_content"
+        android:paddingBottom="80dp"
+        android:visibility="visible" />
+
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+        <View
+            android:background="@color/colorBackgroundGrey"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="100dp"
+            android:layout_centerVertical="true"
+
+            >
+
+            <EditText
+                android:id="@+id/etComment"
+                android:singleLine="true"
+                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:padding="10dp"
+                android:hint="comment"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:background="@color/colorWhite"
+                android:layout_height="match_parent"/>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <ImageView
+            android:id="@+id/btnSend"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/_20sdp"
+            android:src="@drawable/ic_send_message"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_centerVertical="true"
+            android:layout_height="@dimen/_40sdp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
+</layout>
+

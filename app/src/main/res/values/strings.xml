@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Seasia Prism</string>
+    <string name="internet_error">No Internet Connection</string>
+    <string name="delete_post">Delete Post</string>
+    <string name="no_record_found">No Record Found</string>
+    <string name="app_record">Record Video</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="gender">Gender</string>
+    <!--signup form-->
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">NA</string>
+    <string name="dob">DOB</string>
+    <string name="email">Email</string>
+    <string name="submit">Submit</string>
+
+    <string name="enter_first_name">Enter first name</string>
+    <string name="enter_last_name">Enter last name</string>
+    <string name="phone_length">Please check phone number length</string>
+    <string name="enter_phone_number">Enter phone number</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="select_dob">Select DOB</string>
+
+</resources>
