@@ -17,7 +17,7 @@ class LikePresenter(var callback: LikeInterface) {
 
                 if (response?.body()?.StatusCode == "200") {
                     //likeData?.value = response.body()
-                    callback.onSuccess(response.body())
+                    callback.onLikeSuccess(response.body())
                 } else {
                    // likeData?.value = null
                     callback.onError()

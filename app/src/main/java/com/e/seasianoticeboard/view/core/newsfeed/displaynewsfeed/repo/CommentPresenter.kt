@@ -16,12 +16,18 @@ class CommentPresenter(var commentActivity: CommentActivity) {
     fun toRequestBody(value: String): RequestBody {
         return RequestBody.create(MediaType.parse("text/plain"), value)
     }
+
     fun getComment(postId: String) {
         val call = GetRestAdapter.getRestAdapter(true).getCommentList(postId)
         call.enqueue(object : Callback<GetCommentResponse> {
-            override fun onResponse(call: Call<GetCommentResponse>, response: retrofit2.Response<GetCommentResponse>?
+            override fun onResponse(
+                call: Call<GetCommentResponse>, response: retrofit2.Response<GetCommentResponse>?
             ) {
-
+                if (response!!.code() == 500) {
+                    UtilsFunctions.showToastError(response.message())
+                    commentActivity.onError()
+                    return
+                }
                 if (response?.body()?.StatusCode == "200") {
                     commentActivity.getCommentList(response.body())
                 } else {
@@ -46,17 +52,23 @@ class CommentPresenter(var commentActivity: CommentActivity) {
         map["Comment"] = toRequestBody(input.Comment.toString())
 
 
-
         val call = GetRestAdapter.getRestAdapter(true).viewComment(map)
         call.enqueue(object : Callback<CommentResponse> {
-            override fun onResponse(call: Call<CommentResponse>, response: retrofit2.Response<CommentResponse>?
+            override fun onResponse(
+                call: Call<CommentResponse>, response: retrofit2.Response<CommentResponse>?
             ) {
+                if (response!!.code() == 500) {
+                    UtilsFunctions.showToastError(response.message())
+                    commentActivity.onError()
+                    return
+                }
                 if (response?.body()?.StatusCode == "200") {
                     commentActivity.sendComment(response.body())
                 } else {
                     commentActivity.onError()
                     UtilsFunctions.showToastError(response?.body()?.Message)
                 }
+
 
             }
 
@@ -68,15 +80,20 @@ class CommentPresenter(var commentActivity: CommentActivity) {
     }
 
 
-
-    fun deleteComment(input: DeleteCommentInput){
+    fun deleteComment(input: DeleteCommentInput) {
         val call = GetRestAdapter.getRestAdapter(true).deleteComment(input)
         call.enqueue(object : Callback<DeleteCommentResponse> {
-            override fun onResponse(call: Call<DeleteCommentResponse>, response: retrofit2.Response<DeleteCommentResponse>?
+            override fun onResponse(
+                call: Call<DeleteCommentResponse>,
+                response: retrofit2.Response<DeleteCommentResponse>?
             ) {
-
+                if (response!!.code() == 500) {
+                    UtilsFunctions.showToastError(response.message())
+                    commentActivity.onError()
+                    return
+                }
                 if (response?.body()?.StatusCode == "200") {
-                    commentActivity.deleteComment( response.body())
+                    commentActivity.deleteComment(response.body())
                 } else {
                     commentActivity.onError()
                     UtilsFunctions.showToastError(response?.body()?.Message)

@@ -36,7 +36,6 @@ import kotlin.collections.ArrayList
 class NewsFeedAdapter(
         var context: NewsFeedFragment,
         var mList: ArrayList<GetFeedResponse.ResultDataList>,
-        private var listener: OnNewsFeedItemClickListener,
         var baseActivity: BaseActivity?
 ) :
         RecyclerView.Adapter<NewsFeedAdapter.ViewHolder>() {
@@ -102,7 +101,7 @@ class NewsFeedAdapter(
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(context, mList, position, listener, baseActivity)
+        holder.bind(context, mList, position, baseActivity)
 
     }
 
@@ -134,7 +133,6 @@ class NewsFeedAdapter(
                 context: NewsFeedFragment,
                 item: ArrayList<GetFeedResponse.ResultDataList>,
                 index: Int,
-                listener: OnNewsFeedItemClickListener,
                 baseActivity: BaseActivity?
         ) {
             this.index = index

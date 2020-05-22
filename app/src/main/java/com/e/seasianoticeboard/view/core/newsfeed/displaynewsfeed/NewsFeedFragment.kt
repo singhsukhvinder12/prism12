@@ -2,7 +2,6 @@ package com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.paginat
 
 import android.app.Activity
 import android.app.Dialog
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -11,42 +10,33 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.e.seasianoticeboard.R
 import com.e.seasianoticeboard.databinding.FragmentNewsFeedBinding
 import com.e.seasianoticeboard.util.PreferenceKeys
-import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.CasesRequest
+import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.callback.NewsFeedCallback
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.ReportPostInput
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.RepostPostResponse
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.pagination.EndlessRecyclerViewScrollListenerImplementation
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter.LikeInterface
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter.LikePresenter
+import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.repo.NewsFeedPresenter
 import com.e.seasianoticeboard.view.core.newsfeed.viewmodel.NewsFeedViewModel
-import com.ngo.ui.home.fragments.cases.presenter.NewsFeedImplClass
 import com.e.seasianoticeboard.views.core.BaseFragment
 import com.e.seasianoticeboard.views.institute.newsfeed.AddPostActivity
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.adapter.NewsFeedAdapter
-import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.listener.OnNewsFeedItemClickListener
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.*
-import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.presenter.NewsFeedPresenter
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.view.NewsFeedView
 import com.e.seasianoticeboard.views.institute.newsfeed.viewmodel.CommentViewModel
 import kotlinx.android.synthetic.main.fragment_news_feed.*
 
-class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener, LikeInterface,
-    OnNewsFeedItemClickListener, /*AlertDialogListener,*/
-    EndlessRecyclerViewScrollListenerImplementation.OnScrollPageChangeListener {
-    override fun showDescError() {
+class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.OnClickListener,
+    NewsFeedCallback {
 
-    }
 
     private var isResumeRun: Boolean = false
     lateinit var binding: FragmentNewsFeedBinding
@@ -60,8 +50,10 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
     private var media_type: String? = ""
     private var token: String = ""
     var isFirst = true
+    var deleteItemIndex = "0"
     var postiton: Int? = null
     var type = ""
+    var feedPresenter: NewsFeedPresenter? = null
     var horizontalLayoutManager: LinearLayoutManager? = null
     //pagination
     var page: String = "0"
@@ -89,7 +81,6 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
 
     private var complaints = ArrayList<GetFeedResponse.ResultDataList>()
     private var adapter: NewsFeedAdapter? = null
-    private var presenter: NewsFeedPresenter = NewsFeedImplClass(this)
     private var statusId = "-1"
     private var complaintId = "-1"
     private var currentStatus = ""
@@ -105,22 +96,27 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
     }
 
     fun getFeedData() {
-        feedViewModel = ViewModelProviders.of(this).get(NewsFeedViewModel::class.java)
-        feedViewModel!!.newsFeedInput(UserId.toInt())
         baseActivity!!.showDialog()
+        feedPresenter = NewsFeedPresenter(this)
 
-        feedViewModel?.newsFeedResponse()!!.observe(
-            viewLifecycleOwner,
-            object : Observer<ArrayList<GetFeedResponse.ResultDataList>> {
-                override fun onChanged(data: ArrayList<GetFeedResponse.ResultDataList>) {
-                    if (data != null) {
-                        complaints = data
-                        setAdapter()
-                    }
-                    baseActivity!!.hideDialog()
+        feedPresenter!!.fetchComplaints(UserId.toInt())
 
-                }
-            })
+//        feedViewModel = ViewModelProviders.of(this).get(NewsFeedViewModel::class.java)
+//        feedViewModel!!.newsFeedInput(UserId.toInt())
+//
+//
+//        feedViewModel?.newsFeedResponse()!!.observe(
+//            viewLifecycleOwner,
+//            object : Observer<ArrayList<GetFeedResponse.ResultDataList>> {
+//                override fun onChanged(data: ArrayList<GetFeedResponse.ResultDataList>) {
+//                    if (data != null) {
+//                        complaints = data
+//                        setAdapter()
+//                    }
+//                    baseActivity!!.hideDialog()
+//
+//                }
+//            })
 
     }
 
@@ -129,7 +125,7 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
     }
 
     fun setAdapter() {
-        adapter = NewsFeedAdapter(this@NewsFeedFragment, complaints, this, baseActivity)
+        adapter = NewsFeedAdapter(this@NewsFeedFragment, complaints, baseActivity)
         horizontalLayoutManager = LinearLayoutManager(mContext)
         // rvPublic.setNestedScrollingEnabled(false)
         rvPublic?.layoutManager = horizontalLayoutManager
@@ -276,9 +272,9 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
             try {
                 if (data != null) {
                     if (!data.getStringExtra("updatedCount").isEmpty()) {
-                        var position=data.getStringExtra("position")
-                        var count=data.getStringExtra("updatedCount")
-                        complaints.get(position.toInt()).TotalComments =count
+                        var position = data.getStringExtra("position")
+                        var count = data.getStringExtra("updatedCount")
+                        complaints.get(position.toInt()).TotalComments = count
                         adapter!!.notifyDataSetChanged()
                     }
                 }
@@ -369,24 +365,7 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
         setProfilePic()
     }
 
-
-    override fun onItemClick(
-        complaintsData: ArrayList<GetFeedResponse.ResultDataList>,
-        type: String,
-        position: Int
-    ) {
-
-    }
-
-    override fun onDeleteItem(complaintsData: ArrayList<GetFeedResponse.ResultDataList>) {
-    }
-
-    override fun changeLikeStatus(complaintsData: ArrayList<GetFeedResponse.ResultDataList>) {
-    }
-
-
-    override fun onStatusClick(statusId: String) {
-        this.statusId = statusId
+    override fun showDescError() {
     }
 
 
@@ -424,13 +403,6 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
         fromIncidentDetailScreen == 0
     }
 
-    fun doApiCall() {
-        val casesRequest =
-            CasesRequest("1", "", "-1", "1", "10")  //type = -1 for fetching both cases and posts
-        //  Utilities.showProgress(mContext)
-        presenter.getComplaints(casesRequest, token, type, UserId.toInt())
-
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -441,14 +413,6 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
         return R.layout.fragment_news_feed
     }
 
-
-    override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-        pageCount = page
-        val casesRequest =
-            CasesRequest("1", "", "-1", page.toString(), "10" /*totalItemsCount.toString()*/)
-        presenter.getComplaints(casesRequest, token, type, UserId.toInt())
-        progressBar.visibility = View.VISIBLE
-    }
 
     fun likeHitApi(
         input: LikeInput,
@@ -474,30 +438,30 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
         val title = dialog.findViewById<TextView>(R.id.std_name)
         title.setText(getString(R.string.delete_post))
         btnDelete.setOnClickListener {
-            dialog.hide()
-            var commentViewModel: CommentViewModel? = null
-            commentViewModel = ViewModelProviders.of(this).get(CommentViewModel::class.java)
+            baseActivity!!.showDialog()
             var input = DeletePostInput()
             input.NewsLetterId = postId
+            deleteItemIndex = index.toString()
             input.UserId = sharedPref!!.getString(PreferenceKeys.USER_ID, "");
-            commentViewModel.deletePostData(input)
-            commentViewModel?.getDeletedData()!!.observe(
-                this,
-                object : Observer<DeletePostResponse> {
-                    override fun onChanged(data: DeletePostResponse) {
-                        if (data != null) {
-                            ///txtPostLikeNo!!.setText(data.ResultData)
-                            Toast.makeText(
-                                activity,
-                                "" + data.Message.toString(),
-                                Toast.LENGTH_LONG
-                            ).show()
-
-                            complaints.removeAt(index)
-                            adapter!!.notifyDataSetChanged()
-                        }
-                    }
-                })
+            feedPresenter!!.deletaPost(input)
+//            commentViewModel.deletePostData(input)
+//            commentViewModel?.getDeletedData()!!.observe(
+//                this,
+//                object : Observer<DeletePostResponse> {
+//                    override fun onChanged(data: DeletePostResponse) {
+//                        if (data != null) {
+//                            ///txtPostLikeNo!!.setText(data.ResultData)
+//                            Toast.makeText(
+//                                activity,
+//                                "" + data.Message.toString(),
+//                                Toast.LENGTH_LONG
+//                            ).show()
+//
+//                            complaints.removeAt(index)
+//                            adapter!!.notifyDataSetChanged()
+//                        }
+//                    }
+//                })
         }
         btnCancel.setOnClickListener {
             dialog.hide()
@@ -505,28 +469,17 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
         dialog.show()
     }
 
-    fun reportPost(postId: String){
+    fun reportPost(postId: String) {
         var commentViewModel: CommentViewModel? = null
         commentViewModel = ViewModelProviders.of(this).get(CommentViewModel::class.java)
         var input = ReportPostInput()
-        input.NewsletterId = postId
+        input.NewsletterId = postId.toString()
         input.IssueReportedId = "0"
         input.ReportId = "1"
-        input.NewsletterId = postId
+        input.NewsletterId = postId.toString()
         input.UserId = sharedPref!!.getString(PreferenceKeys.USER_ID, "");
-        commentViewModel.reportPostInput(input)
+        feedPresenter!!.reportPost(input)
         baseActivity!!.showDialog()
-        commentViewModel?.reportPostResponse()!!.observe(
-            this,
-            object : Observer<RepostPostResponse> {
-                override fun onChanged(data: RepostPostResponse) {
-                    baseActivity!!.hideDialog()
-                    commentViewModel?.reportPostResponse().removeObserver(this)
-                    if (data != null) {
-                        Toast.makeText(activity, data.Message , Toast.LENGTH_LONG).show()
-                    }
-                }
-            })
     }
 
     fun sharePost(url: String?) {
@@ -538,7 +491,23 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
 
     }
 
-    override fun onSuccess(body: LikesResponse) {
+//    override fun onSuccess(data: ArrayList<GetFeedResponse.ResultDataList>?) {
+//        if (data != null) {
+//            complaints = data
+//            setAdapter()
+//        }
+//        baseActivity!!.hideDialog()
+//    }
+
+    override fun onSuccess(resultData: ArrayList<GetFeedResponse.ResultDataList>?) {
+        if (resultData != null) {
+            complaints = resultData
+            setAdapter()
+        }
+        baseActivity!!.hideDialog()
+    }
+
+    override fun onLikeSuccess(body: LikesResponse) {
         baseActivity!!.hideDialog()
         if (body.ResultData != null) {
             item!!.get(index!!).TotalLikes = body.ResultData
@@ -550,4 +519,22 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, View.OnClickListener,
         baseActivity!!.hideDialog()
     }
 
+    override fun onDeletePost(data: DeletePostResponse) {
+        if (data != null) {
+            Toast.makeText(
+                activity,
+                "" + data.Message.toString(),
+                Toast.LENGTH_LONG
+            ).show()
+            complaints.removeAt(deleteItemIndex.toInt())
+            adapter!!.notifyDataSetChanged()
+        }
+    }
+
+    override fun onRepostPost(data: RepostPostResponse) {
+        baseActivity!!.hideDialog()
+        if (data != null) {
+            Toast.makeText(activity, data.Message, Toast.LENGTH_LONG).show()
+        }
+    }
 }
