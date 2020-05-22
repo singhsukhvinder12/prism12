@@ -1,6 +1,8 @@
 package com.e.seasianoticeboard.view.core.auth
 
 import android.content.Intent
+import android.os.Build
+import android.os.SystemClock
 import android.view.View
 import android.widget.Toast
 import com.e.seasianoticeboard.App
@@ -44,6 +46,11 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
             binding!!.emailCodeTxt.setText("Please enter the code that has been sent to you at " +email)
 
         }
+     /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            binding!!.viewTimer.isCountDown = true
+        }
+        binding!!.viewTimer.base = SystemClock.elapsedRealtime() + 20000
+        binding!!.viewTimer.start()*/
     }
 
     override fun onClick(p0: View?) {
