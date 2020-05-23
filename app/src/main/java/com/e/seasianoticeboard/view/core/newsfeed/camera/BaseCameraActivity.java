@@ -51,7 +51,7 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by sudamasayuki2 on 2018/07/02.
  */
 
- public class BaseCameraActivity extends AppCompatActivity {
+public class BaseCameraActivity extends AppCompatActivity {
 
     private SampleGLView sampleGLView;
     protected CameraRecorder cameraRecorder;
@@ -71,9 +71,14 @@ import javax.microedition.khronos.opengles.GL10;
     private ImageView mGallary;
     private final int REQUEST_TAKE_GALLERY_VIDEO = 1000;
 
+    private String onBackPress = "0";
+    private ImageView front_camera;
+
+
     protected void onCreateActivity() {
         //getSupportActionBar().hide();
         recordBtn = findViewById(R.id.btn_record);
+        front_camera = findViewById(R.id.front_camera);
         cameraRecord = findViewById(R.id.camera_record);
         mGallary = findViewById(R.id.ic_gallary);
         cameraRecord.setOnClickListener(new View.OnClickListener() {
@@ -82,33 +87,54 @@ import javax.microedition.khronos.opengles.GL10;
                 mTIme = findViewById(R.id.time);
 
                 if (recordBtn.getText().equals(getString(R.string.app_record))) {
-                    filepath = getVideoFilePath();
-                    cameraRecorder.start(filepath);
-                    recordBtn.setText("Stop");
-                    cameraRecord.setImageResource(R.drawable.ic_camera_open_red);
-                    countDownTimer = new CountDownTimer(60000, 1000) {
-                        public void onTick(long millisUntilFinished) {
-                            milisecont = millisUntilFinished / 1000;
-                            mTIme.setText("00:" + millisUntilFinished / 1000);
-                        }
+                    try {
+                        filepath = getVideoFilePath();
+                        cameraRecorder.start(filepath);
+                        recordBtn.setText("Stop");
+                        mGallary.setVisibility(View.GONE);
+                        front_camera.setVisibility(View.GONE);
+                        cameraRecord.setImageResource(R.drawable.ic_camera_open_red);
+                        countDownTimer = new CountDownTimer(60000, 1000) {
+                            public void onTick(long millisUntilFinished) {
+                                milisecont = millisUntilFinished / 1000;
+                                mTIme.setText("00:" + millisUntilFinished / 1000);
+                            }
 
-                        public void onFinish() {
-                            mTIme.setText("00:" + milisecont);
-                            cameraRecorder.stop();
-                        }
-                    }.start();
+                            public void onFinish() {
+                                try {
+                                    onBackPress="1";
+                                    mTIme.setText("00:" + milisecont);
+
+                                    if (cameraRecorder!=null){
+
+                                        cameraRecorder.stop();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                 } else {
-                    cameraRecorder.stop();
-                    countDownTimer.cancel();
-                    countDownTimer.onFinish();
-                    recordBtn.setText(getString(R.string.app_record));
+                    try {
+                        cameraRecorder.stop();
+                        countDownTimer.cancel();
+                        countDownTimer.onFinish();
+                        recordBtn.setText(getString(R.string.app_record));
 //                Intent intent=new Intent(this, AddPostActivity.class);
 //                intent.putExtra("filePath",filepath);
 //                 startActivity(intent);
-
-                    setResult(RESULT_OK, getIntent().putExtra("filePath", filepath));
-                    finish();
+                        Intent intent = getIntent();
+                        intent.putExtra("filePath", filepath);
+                        intent.putExtra("onBackPress",onBackPress);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -214,6 +240,12 @@ import javax.microedition.khronos.opengles.GL10;
     protected void onResume() {
         super.onResume();
         setUpCamera();
+        try {
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+
+        } catch (Exception e ) {
+
+        }
     }
 
 
@@ -312,6 +344,8 @@ import javax.microedition.khronos.opengles.GL10;
                 .build();
 
     }
+
+
 
     private void changeFilter(Filters filters) {
         cameraRecorder.setFilter(Filters.getFilterInstance(filters, getApplicationContext()));
@@ -428,22 +462,23 @@ import javax.microedition.khronos.opengles.GL10;
                     Intent intent = new Intent(this, VideoTrimActivity.class);
                     intent.putExtra("path", selectedVideoPath);
                     startActivityForResult(intent, 2);
-                  //  finish();
+                    //  finish();
 
 //                    Intent intent = new Intent(this,
 //                            VideoTrimActivity.class);
 //                    intent.putExtra("path", selectedVideoPath);
 //                    startActivity(intent);
                 }
-            } else if(requestCode == 2){
+            } else if (requestCode == 2) {
                 try {
-                    if(data.getStringExtra("filePath")!=null){
+                    if (data.getStringExtra("filePath") != null) {
                         //Toast.makeText(this,""+data.getStringExtra("filePath"),Toast.LENGTH_LONG).show();
-
-                        filepath=data.getStringExtra("filePath");
+                        filepath = data.getStringExtra("filePath");
+                        onBackPress="1";
                         onBackPressed();
+
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
             }
@@ -452,8 +487,12 @@ import javax.microedition.khronos.opengles.GL10;
 
     @Override
     public void onBackPressed() {
-            setResult(RESULT_OK, getIntent().putExtra("filePath", filepath));
-            finish();
+
+        Intent intent = getIntent();
+        intent.putExtra("filePath", filepath);
+        intent.putExtra("onBackPress",onBackPress);
+        setResult(RESULT_OK, intent);
+        finish();
 
 
     }

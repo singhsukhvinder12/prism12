@@ -22,6 +22,7 @@ import android.util.Log
 import android.view.View
 import android.widget.MediaController
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,6 +42,9 @@ import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.AddUpdat
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.UpdateSchoolInput
 import com.e.seasianoticeboard.views.core.BaseActivity
 import com.vincent.videocompressor.VideoCompress
+import com.yanzhenjie.album.Album
+import com.yanzhenjie.album.AlbumFile
+import com.yanzhenjie.album.api.widget.Widget
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -52,6 +56,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     var binding: ActivityAddPostBinding? = null
     private var mSeekPosition = 0
     private var cachedHeight = 0
+    private var mAlbumFiles = ArrayList<AlbumFile>()
     var presenter: AddPostPresenter? = null
     var status = "0"
     var AudioSavePathInDevice = ""
@@ -141,11 +146,16 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                                 PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
                             )
                         ) {
-                            var i = Intent(
-                                Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                            );
-                            startActivityForResult(i, RC_CODE_PICKER_LOGO);
+                            /* var i = Intent(
+                                 Intent.ACTION_PICK,
+                                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                             );
+                             startActivityForResult(i, RC_CODE_PICKER_LOGO);
+
+ */
+//                            mAlbumFiles = ArrayList()
+
+                            selectAlbum()
 
                         }
                     } else {
@@ -234,6 +244,74 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     }
 
 
+    private fun selectAlbum() {
+        Album.image(this)
+            .multipleChoice()
+            .columnCount(4)
+            .selectCount(5)
+            .checkedList(mAlbumFiles)
+            .camera(true)
+            .widget(
+                Widget.newDarkBuilder(this)
+                    .title(getString(R.string.app_name))
+                    .build()
+            )
+            .onResult { result ->
+                //1 image 2 video
+                mAlbumFiles = result
+//                for ( i in 0 until  mAlbumFiles.size) {
+//                    Log.e("imagePath",mAlbumFiles.get(i).path)
+//                    imagePath=mAlbumFiles.get(i).path
+////                    Glide.with(this)
+////                        .load(imagePath)
+////                        .placeholder(R.drawable.ic_image_placeholder)
+////                        .error(R.drawable.ic_image_placeholder)
+////                        .into(iv_profile_edit)
+//                }
+                if (imagesList != null) {
+                    imagesList!!.clear()
+                }
+
+                for (i in 0 until mAlbumFiles.size) {
+                    binding!!.parentImage.visibility = View.VISIBLE
+                    val selectedVideoPath = mAlbumFiles.get(i).path
+                    val list = ArrayList<AddUpdateImageInput>()
+                    val addUpdateImageInput = AddUpdateImageInput()
+                    addUpdateImageInput.imageUrl = selectedVideoPath
+                    val file = File(selectedVideoPath)
+                    addUpdateImageInput.fileType = "Image"
+                    addUpdateImageInput.fileUrl = file
+                    addUpdateImageInput.imageFileName = selectedVideoPath
+                    list.add(addUpdateImageInput)
+                    imagesList!!.addAll(list)
+                }
+                imagesAdapter!!.notifyDataSetChanged()
+
+            }
+            .onCancel {
+
+                if (imagesList != null) {
+                    imagesList!!.clear()
+                }
+                for (i in 0 until mAlbumFiles.size) {
+                    binding!!.parentImage.visibility = View.VISIBLE
+                    val selectedVideoPath = mAlbumFiles.get(i).path
+                    val list = ArrayList<AddUpdateImageInput>()
+                    val addUpdateImageInput = AddUpdateImageInput()
+                    addUpdateImageInput.imageUrl = selectedVideoPath
+                    val file = File(selectedVideoPath)
+                    addUpdateImageInput.fileType = "Image"
+                    addUpdateImageInput.fileUrl = file
+                    addUpdateImageInput.imageFileName = selectedVideoPath
+                    list.add(addUpdateImageInput)
+                    imagesList!!.addAll(list)
+                }
+                imagesAdapter!!.notifyDataSetChanged()
+            }
+            .start()
+    }
+
+
     private fun videoCompressorCustom() {
 
         var myDirectory = File(Environment.getExternalStorageDirectory(), "Pictures");
@@ -275,27 +353,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                     return
                 }
                 presenter!!.getPostData(addPostData(), File(outPath), audioFIle, imagesList)
-
-//                addPost!!.hitAddPostAPI(addPostData(), File(outPath), audioFIle, imagesList)
-//                addPost?.getData()?.observe(
-//                    this@AddPostActivity, object : Observer<AddPostResponse> {
-//                        override fun onChanged(data: AddPostResponse?) {
-//                            baseActivity!!.hideDialog()
-//                            if (data != null) {
-//
-//                                if (data.StatusCode == 200) {
-//                                    showMessage(this@AddPostActivity, data.Message!!)
-//                                    //finish()
-//                                    status = "1"
-//                                    onBackPressed()
-//                                } else {
-//                                    showMessage(this@AddPostActivity, data.Message!!)
-//                                }
-//                            } else {
-//                                showMessage(this@AddPostActivity, "Somthing went wrong")
-//                            }
-//                        }
-//                    })
 
             }
 
@@ -367,22 +424,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     fun getAndroidMoviesFolder(): File? {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
     }
-//
-//    fun recordActivity() {
-//
-//        val filePath = getVideoFilePath()
-//        val color = resources.getColor(R.color.colorPrimaryDark)
-//        AndroidAudioRecorder.with(this)
-//            .setFilePath(filePath)
-//            .setColor(color)
-//            .setRequestCode(RECODE_AUDIO)
-//            .setSource(AudioSource.MIC)
-//            .setChannel(AudioChannel.STEREO)
-//            .setSampleRate(AudioSampleRate.HZ_48000)
-//            .setAutoStart(true)
-//            .setKeepDisplayOn(true)
-//            .record()
-//    }
 
     fun playVideo(videoUri: String?) {
         mediaController = MediaController(this)
@@ -403,18 +444,18 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_CODE_PICKER_LOGO && resultCode == RESULT_OK) {
-            binding!!.parentImage.visibility = View.VISIBLE
-            val selectedVideoPath = getAbsolutePath(this, data!!.data!!)
-            val list = ArrayList<AddUpdateImageInput>()
-            val addUpdateImageInput = AddUpdateImageInput()
-            addUpdateImageInput.imageUrl = selectedVideoPath
-            val file = File(selectedVideoPath)
-            addUpdateImageInput.fileType = "Image"
-            addUpdateImageInput.fileUrl = file
-            addUpdateImageInput.imageFileName = selectedVideoPath
-            list.add(addUpdateImageInput)
-            imagesList!!.addAll(list)
-            imagesAdapter!!.notifyDataSetChanged()
+//            binding!!.parentImage.visibility = View.VISIBLE
+//            val selectedVideoPath = getAbsolutePath(this, data!!.data!!)
+//            val list = ArrayList<AddUpdateImageInput>()
+//            val addUpdateImageInput = AddUpdateImageInput()
+//            addUpdateImageInput.imageUrl = selectedVideoPath
+//            val file = File(selectedVideoPath)
+//            addUpdateImageInput.fileType = "Image"
+//            addUpdateImageInput.fileUrl = file
+//            addUpdateImageInput.imageFileName = selectedVideoPath
+//            list.add(addUpdateImageInput)
+//            imagesList!!.addAll(list)
+//            imagesAdapter!!.notifyDataSetChanged()
 
         } else if (requestCode == RECODE_AUDIO && resultCode == RESULT_OK) {
 
@@ -438,54 +479,60 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                             "null"
                         )
                     ) {
-                        var uri = bundle.getString("filePath")!!
-                        fileUri = uri
+                        var status = bundle.getString("onBackPress")
+
+                        if (status.equals("1")) {
+                            var uri = bundle.getString("filePath")!!
+                            fileUri = uri
 
 
-                        var video_bitmap = ThumbnailUtils.createVideoThumbnail(
-                            fileUri,
-                            MediaStore.Video.Thumbnails.MINI_KIND
-                        );
+                            var video_bitmap = ThumbnailUtils.createVideoThumbnail(
+                                fileUri,
+                                MediaStore.Video.Thumbnails.MINI_KIND
+                            );
 
 
 //                        ImageView imageview_mini =(ImageView) findViewById (R.id.thumbnail_mini);
 //                        ImageView imageview_micro =(ImageView) findViewById (R.id.thumbnail_micro);
 
-                        var bmThumbnail: Bitmap? = null;
+                            var bmThumbnail: Bitmap? = null;
 
 //MICRO_KIND, size: 96 x 96 thumbnail
-                        bmThumbnail = ThumbnailUtils.createVideoThumbnail(
-                            fileUri,
-                            MediaStore.Images.Thumbnails.MICRO_KIND
-                        );
-                        //   imageview_micro.setImageBitmap(bmThumbnail);
+                            bmThumbnail = ThumbnailUtils.createVideoThumbnail(
+                                fileUri,
+                                MediaStore.Images.Thumbnails.MICRO_KIND
+                            );
+                            //   imageview_micro.setImageBitmap(bmThumbnail);
 
 // MINI_KIND, size: 512 x 384 thumbnail
-                        bmThumbnail =
-                            ThumbnailUtils.createVideoThumbnail(
-                                fileUri,
-                                MediaStore.Images.Thumbnails.MINI_KIND
-                            );
-                        //   imageview_mini.setImageBitmap(bmThumbnail);
+                            bmThumbnail =
+                                ThumbnailUtils.createVideoThumbnail(
+                                    fileUri,
+                                    MediaStore.Images.Thumbnails.MINI_KIND
+                                );
+                            //   imageview_mini.setImageBitmap(bmThumbnail);
 
 
 //                    file_upload = Utils.writeSendFileToExternalDirectory(null, "Video_" + selectedvideo.substring(selectedvideo.lastIndexOf("/") + 1), selectedvideo, "2");
 //            /    thumbnail_path = getInsertedPath(video_bitmap, "", "image");
 
 
-                        mediaPlayer = MediaPlayer()
-                        val file = File(uri)
-                        videoFIle = file
-                        binding!!.parentSelectedMedia.visibility = View.VISIBLE
-                        binding!!.parentAudio.visibility = View.GONE
-                        var ountDownTimer = object : CountDownTimer(1000, 1000) {
-                            override fun onTick(millisUntilFinished: Long) {
-                            }
+                            mediaPlayer = MediaPlayer()
+                            val file = File(uri)
+                            videoFIle = file
+                            binding!!.parentSelectedMedia.visibility = View.VISIBLE
+                            binding!!.parentAudio.visibility = View.GONE
+                            var ountDownTimer = object : CountDownTimer(1000, 1000) {
+                                override fun onTick(millisUntilFinished: Long) {
+                                }
 
-                            override fun onFinish() {
-                                playVideo(uri)
-                            }
-                        }.start()
+                                override fun onFinish() {
+                                    playVideo(uri)
+                                }
+                            }.start()
+                        }
+
+
                     }
 
                     //  createVideoThumbNail(fileUri)
@@ -495,49 +542,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         }
 
     }
-
-
-//    fun createVideoThumbNail(fileUri: String?) {
-//        val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-//        val cursor = this.contentResolver.query(Uri.parse(fileUri), filePathColumn, null, null, null)
-//        cursor!!.moveToFirst()
-//
-//        val columnIndex = cursor.getColumnIndex(filePathColumn[0])
-//        val picturePath = cursor.getString(columnIndex)
-//        cursor!!.close()
-//
-//        val bitmap = ThumbnailUtils.createVideoThumbnail(picturePath, MediaStore.Video.Thumbnails.MICRO_KIND)
-//
-//    }
-
-
-//    public fun getInsertedPath(Bitmap bitmap, String path, String file_name):String {
-//        var strMyImagePath = null;
-////        File mFolder = new File(myDir_omorni);
-//        if (!myDir_omorni.exists()) {
-//            myDir_omorni.mkdir();
-//        }
-//        var s = file_name + ".jpg";
-//        var f =  File(myDir_omorni, s);
-//
-//        strMyImagePath = f.absolutePath;
-//        var fos = null;
-//        try {
-//            fos =  FileOutputStream(f);
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
-//            fos!!.flush;
-//            fos.close();
-//        } catch (e : FileNotFoundException) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        if (strMyImagePath == null) {
-//            return path;
-//        }
-//        return strMyImagePath;
-//    }
 
 
     fun getAbsolutePath(activity: Context, uri: Uri): String? {
@@ -577,7 +581,13 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
             deleteImageAttachement.deleteAttachmentId = imagesList!![position].imageId!!
             deletedImageList!!.add(deleteImageAttachement)
         }
-        imagesList!!.removeAt(position)
+        try {
+            imagesList!!.removeAt(position)
+            mAlbumFiles.removeAt(position)
+        }catch (e:java.lang.Exception){
+
+        }
+
         imagesAdapter!!.notifyDataSetChanged()
         if (imagesList!!.size == 0) {
             binding!!.parentImage.visibility = View.GONE

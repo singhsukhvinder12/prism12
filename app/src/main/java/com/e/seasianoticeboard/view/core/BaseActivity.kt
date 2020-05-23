@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -30,6 +31,7 @@ import com.e.seasianoticeboard.utils.PrefStore
 import com.e.seasianoticeboard.utils.Utils
 import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.pagination.NewsFeedFragment
+import com.google.firebase.crashlytics.internal.model.CrashlyticsReport
 import com.wang.avi.AVLoadingIndicatorView
 import java.security.AccessController.getContext
 import java.text.SimpleDateFormat
@@ -57,7 +59,7 @@ abstract class BaseActivity : AppCompatActivity() {
         viewDataBinding = DataBindingUtil.setContentView(this, getLayoutId())
 
         sharedPref = PrefStore(this)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN )
         mSavedInstanceState = savedInstanceState
 
         initViews()
@@ -123,6 +125,21 @@ abstract class BaseActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+    }
+
+    fun hideKeyboard(){
+        try {
+            var imm =getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager;
+            imm.hideSoftInputFromWindow(getCurrentFocus()!!.getWindowToken(),  0);
+
+        }
+        catch (e:Exception){
+
+        }
+
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+
     }
 
 

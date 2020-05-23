@@ -22,6 +22,15 @@ class MainActivity : BaseActivity() {
         return R.layout.activity_main
     }
 
+    override fun onResume() {
+        super.onResume()
+        try {
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+
+        } catch (e: Exception) {
+
+        }
+    }
     override fun initViews() {
         binding = viewDataBinding as ActivityMainBinding
         binding!!.includeView.ivBack.visibility = View.GONE

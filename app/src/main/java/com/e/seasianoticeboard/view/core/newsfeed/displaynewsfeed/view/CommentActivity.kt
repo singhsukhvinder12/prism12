@@ -195,6 +195,11 @@ class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
         hideDialog()
         commentList!!.removeAt(deleteCommentPosition)
         adapter.notifyDataSetChanged()
+
+        if(deleteComment!=null){
+            commentCount = deleteComment.ResultData!!
+
+        }
      //   commentPresenter!!.getComment(postId)
     }
 

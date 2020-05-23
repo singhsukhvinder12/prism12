@@ -253,6 +253,18 @@ public class RecordAudioActivity extends AppCompatActivity {
                 String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+
+        } catch (Exception e ) {
+
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {

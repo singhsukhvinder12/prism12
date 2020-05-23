@@ -41,6 +41,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     var strDOB = ""
     var gender = ""
     var fileUri = ""
+    var postedByMail=""
     var imageFile: File? = null
     var userId = "0"
     var emailId = ""
@@ -67,10 +68,10 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     override fun initViews() {
         binding = viewDataBinding as ActivityUserProfileBinding
         binding!!.includeView.ivBack.setOnClickListener { finish() }
-
         binding!!.etDob.setOnClickListener(this)
         binding!!.btSubmit.setOnClickListener(this)
         binding!!.ivProfile.setOnClickListener(this)
+        binding!!.relMain.setOnClickListener(this)
         binding!!.radioGroupGender.setOnCheckedChangeListener(this)
         presenter = UpdateUserProfilePresenter(this)
         if (intent.getStringExtra("comingFrom") != null) {
@@ -78,7 +79,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             userId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")!!
             emailId = sharedPref!!.getString(PreferenceKeys.EMAIL, "")!!
 
-            var postedByMail = intent.getStringExtra("postedByMail")
+             postedByMail = intent.getStringExtra("postedByMail")
             if (postedByMail.equals(emailId)) {
                 binding!!.includeView.toolbatTitle.text = "Edit Profile"
                 updateUser = true
@@ -156,6 +157,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     }
 
     override fun onClick(view: View?) {
+        hideKeyboard()
         when (view?.id) {
             R.id.et_dob -> {
                 selectDatePicker()
@@ -426,30 +428,38 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     override fun onGetUserProfile(data: GetUserProfileResponse) {
 
         hideDialog()
+
         if (data != null && data!!.ResultData != null) {
             binding!!.etFirstName.setText(data.ResultData!!.FirstName)
             binding!!.etLastName.setText(data.ResultData!!.LastName)
             binding!!.etEmail.setText(data.ResultData!!.Email)
             binding!!.etPhone.setText(data.ResultData!!.PhoneNo)
             // binding!!.etDob.setText(data.ResultData.StrDOB)
-            binding!!.etDob.setText(
-                getLocalDate(
-                    "yyyy-MM-dd'T'HH:mm:ss",
-                    data.ResultData!!.DOB,
-                    "yyyy-MM-dd"
+
+            try {
+                binding!!.etDob.setText(getLocalDate("yyyy-MM-dd'T'HH:mm:ss", data.ResultData!!.DOB, "yyyy-MM-dd")
                 )
-            )
+                gender = data!!.ResultData!!.Gender!!
+
+            }
+            catch (e:java.lang.Exception){
+
+            }
             userId = data!!.ResultData!!.UserId!!
-            gender = data!!.ResultData!!.Gender!!
             if (!data!!.ResultData!!.ImageUrl!!.isEmpty()) {
 
                 Glide.with(this@UserProfileActivity).load(data!!.ResultData!!.ImageUrl)
                     .placeholder(R.drawable.user).error(R.drawable.user)
                     .into(binding!!.ivProfile!!)
-                sharedPref!!.saveString(
-                    PreferenceKeys.USER_IMAGE,
-                    data!!.ResultData!!.ImageUrl.toString()
-                )
+
+                if (postedByMail.equals(emailId)){
+                    sharedPref!!.saveString(
+                        PreferenceKeys.USER_IMAGE,
+                        data!!.ResultData!!.ImageUrl.toString()
+                    )
+
+                }
+
 
             }
             if (gender.equals("M", true)) {

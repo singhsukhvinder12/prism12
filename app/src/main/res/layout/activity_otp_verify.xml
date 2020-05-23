@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
+        android:id="@+id/parent_id"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.core.auth.OtpVerifyActivity">
@@ -42,6 +43,8 @@
             android:textSize="16dp" />
 
         <RelativeLayout
+            android:focusable="false"
+
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,16 +52,16 @@
 
             <com.goodiebag.pinview.Pinview
                 android:id="@+id/otpPin"
-                android:layout_width="wrap_content"
+
+                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:cursorVisible="true"
-                android:inputType="text"
+                android:cursorVisible="false"
                 android:itemBackground="@mipmap/ic_launcher"
                 android:textStyle="bold"
                 app:hint=""
                 app:inputType="number"
-                app:pinHeight="40dp"
+                 app:pinHeight="40dp"
                 app:pinLength="6"
                 app:pinWidth="40dp"
                 app:textSize="10dp" />

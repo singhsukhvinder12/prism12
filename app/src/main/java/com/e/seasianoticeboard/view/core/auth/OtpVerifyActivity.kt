@@ -1,9 +1,10 @@
 package com.e.seasianoticeboard.view.core.auth
 
+import android.app.Activity
 import android.content.Intent
-import android.os.Build
-import android.os.SystemClock
 import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.e.seasianoticeboard.App
 import com.e.seasianoticeboard.MainActivity
@@ -35,9 +36,12 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
         binding = viewDataBinding as ActivityOtpVerifyBinding
         binding!!.btnSubmit.setOnClickListener(this)
         binding!!.resendCode.setOnClickListener(this)
+        binding!!.parentId.setOnClickListener(this)
         binding!!.includeView.ivBack.setOnClickListener { finish() }
         binding!!.includeView.toolbatTitle.setText("Verify OTP")
         otpVerifyPresenter= VerifyOtpPresenter(this)
+
+      //  hideKeyboard()
         if (intent.getStringExtra("OtpId") != null) {
             OtpId = intent.getStringExtra("OtpId");
         }
@@ -46,14 +50,19 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
             binding!!.emailCodeTxt.setText("Please enter the code that has been sent to you at " +email)
 
         }
-     /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+
+       // binding!!.otpPin.set
+      /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             binding!!.viewTimer.isCountDown = true
         }
         binding!!.viewTimer.base = SystemClock.elapsedRealtime() + 20000
         binding!!.viewTimer.start()*/
     }
 
+
     override fun onClick(p0: View?) {
+       // hideKeyboard()
         when (p0!!.id) {
             R.id.btnSubmit -> {
                 if (binding!!.otpPin.value.length >= 6) {
@@ -81,6 +90,9 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
         }
     }
 
+
+
+
     override fun onOTPSucess(data: VerifyEmailResponse) {
         hideDialog()
         if (data != null) {
@@ -100,6 +112,7 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
                     var intent = Intent(this@OtpVerifyActivity, UserProfileActivity::class.java)
                     intent.putExtra("email", email)
                     startActivity(intent)
+                    finish()
                 }
             } else {
                 UtilsFunctions.showToastError(data.Message)

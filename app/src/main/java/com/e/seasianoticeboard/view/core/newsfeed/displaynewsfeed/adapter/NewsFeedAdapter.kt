@@ -45,7 +45,6 @@ class NewsFeedAdapter(
     //private val isLoadingAdded = false
     private val mCurrentPosition = 0
     var progressDialog: ProgressDialog? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),

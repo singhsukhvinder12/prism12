@@ -55,14 +55,14 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     var deleteItemIndex = "0"
     var postiton: Int? = null
     var type = ""
-    var  RC_CODE_PICKER_LOGO = 2000
+    var RC_CODE_PICKER_LOGO = 2000
     val PERMISSION_READ_STORAGE = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.CAMERA,
         Manifest.permission.RECORD_AUDIO
     )
-    var  REQUEST_PERMISSIONS = 1
+    var REQUEST_PERMISSIONS = 1
 
     var feedPresenter: NewsFeedPresenter? = null
     var horizontalLayoutManager: LinearLayoutManager? = null
@@ -290,10 +290,17 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
 
             } catch (e: Exception) {
             }
+        } else if (requestCode == 205) {
+
+            try {
+                getFeedData()
+            } catch ( e:Exception) {
+
+            }
+
         }
-
-
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -447,6 +454,7 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
         val title = dialog.findViewById<TextView>(R.id.std_name)
         title.setText(getString(R.string.delete_post))
         btnDelete.setOnClickListener {
+            dialog.hide()
             baseActivity!!.showDialog()
             var input = DeletePostInput()
             input.NewsLetterId = postId
@@ -529,6 +537,7 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     }
 
     override fun onDeletePost(data: DeletePostResponse) {
+        baseActivity!!.hideDialog()
         if (data != null) {
             Toast.makeText(
                 activity,
@@ -548,12 +557,11 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     }
 
 
-    fun sendDeviceToken(){
-        var input=DeviceTokenInput()
-        input.DeviceToken=sharedPref!!.getString(PreferenceKeys.DEVECE_TOKEN,"")
-        input.UserId=sharedPref!!.getString(PreferenceKeys.USER_ID,"")
-        input.DeviceType="A"
-        feedPresenter!!.sendDeviceToken(input)
-
+    fun sendDeviceToken() {
+        var input = DeviceTokenInput()
+        input.DeviceToken = sharedPref!!.getString(PreferenceKeys.DEVECE_TOKEN, "")
+        input.UserId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")
+        input.DeviceType = "1"
+        //  feedPresenter!!.sendDeviceToken(input)
     }
 }
