@@ -45,7 +45,7 @@
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
+            android:layout_below="@+id/emailCodeTxt">
 
             <com.goodiebag.pinview.Pinview
                 android:id="@+id/otpPin"
@@ -56,7 +56,7 @@
                 android:inputType="text"
                 android:itemBackground="@mipmap/ic_launcher"
                 android:textStyle="bold"
-                app:hint="0"
+                app:hint=""
                 app:inputType="number"
                 app:pinHeight="40dp"
                 app:pinLength="6"
@@ -65,25 +65,33 @@
 
 
             <TextView
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:id="@+id/didtShowCode"
-                android:visibility="gone"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="25dp"
                 android:textColor="@color/black"
                 android:text="Didn't receive code?"
-                android:layout_below="@+id/otpPin"
+                android:layout_below="@+id/btnSubmit"
                 android:fontFamily="@font/opensans_regular"
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+         <!--   <Chronometer
+                android:id="@+id/view_timer"
+                tools:targetApi="24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/didtShowCode"
+                android:layout_marginTop="25dp"
+                android:layout_centerHorizontal="true"/>-->
+
             <TextView
                 android:textSize="20sp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="25dp"
                 android:text="Resend Code"
                 android:id="@+id/resendCode"
                 android:textColor="@color/colorPrimary"
-                android:layout_below="@+id/btnSubmit"
+                android:layout_below="@+id/didtShowCode"
                 android:fontFamily="@font/opensans_regular"
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"
