@@ -114,6 +114,9 @@ public class RecordAudioActivity extends AppCompatActivity {
         ivClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (mp != null) {
+                    mp.stop();
+                }
                 finish();
             }
         });
@@ -126,9 +129,15 @@ public class RecordAudioActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (mp != null) {
+            mp.stop();
+        }
+    }
 
     private void playSound(MediaPlayer player) {
         if (player != null) {

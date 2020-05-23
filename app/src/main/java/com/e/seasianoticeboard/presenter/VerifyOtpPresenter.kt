@@ -52,7 +52,6 @@ class VerifyOtpPresenter(var otpVerifyActivity: OtpVerifyActivity) {
                     }
                 }
             }
-
             override fun onFailure(call: Call<SignupVerificationResponse>, t: Throwable) {
                 otpVerifyActivity.onFailer()
                 UtilsFunctions.showToastError(t.message)

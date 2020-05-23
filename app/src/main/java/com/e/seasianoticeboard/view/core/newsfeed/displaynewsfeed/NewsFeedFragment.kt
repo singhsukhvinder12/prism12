@@ -1,5 +1,6 @@
 package com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.pagination
 
+import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -17,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.e.seasianoticeboard.R
 import com.e.seasianoticeboard.databinding.FragmentNewsFeedBinding
+import com.e.seasianoticeboard.model.DeviceTokenInput
 import com.e.seasianoticeboard.util.PreferenceKeys
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.callback.NewsFeedCallback
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.ReportPostInput
@@ -53,6 +55,15 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     var deleteItemIndex = "0"
     var postiton: Int? = null
     var type = ""
+    var  RC_CODE_PICKER_LOGO = 2000
+    val PERMISSION_READ_STORAGE = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO
+    )
+    var  REQUEST_PERMISSIONS = 1
+
     var feedPresenter: NewsFeedPresenter? = null
     var horizontalLayoutManager: LinearLayoutManager? = null
     //pagination
@@ -97,7 +108,7 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
 
     fun getFeedData() {
         baseActivity!!.showDialog()
-        feedPresenter = NewsFeedPresenter(this)
+
 
         feedPresenter!!.fetchComplaints(UserId.toInt())
 
@@ -133,13 +144,11 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     }
 
     fun setupUI() {
+        feedPresenter = NewsFeedPresenter(this)
+        sendDeviceToken()
         setProfilePic()
-
         imgAdd.setOnClickListener(this)
-
-        // doApiCall()
         getFeedData()
-
         txtAddPost.setOnClickListener {
             //show the addPost layout
             layoutAddPost.visibility = View.GONE
@@ -536,5 +545,15 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
         if (data != null) {
             Toast.makeText(activity, data.Message, Toast.LENGTH_LONG).show()
         }
+    }
+
+
+    fun sendDeviceToken(){
+        var input=DeviceTokenInput()
+        input.DeviceToken=sharedPref!!.getString(PreferenceKeys.DEVECE_TOKEN,"")
+        input.UserId=sharedPref!!.getString(PreferenceKeys.USER_ID,"")
+        input.DeviceType="A"
+        feedPresenter!!.sendDeviceToken(input)
+
     }
 }

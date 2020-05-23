@@ -74,11 +74,25 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         binding!!.radioGroupGender.setOnCheckedChangeListener(this)
         presenter = UpdateUserProfilePresenter(this)
         if (intent.getStringExtra("comingFrom") != null) {
-            binding!!.includeView.toolbatTitle.text = "Edit Profile"
+
             userId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")!!
             emailId = sharedPref!!.getString(PreferenceKeys.EMAIL, "")!!
-            updateUser = true
-            getUserProfile()
+
+            var postedByMail = intent.getStringExtra("postedByMail")
+            if (postedByMail.equals(emailId)) {
+                binding!!.includeView.toolbatTitle.text = "Edit Profile"
+                updateUser = true
+                enabledField(true)
+                binding!!.btSubmit.visibility = View.VISIBLE
+                getUserProfile(emailId)
+            } else {
+                binding!!.btSubmit.visibility = View.GONE
+                binding!!.includeView.toolbatTitle.text = "Profile"
+                enabledField(false)
+                getUserProfile(postedByMail)
+            }
+
+
         } else {
             binding!!.includeView.toolbatTitle.setText("Signup")
         }
@@ -89,9 +103,20 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         }
     }
 
-    fun getUserProfile() {
+    fun enabledField(status: Boolean) {
+        binding!!.etFirstName.isEnabled = status
+        binding!!.etLastName.isEnabled = status
+        binding!!.etPhone.isEnabled = status
+        binding!!.etDob.isEnabled = status
+        binding!!.ivProfile.isEnabled = status
+        binding!!.rbMale.isClickable = status
+        binding!!.rbFemale.isClickable = status
+        binding!!.rbNa.isClickable = status
+    }
+
+    fun getUserProfile(postedByMail: String?) {
         var input = GetUserProfileInput()
-        input.Email = emailId
+        input.Email = postedByMail
         input.Phone = ""
         showDialog()
         if (!UtilsFunctions.isNetworkAvailable(App.app)) {
@@ -436,6 +461,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             }
         }
     }
+
     override fun onError() {
         hideDialog()
     }

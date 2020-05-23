@@ -19,6 +19,7 @@ class GetFeedResponse:Serializable {
         var Description: String? = null
 
         var IsLikedByMe: String? = null
+        var Email: String? = null
 
         var Comments: String? = null
         var PostedByImageUrl : String? = null

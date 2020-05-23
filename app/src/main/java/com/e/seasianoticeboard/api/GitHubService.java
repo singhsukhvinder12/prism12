@@ -2,6 +2,8 @@ package com.e.seasianoticeboard.api;
 
 
 
+import com.e.seasianoticeboard.model.DeviceTokenInput;
+import com.e.seasianoticeboard.model.DeviceTokenResponse;
 import com.e.seasianoticeboard.model.GetUserProfileInput;
 import com.e.seasianoticeboard.model.GetUserProfileResponse;
 import com.e.seasianoticeboard.model.SignupVerificationResponse;
@@ -57,6 +59,9 @@ public interface GitHubService {
 
     @POST("Social/GetNewsLetter")
     Call<GetFeedResponse> getPostDara(@Body GetFeedInput UserId);
+
+    @POST("User/AddUpdateDeviceDetail")
+    Call<DeviceTokenResponse> sendDeviceToken(@Body DeviceTokenInput UserId);
 
     @Multipart
     @POST("Social/AddUpdateComment")

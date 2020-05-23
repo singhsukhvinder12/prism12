@@ -48,6 +48,11 @@ class PlayVideoActivity : BaseActivity() {
             binding!!.progress.visibility = View.GONE
         })
 
+    }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        binding!!.videoView.stopPlayback()
+        finish()
     }
 }

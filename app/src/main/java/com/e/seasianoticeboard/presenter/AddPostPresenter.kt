@@ -91,6 +91,12 @@ class AddPostPresenter(var addPostActivity: AddPostActivity) {
                 call: Call<AddPostResponse>,
                 response: retrofit2.Response<AddPostResponse>?
             ) {
+
+                if (response!!.code() == 500) {
+                    UtilsFunctions.showToastError(response.message())
+                    addPostActivity.onError()
+                    return
+                }
                 if (response != null) {
                     addPostActivity.onSuccess(response.body())
 

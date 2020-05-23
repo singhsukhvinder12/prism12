@@ -70,6 +70,7 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_toRightOf="@+id/constraintLayout"
             android:layout_below="@+id/tvName"
+            android:layout_marginBottom="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -78,9 +79,9 @@
             android:textSize="@dimen/dp_10"
             android:layout_marginLeft="8dp"
             android:text="2020-05-12"
-            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="40dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/tvComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <ImageView

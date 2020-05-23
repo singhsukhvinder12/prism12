@@ -55,6 +55,12 @@ class UpdateUserProfilePresenter(var userProfileActivity: UserProfileActivity) {
                 call: Call<UserProfileResponse>,
                 response: retrofit2.Response<UserProfileResponse>?
             ) {
+                if (response!!.code() == 500) {
+                    UtilsFunctions.showToastError(response.message())
+                    userProfileActivity.onError()
+                    return
+                }
+
                 if (response!!.body() != null) {
                     userProfileActivity.onSignupUser(response.body())
 

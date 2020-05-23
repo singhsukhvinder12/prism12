@@ -17,7 +17,7 @@ class MainActivity : BaseActivity() {
     var newsFeedFragment: NewsFeedFragment = NewsFeedFragment()
 
     var binding: ActivityMainBinding? = null
-    var userImage=""
+    var userImage = ""
     override fun getLayoutId(): Int {
         return R.layout.activity_main
     }
@@ -35,12 +35,13 @@ class MainActivity : BaseActivity() {
 
             var intent = Intent(this, UserProfileActivity::class.java)
             intent.putExtra("comingFrom", "editProfile")
+            intent.putExtra("postedByMail", sharedPref!!.getString(PreferenceKeys.EMAIL, "")!!)
             startActivityForResult(intent, 205)
 
             //Toast.makeText(this,"Coming Soon",Toast.LENGTH_LONG).show()
 
         }
-userImage=sharedPref!!.getString(PreferenceKeys.USER_IMAGE,"")!!
+        userImage = sharedPref!!.getString(PreferenceKeys.USER_IMAGE, "")!!
         Glide.with(this).load(userImage).placeholder(R.drawable.user).error(R.drawable.user)
             .into(binding!!.includeView.ivEditProfile)
     }
@@ -56,19 +57,19 @@ userImage=sharedPref!!.getString(PreferenceKeys.USER_IMAGE,"")!!
             try {
 
 
-            if (data != null) {
-                val bundle = data!!.getExtras();
-                var code = bundle!!.getString("imageCode")!!
-                if (code.equals("1")) {
-                    /////change image
-                    userImage = sharedPref!!.getString(PreferenceKeys.USER_IMAGE, "")!!
-                    Glide.with(this).load(userImage).placeholder(R.drawable.user)
-                        .error(R.drawable.user)
-                        .into(binding!!.includeView.ivEditProfile)
+                if (data != null) {
+                    val bundle = data!!.getExtras();
+                    var code = bundle!!.getString("imageCode")!!
+                    if (code.equals("1")) {
+                        /////change image
+                        userImage = sharedPref!!.getString(PreferenceKeys.USER_IMAGE, "")!!
+                        Glide.with(this).load(userImage).placeholder(R.drawable.user)
+                            .error(R.drawable.user)
+                            .into(binding!!.includeView.ivEditProfile)
 
+                    }
                 }
-            }
-            }catch (e:Exception){
+            } catch (e: Exception) {
 
             }
         }

@@ -8,6 +8,7 @@ import com.e.seasianoticeboard.callbacks.EmailVeryfyCallback
 import com.e.seasianoticeboard.databinding.ActivityEmailBinding
 import com.e.seasianoticeboard.model.SignupVerificationResponse
 import com.e.seasianoticeboard.presenter.EmailVerifyPresenter
+import com.e.seasianoticeboard.utils.Utils
 import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.views.core.BaseActivity
 
@@ -36,6 +37,13 @@ class EmailActivity : BaseActivity(), View.OnClickListener,EmailVeryfyCallback {
                     binding!!.edEmail.error = "Please enter email"
                     binding!!.edEmail.requestFocus()
                 }
+
+//                else if ((!Utils.emailValidator(binding!!.edEmail.text.toString()) )&&(!Utils.emailValidatorSecond(binding!!.edEmail.text.toString()))) {
+//                    binding!!.edEmail.error = "Please check email"
+//                    binding!!.edEmail.requestFocus()
+//                }
+
+
                 else {
                     showDialog()
                     if (!UtilsFunctions.isNetworkAvailable(App.app)) {

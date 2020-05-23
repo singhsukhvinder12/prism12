@@ -52,7 +52,7 @@
                 android:layout_centerVertical="true"
                 android:layout_width="match_parent"
                 android:padding="10dp"
-                android:hint="comment"
+                android:hint="@string/please_add_a_comment"
                 android:layout_marginLeft="@dimen/_10sdp"
                 android:background="@color/colorWhite"
                 android:layout_height="match_parent"/>

@@ -29,6 +29,7 @@ class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
     var userId=""
     var postId=""
     var commentCount=""
+    var deleteCommentPosition=0
     var commentPresenter:CommentPresenter?=null
     var position="";
     var commentModel:GetCommentResponse.ResultDataModel.LstgetCommentViewModelList?=null
@@ -165,6 +166,7 @@ class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
         input.PostId=postId
         input.UserId=userId
         showDialog()
+        deleteCommentPosition=position
         commentPresenter=CommentPresenter(this)
         commentPresenter!!.deleteComment(input!!)
 //        commentViewModel?.deleteCommentInput(input)
@@ -191,11 +193,9 @@ class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
 
     override fun deleteComment(deleteComment: DeleteCommentResponse) {
         hideDialog()
-        if(deleteComment!=null){
-          //  commentGet(postId)
-            //ommentPresenter!!.getComment(postId)
-        }
-        commentPresenter!!.getComment(postId)
+        commentList!!.removeAt(deleteCommentPosition)
+        adapter.notifyDataSetChanged()
+     //   commentPresenter!!.getComment(postId)
     }
 
     override fun sendComment(sendComment: CommentResponse) {

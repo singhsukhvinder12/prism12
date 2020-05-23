@@ -152,7 +152,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                         baseActivity!!.showMessage(this, "Please delete selected media")
                     }
                 } else {
-                    baseActivity!!.showMessage(this, "you can select only 5 imagies")
+                    baseActivity!!.showMessage(this, getString(R.string.max_five_photos))
 
                 }
             }

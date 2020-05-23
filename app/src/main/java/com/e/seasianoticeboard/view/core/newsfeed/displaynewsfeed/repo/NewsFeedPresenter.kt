@@ -1,6 +1,8 @@
 package com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.repo
 
 import com.e.seasianoticeboard.api.GetRestAdapter
+import com.e.seasianoticeboard.model.DeviceTokenInput
+import com.e.seasianoticeboard.model.DeviceTokenResponse
 import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.ReportPostInput
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.RepostPostResponse
@@ -112,5 +114,22 @@ class NewsFeedPresenter(var newsFeedFragment: NewsFeedFragment) {
 
     }
 
+    fun sendDeviceToken(input:DeviceTokenInput){
+        val call = GetRestAdapter.getRestAdapter(true).sendDeviceToken(input)
+        call.enqueue(object : Callback<DeviceTokenResponse> {
+            override fun onResponse(call: Call<DeviceTokenResponse>, response: retrofit2.Response<DeviceTokenResponse>?
+            ) {
+                if (response!!.code() == 500) {
+                   // UtilsFunctions.showToastError(response.message())
+                   // newsFeedFragment.onError()
+                    return
+                }
+            }
 
+            override fun onFailure(call: Call<DeviceTokenResponse>, t: Throwable) {
+                newsFeedFragment.onError()
+                UtilsFunctions.showToastError(t.message)
+            }
+        })
+    }
 }

@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,9 @@ import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.e.seasianoticeboard.R
 import com.e.seasianoticeboard.databinding.ItemNewsFeedBinding
+import com.e.seasianoticeboard.util.CheckRuntimePermissions
 import com.e.seasianoticeboard.util.PreferenceKeys
+import com.e.seasianoticeboard.view.core.auth.UserProfileActivity
 import com.e.seasianoticeboard.view.core.newsfeed.audioplayer.AndroidBuildingMusicPlayerActivity
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.adapter.SlidingImage_Adapter
 import com.e.seasianoticeboard.views.core.BaseActivity
@@ -34,21 +37,21 @@ import kotlin.collections.ArrayList
 
 
 class NewsFeedAdapter(
-        var context: NewsFeedFragment,
-        var mList: ArrayList<GetFeedResponse.ResultDataList>,
-        var baseActivity: BaseActivity?
+    var context: NewsFeedFragment,
+    var mList: ArrayList<GetFeedResponse.ResultDataList>,
+    var baseActivity: BaseActivity?
 ) :
-        RecyclerView.Adapter<NewsFeedAdapter.ViewHolder>() {
+    RecyclerView.Adapter<NewsFeedAdapter.ViewHolder>() {
     //private val isLoadingAdded = false
     private val mCurrentPosition = 0
     var progressDialog: ProgressDialog? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = DataBindingUtil.inflate(
-                LayoutInflater.from(parent.context),
-                R.layout.item_news_feed,
-                parent,
-                false
+            LayoutInflater.from(parent.context),
+            R.layout.item_news_feed,
+            parent,
+            false
         ) as ItemNewsFeedBinding
 
         return ViewHolder(binding.root)
@@ -56,9 +59,9 @@ class NewsFeedAdapter(
 
     //to add comment
     fun notifyParticularItemWithComment(
-            complaintId: String,
-            data: ArrayList<GetFeedResponse.ResultDataList>,
-            commentsCounts: Int
+        complaintId: String,
+        data: ArrayList<GetFeedResponse.ResultDataList>,
+        commentsCounts: Int
     ) {
     }
 
@@ -74,8 +77,8 @@ class NewsFeedAdapter(
     }
 
     fun addDataInMyCases(
-            mLayoutManager: LinearLayoutManager,
-            listItems: ArrayList<GetFeedResponse.ResultDataList>
+        mLayoutManager: LinearLayoutManager,
+        listItems: ArrayList<GetFeedResponse.ResultDataList>
     ) {
         var size = this.mList.size
         this.mList.addAll(listItems)
@@ -130,10 +133,10 @@ class NewsFeedAdapter(
         var mediaPlayer: MediaPlayer? = null
         var status = ""
         fun bind(
-                context: NewsFeedFragment,
-                item: ArrayList<GetFeedResponse.ResultDataList>,
-                index: Int,
-                baseActivity: BaseActivity?
+            context: NewsFeedFragment,
+            item: ArrayList<GetFeedResponse.ResultDataList>,
+            index: Int,
+            baseActivity: BaseActivity?
         ) {
             this.index = index
 
@@ -150,14 +153,7 @@ class NewsFeedAdapter(
             Glide.with(context).load(item.get(position).PostedByImageUrl)
                 .placeholder(R.drawable.user).error(R.drawable.user)
                 .into(itemView.img)
-
-//            if (!item.get(index).TotalLikes.equals("0")) {
-//                itemView.txtPostLikeNo.setText(item.get(index).TotalLikes)
-//            }
-
             itemView.txtPostLikeNo.setText(item.get(index).TotalLikes)
-
-           // status = item.get(index).IsLikedByMe!!
 
             if (item.get(index).IsLikedByMe.equals("true")) {
                 itemView.img_like_post.setImageResource(R.drawable.ic_like_heart)
@@ -170,67 +166,90 @@ class NewsFeedAdapter(
             popup1.inflate(R.menu.news_feed_menu)
 
 
-            if(item.get(index).PostedById.equals(context.sharedPref!!.getString(PreferenceKeys.USER_ID,"").toString())){
+            if (item.get(index).PostedById.equals(
+                    context.sharedPref!!.getString(
+                        PreferenceKeys.USER_ID,
+                        ""
+                    ).toString()
+                )
+            ) {
                 popup1.menu.getItem(0).setVisible(true)
                 popup1.menu.getItem(1).setVisible(false)
-            } else{
+            } else {
                 popup1.menu.getItem(0).setVisible(false)
                 popup1.menu.getItem(1).setVisible(true)
             }
 
-                if (item.get(index).lstDocuments != null) {
-                    if (item.get(index).lstDocuments!!.get(0).Type != null) {
-                        var isTYpe = item.get(index).lstDocuments!!.get(0).Type
-                        val ImagesArray = ArrayList<String>()
-                        if (isTYpe.equals("Image")) {
-                            itemView.viewPagerParent.visibility = View.VISIBLE
-                            itemView.audioView.visibility = View.GONE
-                            itemView.parentVideoView.visibility = View.GONE
+            if (item.get(index).lstDocuments != null) {
+                if (item.get(index).lstDocuments!!.get(0).Type != null) {
+                    var isTYpe = item.get(index).lstDocuments!!.get(0).Type
+                    val ImagesArray = ArrayList<String>()
+                    if (isTYpe.equals("Image")) {
+                        itemView.viewPagerParent.visibility = View.VISIBLE
+                        itemView.audioView.visibility = View.GONE
+                        itemView.parentVideoView.visibility = View.GONE
 
-                            if (item.get(index).lstDocuments != null) {
+                        if (item.get(index).lstDocuments != null) {
 
-                                for (i in 0..item.get(index)!!.lstDocuments!!.size - 1) {
-                                    var url = item.get(index).lstDocuments!!.get(i).URL
-                                    ImagesArray.add(url!!);
-                                }
-                                var mPager = itemView.findViewById(R.id.viewPager) as ViewPager
-                                mPager.adapter = SlidingImage_Adapter(context.activity, ImagesArray)
+                            for (i in 0..item.get(index)!!.lstDocuments!!.size - 1) {
+                                var url = item.get(index).lstDocuments!!.get(i).URL
+                                ImagesArray.add(url!!);
                             }
+                            var mPager = itemView.findViewById(R.id.viewPager) as ViewPager
+                            mPager.adapter = SlidingImage_Adapter(context.activity, ImagesArray)
+                        }
 
-                        } else if (isTYpe.equals("Audio")) {
-                            var url = item.get(index).lstDocuments!!.get(0).URL
-                            itemView.audioView.visibility = View.VISIBLE
-                            itemView.viewPagerParent.visibility = View.GONE
-                            itemView.parentVideoView.visibility = View.GONE
+                    } else if (isTYpe.equals("Audio")) {
+                        var url = item.get(index).lstDocuments!!.get(0).URL
+                        itemView.audioView.visibility = View.VISIBLE
+                        itemView.viewPagerParent.visibility = View.GONE
+                        itemView.parentVideoView.visibility = View.GONE
 
-                            var playAUdio = false
+                        var playAUdio = false
 
 
-                            itemView.btnPlayAudio.setOnClickListener {
+                        itemView.btnPlayAudio.setOnClickListener {
 
-                                var intent = Intent(context.activity, AndroidBuildingMusicPlayerActivity::class.java);
+                            if (CheckRuntimePermissions.checkMashMallowPermissions(
+                                    baseActivity,
+                                    context.PERMISSION_READ_STORAGE, context.REQUEST_PERMISSIONS
+                                )
+                            ) {
+                                var intent = Intent(
+                                    context.activity,
+                                    AndroidBuildingMusicPlayerActivity::class.java
+                                );
                                 intent.putExtra("audio", url)
                                 context.startActivity(intent)
                             }
-                        } else if (isTYpe.equals("Video")) {
-                            itemView.viewPagerParent.visibility = View.GONE
-                            itemView.audioView.visibility = View.GONE
-                            itemView.parentVideoView.visibility = View.VISIBLE
+                        }
+                    } else if (isTYpe.equals("Video")) {
+                        itemView.viewPagerParent.visibility = View.GONE
+                        itemView.audioView.visibility = View.GONE
+                        itemView.parentVideoView.visibility = View.VISIBLE
 
-                            val url = item.get(index).lstDocuments!!.get(0).URL
-                            itemView.btnPlayVideo.setOnClickListener {
-                                var intent = Intent(context.activity, PlayVideoActivity::class.java)
-                                intent.putExtra("videoPath", url)
-                                context.startActivity(intent)
-                            }
-//                            Glide
-//                                .with(context)
-//                                .asBitmap()
-//                                .load(url)
-//                                .into(itemView.btnPlayVideo);
+                        val url = item.get(index).lstDocuments!!.get(0).URL
+                        itemView.btnPlayVideo.setOnClickListener {
+                            var intent = Intent(context.activity, PlayVideoActivity::class.java)
+                            intent.putExtra("videoPath", url)
+                            context.startActivity(intent)
                         }
                     }
                 }
+            }
+
+            itemView.img.setOnClickListener {
+
+                if (item.get(index).PostedById != null) {
+                    var intent = Intent(context.activity, UserProfileActivity::class.java)
+                    intent.putExtra("comingFrom", "editProfile")
+                    intent.putExtra("postedByMail", item.get(index).Email)
+                    context.startActivityForResult(intent, 205)
+                } else {
+                    Toast.makeText(context.activity, "Somthing went wrong", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
 
             itemView.iv_menu!!.setOnClickListener {
                 popup1.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
@@ -238,7 +257,7 @@ class NewsFeedAdapter(
 
                         when (item1.getItemId()) {
                             R.id.delete -> {
-                                context.deletePost(item.get(index).NewsLetterId.toString(),index)
+                                context.deletePost(item.get(index).NewsLetterId.toString(), index)
                             }
                             R.id.report -> {
                                 context.reportPost(item.get(index).NewsLetterId.toString())
@@ -252,68 +271,58 @@ class NewsFeedAdapter(
             }
 
             itemView.layoutCommentPost.setOnClickListener {
-                    //    baseActivity!!.showMessage(context,"Coming soon")
-                    var intent = Intent(context.activity, CommentActivity::class.java)
-                    val bundle = Bundle()
-                    bundle.putSerializable("commentData", item.get(index).lstComments)
-                    intent.putExtras(bundle)
-                    intent.putExtra("postId", item.get(index).NewsLetterId.toString())
-                    intent.putExtra("position",""+index)
-                    intent.putExtra("PostedById", item.get(index).PostedById.toString())
-                    context.startActivityForResult(intent,588)
+                //    baseActivity!!.showMessage(context,"Coming soon")
+                var intent = Intent(context.activity, CommentActivity::class.java)
+                val bundle = Bundle()
+                bundle.putSerializable("commentData", item.get(index).lstComments)
+                intent.putExtras(bundle)
+                intent.putExtra("postId", item.get(index).NewsLetterId.toString())
+                intent.putExtra("position", "" + index)
+                intent.putExtra("PostedById", item.get(index).PostedById.toString())
+                context.startActivityForResult(intent, 588)
+            }
+            itemView.img_like_post.setOnClickListener {
+                if (item.get(index).IsLikedByMe.equals("true")) {
+                    itemView.img_like_post.setImageResource(R.drawable.ic_unlike_heart)
+                    var input = LikeInput()
+                    //  status="false"
+                    item.get(index).IsLikedByMe = "false"
+                    input.IsLiked = "false"
+                    input.LikedBy =
+                        baseActivity!!.sharedPref!!.getString(PreferenceKeys.USER_ID, "")
+                    input.PostId = item.get(index).NewsLetterId.toString()
+                    input.TotalLikes = item.get(index).TotalLikes.toString()
+                    context.likeHitApi(input, itemView.txtPostLikeNo, index, item)
+                } else if (item.get(index).IsLikedByMe.equals("false")) {
+                    itemView.img_like_post.setImageResource(R.drawable.ic_like_heart)
+                    var input = LikeInput()
+                    //   status="true"
+                    item.get(index).IsLikedByMe = "true"
+                    input.IsLiked = "true"
+                    input.LikedBy =
+                        baseActivity!!.sharedPref!!.getString(PreferenceKeys.USER_ID, "")
+                    input.PostId = item.get(index).NewsLetterId.toString()
+                    input.TotalLikes = item.get(index).TotalLikes.toString()
+                    context.likeHitApi(input, itemView.txtPostLikeNo, index, item)
                 }
-                itemView.img_like_post.setOnClickListener {
-                    if (item.get(index).IsLikedByMe.equals("true")) {
-                        itemView.img_like_post.setImageResource(R.drawable.ic_unlike_heart)
-                        var input = LikeInput()
-                      //  status="false"
-                        item.get(index).IsLikedByMe="false"
-                        input.IsLiked = "false"
-                        input.LikedBy = baseActivity!!.sharedPref!!.getString(PreferenceKeys.USER_ID, "")
-                        input.PostId = item.get(index).NewsLetterId.toString()
-                        input.TotalLikes = item.get(index).TotalLikes.toString()
-                        context.likeHitApi(input, itemView.txtPostLikeNo, index,item)
-                    } else  if (item.get(index).IsLikedByMe.equals("false")) {
-                        itemView.img_like_post.setImageResource(R.drawable.ic_like_heart)
-                        var input = LikeInput()
-                     //   status="true"
-                        item.get(index).IsLikedByMe="true"
-                        input.IsLiked = "true"
-                        input.LikedBy = baseActivity!!.sharedPref!!.getString(PreferenceKeys.USER_ID, "")
-                        input.PostId = item.get(index).NewsLetterId.toString()
-                        input.TotalLikes = item.get(index).TotalLikes.toString()
-                        context.likeHitApi(input, itemView.txtPostLikeNo, index, item)
-                    }
-                }
+            }
 
-                itemView.txtPostLikeNo.setOnClickListener {
-                    var intent = Intent(context.activity, LikeListActivity::class.java)
+            itemView.txtPostLikeNo.setOnClickListener {
+                var intent = Intent(context.activity, LikeListActivity::class.java)
 
-                    intent.putExtra("postId",item.get(index).NewsLetterId.toString())
-                    context.startActivity(intent)
-                }
-                itemView.share.setOnClickListener {
-                if(item.get(index).lstDocuments!=null && item.get(index).lstDocuments!!.get(0).Type != null){
+                intent.putExtra("postId", item.get(index).NewsLetterId.toString())
+                context.startActivity(intent)
+            }
+            itemView.share.setOnClickListener {
+                if (item.get(index).lstDocuments != null && item.get(index).lstDocuments!!.get(0).Type != null) {
                     context.sharePost(item.get(index).lstDocuments!!.get(0).URL)
-                } else{
+                } else {
                     context.sharePost(item.get(index).Description)
                 }
 
-                }
             }
         }
-
-    fun getLocalDate(format: String, milisec: String?, outputFormat: String?): String {
-        val inputFormat = SimpleDateFormat(format, Locale.getDefault())
-        val outputFormat1 = SimpleDateFormat(outputFormat, Locale.getDefault())
-
-        //val tz = TimeZone.getTimeZone("Local")
-        // inputFormat.timeZone = tz
-        val date = inputFormat.parse(milisec)
-
-        val tzLocal = TimeZone.getDefault()
-        outputFormat1.timeZone = tzLocal
-        return outputFormat1.format(date)
     }
 
-    }
+
+}
