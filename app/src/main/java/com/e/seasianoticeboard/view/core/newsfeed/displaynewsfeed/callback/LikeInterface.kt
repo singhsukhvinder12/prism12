@@ -1,4 +1,4 @@
-package com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter
+package com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.callback
 
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.LikesResponse
 

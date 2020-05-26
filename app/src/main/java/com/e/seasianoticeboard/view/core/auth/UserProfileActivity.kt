@@ -1,6 +1,7 @@
 package com.e.seasianoticeboard.view.core.auth
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -11,8 +12,11 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.InputFilter
 import android.text.TextUtils
 import android.view.View
+import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import com.bumptech.glide.Glide
@@ -28,11 +32,16 @@ import com.e.seasianoticeboard.util.DateTimeUtil
 import com.e.seasianoticeboard.util.PreferenceKeys
 import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.utils.UtilsFunctions.showToast
+import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.AddUpdateImageInput
 import com.e.seasianoticeboard.views.core.BaseActivity
+import com.yanzhenjie.album.Album
+import com.yanzhenjie.album.AlbumFile
+import com.yanzhenjie.album.api.widget.Widget
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import android.text.TextWatcher as TextWatcher1
 
 
 class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCallback,
@@ -41,14 +50,21 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     var strDOB = ""
     var gender = ""
     var fileUri = ""
-    var postedByMail=""
+    var postedByMail = ""
     var imageFile: File? = null
     var userId = "0"
     var emailId = ""
     var updateUser = false
     var presenter: UpdateUserProfilePresenter? = null
     var status = "0"
+    var mytext = ""
+
+
+    var day = ""
+    var month = ""
+    var year = ""
     private val REQUEST_PERMISSIONS = 1
+    private var mAlbumFiles = ArrayList<AlbumFile>()
 
     val PERMISSION_READ_STORAGE = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -65,6 +81,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         return R.layout.activity_user_profile
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initViews() {
         binding = viewDataBinding as ActivityUserProfileBinding
         binding!!.includeView.ivBack.setOnClickListener { finish() }
@@ -79,7 +96,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             userId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")!!
             emailId = sharedPref!!.getString(PreferenceKeys.EMAIL, "")!!
 
-             postedByMail = intent.getStringExtra("postedByMail")
+            postedByMail = intent.getStringExtra("postedByMail")
             if (postedByMail.equals(emailId)) {
                 binding!!.includeView.toolbatTitle.text = "Edit Profile"
                 updateUser = true
@@ -93,7 +110,6 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 getUserProfile(postedByMail)
             }
 
-
         } else {
             binding!!.includeView.toolbatTitle.setText("Signup")
         }
@@ -102,6 +118,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             email = intent.getStringExtra("email")!!;
             binding!!.etEmail.setText(email)
         }
+
     }
 
     fun enabledField(status: Boolean) {
@@ -129,32 +146,86 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     }
 
     fun selectDatePicker() {
-        val calendar = Calendar.getInstance()
-        val calendar2 = Calendar.getInstance()
-        val date = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, monthOfYear)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            val myFormat = "yyyy-MM-dd"
-            val sdf = SimpleDateFormat(myFormat, Locale.US)
-            if (DateTimeUtil.checkFutureData(
-                    calendar2,
-                    calendar
-                )
-            ) {
-                showToast("Please select past date")
-            } else {
-                strDOB = sdf.format(calendar.time)
-                binding!!.etDob.setText(strDOB)
+
+        try {
+            val mYear: Int
+            val mMonth: Int
+            val mDay: Int
+            val mcurrentDate = Calendar.getInstance()
+            mYear = mcurrentDate[Calendar.YEAR]
+            mMonth = mcurrentDate[Calendar.MONTH]
+            mDay = mcurrentDate[Calendar.DAY_OF_MONTH]
+            val mDatePicker = DatePickerDialog(
+                baseActivity!!, R.style.DialogTheme,
+                DatePickerDialog.OnDateSetListener { datepicker, selectedyear, selectedmonth, selectedday ->
+                    if (selectedday.toString().length == 1)
+                        day = "0$selectedday"
+                    else
+                        day = selectedday.toString()
+
+                    if ((selectedmonth + 1).toString().length == 1)
+                        month = "0" + (selectedmonth + 1).toString()
+                    else month = (selectedmonth + 1).toString()
+
+                    year = selectedyear.toString()
+                    strDOB = year + "-" + month + "-" + day
+                    binding!!.etDob.setText(strDOB)
+
+                }, mYear - 13, mMonth, mDay
+            )
+            mcurrentDate[mYear - 13, mMonth] = mDay
+            val value = mcurrentDate.timeInMillis
+            mDatePicker.datePicker.maxDate = value
+            if (!mDatePicker.isShowing) {
+                mDatePicker.show()
             }
+
+        } catch (e: Exception) {
+
         }
-        val dpDialog = DatePickerDialog(
-            this, date, calendar
-                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-        dpDialog.show()
     }
+
+
+    private fun selectAlbum() {
+        Album.image(this)
+            .singleChoice()
+            .columnCount(4)
+            .camera(true)
+            .widget(
+                Widget.newDarkBuilder(this)
+                    .title(getString(R.string.app_name))
+                    .build()
+            )
+            .onResult { result ->
+                mAlbumFiles = result
+                      fileUri=mAlbumFiles.get(0).path
+
+                val file = File(fileUri)
+                imageFile = file
+                    Glide.with(this)
+                        .load(fileUri)
+                        .placeholder(R.drawable.user)
+                        .error(R.drawable.user)
+                        .into(binding!!.ivProfile)
+
+//                fileUri = getAbsolutePath(this@UserProfileActivity, tempUri)!!
+//
+//                Glide.with(this).load(tempUri).placeholder(R.drawable.user).error(R.drawable.user)
+//                    .into(binding!!.ivProfile)
+//
+
+
+
+            }
+            .onCancel {
+
+            }
+            .start()
+    }
+
+
+
+
 
     override fun onClick(view: View?) {
         hideKeyboard()
@@ -173,7 +244,9 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                         PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
                     )
                 ) {
-                    selectImage()
+                    mAlbumFiles=ArrayList()
+                    selectAlbum()
+                  //  selectImage()
                 }
             }
         }
@@ -181,7 +254,6 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 
 
     fun selectImage() {
-
         val builder1: AlertDialog.Builder = AlertDialog.Builder(this)
         builder1.setMessage("Select Image.")
         builder1.setCancelable(true)
@@ -420,6 +492,10 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 PreferenceKeys.USER_IMAGE,
                 data.ResultData!!.ImageUrl.toString()
             )
+            sharedPref!!.saveString(
+                PreferenceKeys.USERNAME,
+                data.ResultData!!.FirstName.toString() + " " + data.ResultData!!.LastName.toString()
+            )
             onBackPressed()
 
         }
@@ -430,19 +506,51 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         hideDialog()
 
         if (data != null && data!!.ResultData != null) {
-            binding!!.etFirstName.setText(data.ResultData!!.FirstName)
-            binding!!.etLastName.setText(data.ResultData!!.LastName)
+
+            try {
+                var firstName = data.ResultData!!.FirstName!!.substring(
+                    0,
+                    1
+                ).toUpperCase() + data.ResultData!!.FirstName!!.substring(1).toLowerCase();
+                var lastName = data.ResultData!!.LastName!!.substring(
+                    0,
+                    1
+                ).toUpperCase() + data.ResultData!!.LastName!!.substring(1).toLowerCase();
+
+                binding!!.etFirstName.setText(firstName)
+                binding!!.etLastName.setText(lastName)
+
+                sharedPref!!.saveString(
+                    PreferenceKeys.USERNAME,
+                    firstName + " " + lastName
+                )
+
+            } catch (e: Exception) {
+
+            }
+
             binding!!.etEmail.setText(data.ResultData!!.Email)
-            binding!!.etPhone.setText(data.ResultData!!.PhoneNo)
+
+            if (postedByMail.equals(emailId)) {
+                binding!!.etPhone.setText(data.ResultData!!.PhoneNo)
+
+            } else {
+                try {
+                    var phNum = data.ResultData!!.PhoneNo!!.substring(0, 2)
+                    var last = data.ResultData!!.PhoneNo!!.substring(0, phNum.length - 1)
+                    binding!!.etPhone.setText(phNum + "*******" + last)
+                } catch (e: java.lang.Exception) {
+                }
+            }
             // binding!!.etDob.setText(data.ResultData.StrDOB)
 
             try {
-                binding!!.etDob.setText(getLocalDate("yyyy-MM-dd'T'HH:mm:ss", data.ResultData!!.DOB, "yyyy-MM-dd")
+                binding!!.etDob.setText(
+                    getLocalDate("yyyy-MM-dd'T'HH:mm:ss", data.ResultData!!.DOB, "yyyy-MM-dd")
                 )
                 gender = data!!.ResultData!!.Gender!!
 
-            }
-            catch (e:java.lang.Exception){
+            } catch (e: java.lang.Exception) {
 
             }
             userId = data!!.ResultData!!.UserId!!
@@ -452,15 +560,12 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                     .placeholder(R.drawable.user).error(R.drawable.user)
                     .into(binding!!.ivProfile!!)
 
-                if (postedByMail.equals(emailId)){
+                if (postedByMail.equals(emailId)) {
                     sharedPref!!.saveString(
                         PreferenceKeys.USER_IMAGE,
                         data!!.ResultData!!.ImageUrl.toString()
                     )
-
                 }
-
-
             }
             if (gender.equals("M", true)) {
                 binding!!.rbMale.isChecked = true

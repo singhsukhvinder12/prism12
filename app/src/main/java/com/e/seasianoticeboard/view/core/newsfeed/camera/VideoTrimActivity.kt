@@ -28,26 +28,35 @@ class VideoTrimActivity : BaseActivity(), OnTrimVideoListener, OnVideoListener {
     }
 
     override fun initViews() {
-        binding=viewDataBinding as ActivityVideoTrimBinding
+        try {
+            binding=viewDataBinding as ActivityVideoTrimBinding
 
-        if(intent.getStringExtra("path")!=null){
-            var videoUri=intent.getStringExtra("path")
-            binding!!.videoTrimmer.setTextTimeSelectionTypeface(FontsHelper[this, FontsConstants.SEMI_BOLD])
-                    .setOnTrimVideoListener(this)
-                    .setOnVideoListener(this)
-                    .setVideoURI(Uri.parse(videoUri))
-                    .setVideoInformationVisibility(true)
-                    .setMaxDuration(60)
-                    .setMinDuration(2)
-                    .setDestinationPath()
-        }
-        binding!!.back.setOnClickListener {
-            binding!!.videoTrimmer.onCancelClicked()
-            finish()
-        }
+            if(intent.getStringExtra("path")!=null){
+                var videoUri=intent.getStringExtra("path")
+                binding!!.videoTrimmer.setTextTimeSelectionTypeface(FontsHelper[this, FontsConstants.SEMI_BOLD])
+                        .setOnTrimVideoListener(this)
+                        .setOnVideoListener(this)
+                        .setVideoURI(Uri.parse(videoUri))
+                        .setVideoInformationVisibility(true)
+                        .setMaxDuration(60)
+                        .setMinDuration(2)
+                        .setDestinationPath()
+            }
+            binding!!.back.setOnClickListener {
+                try {
+                    binding!!.videoTrimmer.onCancelClicked()
+                    finish()
+                } catch (e: Exception) {
+                }
+            }
 
-        binding!!.save.setOnClickListener {
-            binding!!.videoTrimmer.onSaveClicked()
+            binding!!.save.setOnClickListener {
+                try {
+                    binding!!.videoTrimmer.onSaveClicked()
+                } catch (e: Exception) {
+                }
+            }
+        } catch (e: Exception) {
         }
     }
 

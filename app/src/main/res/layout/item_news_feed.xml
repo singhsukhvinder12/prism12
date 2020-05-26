@@ -46,6 +46,7 @@
                             android:id="@+id/txtUserNameForPost"
                             android:layout_width="wrap_content"
                             android:textSize="@dimen/_14sdp"
+                            android:inputType="textPersonName|textCapWords"
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorBlack" />
 
@@ -146,7 +147,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentRight="true"
                         android:id="@+id/videoView1"
-                        android:scaleType="fitXY"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/video_thumbnail"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -217,21 +218,17 @@
                             android:src="@drawable/ic_unlike_heart"
                             android:layout_height="20dp"
                             />
-                        <RelativeLayout
+
+                        <TextView
+                            android:id="@+id/txtPostLikeNo"
+                            android:paddingLeft="2dp"
+                            android:paddingRight="7dp"
+                            android:layout_marginBottom="1dp"
+                            android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent">
-                            <TextView
-                                android:id="@+id/txtPostLikeNo"
-                                android:paddingLeft="2dp"
-                                android:paddingRight="7dp"
-                                android:layout_centerVertical="true"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="6sp"
-                                />
-                        </RelativeLayout>
-
-
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6sp"
+                            />
 
                     </LinearLayout>
 
@@ -250,6 +247,7 @@
                             android:src="@drawable/comment" />
 
                         <TextView
+                            android:layout_marginBottom="2dp"
                             android:id="@+id/txtPostCommentNo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

@@ -1,9 +1,8 @@
 package com.e.seasianoticeboard.view.core.auth
 
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.e.seasianoticeboard.App
@@ -18,6 +17,7 @@ import com.e.seasianoticeboard.presenter.VerifyOtpPresenter
 import com.e.seasianoticeboard.util.PreferenceKeys
 import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.views.core.BaseActivity
+import com.goodiebag.pinview.Pinview
 
 
 class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallback {
@@ -25,44 +25,38 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
 
     var OtpId = "";
     var email = "";
-    var otpVerifyPresenter:VerifyOtpPresenter?=null
+    var otpVerifyPresenter: VerifyOtpPresenter? = null
 
     var binding: ActivityOtpVerifyBinding? = null
     override fun getLayoutId(): Int {
         return R.layout.activity_otp_verify
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initViews() {
         binding = viewDataBinding as ActivityOtpVerifyBinding
         binding!!.btnSubmit.setOnClickListener(this)
         binding!!.resendCode.setOnClickListener(this)
         binding!!.parentId.setOnClickListener(this)
         binding!!.includeView.ivBack.setOnClickListener { finish() }
-        binding!!.includeView.toolbatTitle.setText("Verify OTP")
-        otpVerifyPresenter= VerifyOtpPresenter(this)
+        binding!!.includeView.toolbatTitle.setText(getString(R.string.account_verification))
+        otpVerifyPresenter = VerifyOtpPresenter(this)
 
-      //  hideKeyboard()
+
+        //  hideKeyboard()
         if (intent.getStringExtra("OtpId") != null) {
             OtpId = intent.getStringExtra("OtpId");
         }
         if (intent.getStringExtra("email") != null) {
             email = intent.getStringExtra("email")!!;
-            binding!!.emailCodeTxt.setText("Please enter the code that has been sent to you at " +email)
+            binding!!.emailCodeTxt.setText("Please enter the code that has been sent to you at " + email)
 
         }
-
-
-       // binding!!.otpPin.set
-      /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding!!.viewTimer.isCountDown = true
-        }
-        binding!!.viewTimer.base = SystemClock.elapsedRealtime() + 20000
-        binding!!.viewTimer.start()*/
     }
 
 
     override fun onClick(p0: View?) {
-       // hideKeyboard()
+        hideKeyboard()
         when (p0!!.id) {
             R.id.btnSubmit -> {
                 if (binding!!.otpPin.value.length >= 6) {
@@ -78,7 +72,7 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
                 }
             }
 
-            R.id.resendCode->{
+            R.id.resendCode -> {
                 showDialog()
                 if (!UtilsFunctions.isNetworkAvailable(App.app)) {
                     UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
@@ -91,16 +85,23 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
     }
 
 
-
-
     override fun onOTPSucess(data: VerifyEmailResponse) {
         hideDialog()
         if (data != null) {
             if (data.StatusCode == "200") {
                 if (data.ResultData != null) {
-                    sharedPref!!.saveString(PreferenceKeys.USER_ID, data.ResultData!!.UserId.toString())
-                    sharedPref!!.saveString(PreferenceKeys.EMAIL, data.ResultData!!.Email.toString())
-                    sharedPref!!.saveString(PreferenceKeys.USERNAME, data.ResultData!!.FirstName.toString() + " " + data.ResultData!!.LastName.toString())
+                    sharedPref!!.saveString(
+                        PreferenceKeys.USER_ID,
+                        data.ResultData!!.UserId.toString()
+                    )
+                    sharedPref!!.saveString(
+                        PreferenceKeys.EMAIL,
+                        data.ResultData!!.Email.toString()
+                    )
+                    sharedPref!!.saveString(
+                        PreferenceKeys.USERNAME,
+                        data.ResultData!!.FirstName.toString() + " " + data.ResultData!!.LastName.toString()
+                    )
                     var intent =
                         Intent(
                             this@OtpVerifyActivity,
@@ -117,18 +118,24 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
             } else {
                 UtilsFunctions.showToastError(data.Message)
             }
-        } else
-        {
+        } else {
             UtilsFunctions.showToastError("Somthing went wrong")
         }
     }
 
     override fun onResendOtp(data: SignupVerificationResponse) {
         hideDialog()
-        if(data!=null){
-            Toast.makeText(this@OtpVerifyActivity, "OTP has been sent on your mail", Toast.LENGTH_LONG).show()
+        if (data.ResultData != null) {
+            Toast.makeText(
+                this@OtpVerifyActivity,
+                "OTP has been sent on your mail",
+                Toast.LENGTH_LONG
+            ).show()
+            OtpId = data.ResultData!!
+
         }
     }
+
     override fun onFailer() {
         hideDialog()
     }

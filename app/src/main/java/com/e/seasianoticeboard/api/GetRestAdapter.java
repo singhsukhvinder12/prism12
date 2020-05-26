@@ -16,12 +16,10 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 public class GetRestAdapter {
-     private static final String LOCAL = "https://stgsd.appsndevs.com/ISEASIa/api/";
-//     private static final String LOCAL = "https://stgsd.appsndevs.com/ISMSQA/api/";
-//    private static final String LOCAL = "https://stgsd.appsndevs.com/IsmsTest/api/";
-    //private static final String LOCAL = "https://stgsd.appsndevs.com/ISMSQA/api/";
-  // private static final String LOCAL = "https://stgsd.appsndevs.com/IsmsTest/api/";
-    //    private static final String LOCAL = "http://stgsd.appsndevs.com/EducationProApi/api/";
+//     private static final String LOCAL = "https://stgsd.appsndevs.com/ISEASIa/api/";
+
+     private static final String LOCAL = "http://iseasia.appsndevs.com/api/";
+
     private static final String HOST_URL = LOCAL;
     private static final String APPLICATION_JSON = "application/json";
 

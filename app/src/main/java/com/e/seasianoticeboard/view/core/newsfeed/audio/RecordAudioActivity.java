@@ -55,11 +55,7 @@ public class RecordAudioActivity extends AppCompatActivity {
         ivCheck = findViewById(R.id.ivCheck);
         ivClear = findViewById(R.id.ivClear);
         btnRestart = findViewById(R.id.restart);
-//        btnClose = findViewById(R.id.close);
-//        btnDone = findViewById(R.id.done);
-//        btnDone.setVisibility(View.GONE);
         tvTime = (TextView) findViewById(R.id.timer);
-//
         random = new Random();
         Glide.with(this)
                 .load(getDrawable(R.drawable.audio_player_gif_image))
@@ -103,7 +99,6 @@ public class RecordAudioActivity extends AppCompatActivity {
                         mp.stop();
                     }
                 }
-
                 AudioSavePathInDevice = "";
                 tvTime.setText("00:00:00");
                 startRecording = false;
@@ -124,6 +119,9 @@ public class RecordAudioActivity extends AppCompatActivity {
         ivCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (mp != null) {
+                    mp.stop();
+                }
                 setResult(RESULT_OK, getIntent().putExtra("data", AudioSavePathInDevice));
                 finish();
             }
@@ -253,21 +251,19 @@ public class RecordAudioActivity extends AppCompatActivity {
                 String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         try {
             overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        } catch (Exception e ) {
+        } catch (Exception e) {
 
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case RequestPermissionCode:
                 if (grantResults.length > 0) {

@@ -2,25 +2,24 @@ package com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.view
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.e.seasianoticeboard.App
 import com.e.seasianoticeboard.R
 import com.e.seasianoticeboard.databinding.ActivityCommentBinding
 import com.e.seasianoticeboard.util.PreferenceKeys
-import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.listener.CommentCallback
-import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.repo.CommentPresenter
+import com.e.seasianoticeboard.utils.UtilsFunctions
+import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.callback.CommentCallback
+import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter.CommentPresenter
 import com.e.seasianoticeboard.views.core.BaseActivity
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.adapter.CommentAdapter
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.*
-import com.e.seasianoticeboard.views.institute.newsfeed.viewmodel.CommentViewModel
 import kotlin.collections.ArrayList
 
 
-class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
-    var commentViewModel: CommentViewModel? = null
+class CommentActivity : BaseActivity(), View.OnClickListener,
+    CommentCallback {
     var commentInput: CommentInput? = null
     var binding: ActivityCommentBinding?=null
     lateinit var adapter: CommentAdapter
@@ -30,9 +29,8 @@ class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
     var postId=""
     var commentCount=""
     var deleteCommentPosition=0
-    var commentPresenter:CommentPresenter?=null
+    var commentPresenter: CommentPresenter?=null
     var position="";
-    var commentModel:GetCommentResponse.ResultDataModel.LstgetCommentViewModelList?=null
     override fun getLayoutId(): Int {
         return R.layout.activity_comment
     }
@@ -44,68 +42,33 @@ class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
         binding!!.includeView.ivBack.setOnClickListener(this)
         userId=sharedPref!!.getString(PreferenceKeys.USER_ID,"")!!
 
-        commentPresenter=CommentPresenter(this)
-        val bundle: Bundle = intent.getExtras()!!
-         //commentList = bundle.getSerializable("commentData") as ArrayList<GetFeedResponse.ResultDataList.LstComments>?
+        commentPresenter=
+            CommentPresenter(
+                this
+            )
         if(intent.getStringExtra("postId")!=null){
             postedById=intent.getStringExtra("PostedById")!!
             postId=intent.getStringExtra("postId")!!
             position=intent.getStringExtra("position")!!
-          //  commentGet(postId)
             showDialog()
+            if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+                UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+                return
+            }
             commentPresenter!!.getComment(postId!!)
 
         }
         setAdapterData()
     }
 
-    fun commentSend() {
-        commentViewModel = ViewModelProviders.of(this).get(CommentViewModel::class.java)
-        commentViewModel?.commentOnPost(getImputData())
-        showDialog()
-        commentViewModel?.commentSendData()!!.observe(
-                this,
-                object : Observer<CommentResponse> {
-                    override fun onChanged(data: CommentResponse) {
-                        commentViewModel!!.commentSendData().removeObserver(this)
-                        hideDialog()
-                        if (data != null) {
-                       //     showMessage(this@CommentActivity,data.Message.toString())
-                            commentCount=data.ResultData!!
-                         //   commentGet(postId)
-                            commentPresenter!!.getComment(postId!!)
-                        }
-                    }
-                })
-    }
 
 
     override fun onBackPressed() {
-        //super.onBackPressed()
         var intent=Intent()
         intent.putExtra("position",position)
         intent.putExtra("updatedCount",commentCount.toString())
         setResult(Activity.RESULT_OK,intent)
         finish()
-    }
-    fun commentGet(postId: String) {
-        commentViewModel = ViewModelProviders.of(this).get(CommentViewModel::class.java)
-        commentViewModel?.getCommentList(postId)
-        showDialog()
-        commentViewModel?.getCommentData()!!.observe(
-                this,
-                object : Observer<GetCommentResponse> {
-                    override fun onChanged(data: GetCommentResponse) {
-                        hideDialog()
-                        commentViewModel!!.getCommentData().removeObserver(this)
-                        if (data.ResultData != null) {
-                           // showMessage(this@CommentActivity,data.Message.toString())
-                            commentList=data.ResultData!!.lstgetCommentViewModel
-                            setAdapterData()
-
-                        }
-                    }
-                })
     }
 
     fun getImputData(): CommentInput {
@@ -113,7 +76,7 @@ class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
         commentInput!!.CommentId=""
         commentInput!!.PostId=postId
         commentInput!!.CommentedBy=userId
-        commentInput!!.Comment=binding!!.etComment.text.toString()
+        commentInput!!.Comment=binding!!.etComment.text.toString().trim()
         commentInput!!.AllFiles=""
         return commentInput!!
     }
@@ -130,26 +93,22 @@ class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
     override fun onClick(p0: View?) {
         when(p0!!.id){
             R.id.btnSend->{
-                if(!binding!!.etComment.text.isEmpty()){
-                    //commentSend()
+                if(binding!!.etComment.text.trim().isEmpty()){
+                    Toast.makeText(this,"Please enter your comment",Toast.LENGTH_LONG).show()
 
+                }
+//
+//                else if(binding!!.etComment.text.isBlank()){
+//                    Toast.makeText(this,"Please enter your comment",Toast.LENGTH_LONG).show()
+//                }
+                else{
                     showDialog()
+                    if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+                        UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+                        return
+                    }
                     commentPresenter!!.sendComment(getImputData()!!)
-//                    if(commentList==null){
-//                        commentList=ArrayList<GetCommentResponse.ResultDataModel.LstgetCommentViewModelList>()
-//                        setAdapterData()
-//                    }
-//                    commentModel=GetCommentResponse.ResultDataModel.LstgetCommentViewModelList()
-//                    commentModel!!.Comment=binding!!.etComment.text.toString()
-//                    commentModel!!.CommentedBy=sharedPref!!.getString(PreferenceKeys.USERNAME,"")
-//                    val date: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-//                    commentModel!!.CreatedDate=date
-//                    commentModel!!.dummyDate=true
-//                    commentList!!.add(commentModel!!)
-                   // adapter.setData(commentList!!)
                     binding!!.etComment.setText("")
-
-
                 }
             }
             R.id.iv_back->{
@@ -160,27 +119,22 @@ class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
 
 
     fun deleteComment(commentId: String?, position: Int) {
-        commentViewModel = ViewModelProviders.of(this).get(CommentViewModel::class.java)
         var input=DeleteCommentInput()
         input.CommentId=commentId
         input.PostId=postId
         input.UserId=userId
         showDialog()
         deleteCommentPosition=position
-        commentPresenter=CommentPresenter(this)
+        commentPresenter=
+            CommentPresenter(
+                this
+            )
+        if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+            UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+            return
+        }
         commentPresenter!!.deleteComment(input!!)
-//        commentViewModel?.deleteCommentInput(input)
-//        showDialog()
-//        commentViewModel?.deleteCommentResponse()!!.observe(
-//                this,
-//                object : Observer<DeleteCommentResponse> {
-//                    override fun onChanged(data: DeleteCommentResponse) {
-//                        hideDialog()
-//                        if(data!=null){
-//                            commentGet(postId)
-//                        }
-//                    }
-//                })
+
     }
 
     override fun getCommentList(commentListData:GetCommentResponse) {
@@ -200,14 +154,12 @@ class CommentActivity : BaseActivity(), View.OnClickListener, CommentCallback {
             commentCount = deleteComment.ResultData!!
 
         }
-     //   commentPresenter!!.getComment(postId)
     }
 
     override fun sendComment(sendComment: CommentResponse) {
         hideDialog()
         if (sendComment.ResultData != null) {
             commentCount = sendComment.ResultData!!
-            //  commentGet(postId)
             commentPresenter!!.getComment(postId)
         }
     }

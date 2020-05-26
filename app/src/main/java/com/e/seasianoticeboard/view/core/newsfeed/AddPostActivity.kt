@@ -9,21 +9,17 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.media.ThumbnailUtils
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Environment
+import android.os.*
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.MediaController
 import android.widget.SeekBar
-import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -49,6 +45,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import android.os.CancellationSignal as CancellationSignal1
 
 
 @Suppress("INACCESSIBLE_TYPE")
@@ -106,6 +103,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         binding!!.deleteVideo.setOnClickListener(this)
         binding!!.deleteAudio.setOnClickListener(this)
         binding!!.btnUpload.setOnClickListener(this)
+        binding!!.parent.setOnClickListener(this)
         binding!!.cardView.setOnClickListener(this)
         presenter = AddPostPresenter(this)
         setImagesAdapter()
@@ -114,7 +112,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         random = Random()
         binding!!.userName.setText(sharedPref!!.getString(PreferenceKeys.USERNAME, "").toString())
 
-        Glide.with(this).load(sharedPref!!.getString(PreferenceKeys.USER_IMAGE))
+        Glide.with(this).load(sharedPref!!.getString(PreferenceKeys.USER_IMAGE, ""))
             .placeholder(R.drawable.user).error(
                 R.drawable.user
             ).into(binding!!.imgLogo)
@@ -132,6 +130,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
 
     override fun onClick(p0: View?) {
+
         when (p0!!.id) {
             R.id.iv_back -> {
                 finish()
@@ -146,15 +145,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                                 PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
                             )
                         ) {
-                            /* var i = Intent(
-                                 Intent.ACTION_PICK,
-                                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                             );
-                             startActivityForResult(i, RC_CODE_PICKER_LOGO);
-
- */
-//                            mAlbumFiles = ArrayList()
-
                             selectAlbum()
 
                         }
@@ -210,9 +200,12 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 binding!!.parentAudio.visibility = View.GONE
             }
             R.id.btnUpload -> {
-                if (!binding!!.textPost.text.toString().isEmpty()) {
+                if (binding!!.textPost.text.toString().trim().isEmpty()) {
 
+                    showMessage(this, "Please enter description")
+                }
 
+                else {
                     if (videoFIle != null) {
                         binding!!.videoView1.stopPlayback()
                         videoCompressorCustom()
@@ -222,17 +215,10 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                             UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
                             return
                         }
-                        if (!UtilsFunctions.isNetworkAvailable(App.app)) {
-                            UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
-                            return
-                        }
                         presenter!!.getPostData(addPostData(), videoFIle, audioFIle, imagesList)
 
                     }
 
-
-                } else {
-                    showMessage(this, "Please enter description")
                 }
             }
             R.id.card_view -> {
@@ -406,7 +392,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     fun addPostData(): AddPostInput {
         var addPost = AddPostInput()
         addPost.Title = ""
-        addPost.Description = binding!!.textPost.text.toString()
+        addPost.Description = binding!!.textPost.text.toString().trim()
         addPost.Links = "seasia.in"
         addPost.DeleteIds = "0"
         addPost.NewsLetterIds = "0"
@@ -415,15 +401,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         return addPost
     }
 
-    fun getVideoFilePath(): String? {
-        return getAndroidMoviesFolder()!!.absolutePath + "/" + SimpleDateFormat("yyyyMM_dd-HHmmss").format(
-            Date()
-        ) + "cameraRecorder1.mp4"
-    }
-
-    fun getAndroidMoviesFolder(): File? {
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-    }
 
     fun playVideo(videoUri: String?) {
         mediaController = MediaController(this)
@@ -485,43 +462,16 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                             var uri = bundle.getString("filePath")!!
                             fileUri = uri
 
-
                             var video_bitmap = ThumbnailUtils.createVideoThumbnail(
                                 fileUri,
                                 MediaStore.Video.Thumbnails.MINI_KIND
                             );
-
-
-//                        ImageView imageview_mini =(ImageView) findViewById (R.id.thumbnail_mini);
-//                        ImageView imageview_micro =(ImageView) findViewById (R.id.thumbnail_micro);
-
-                            var bmThumbnail: Bitmap? = null;
-
-//MICRO_KIND, size: 96 x 96 thumbnail
-                            bmThumbnail = ThumbnailUtils.createVideoThumbnail(
-                                fileUri,
-                                MediaStore.Images.Thumbnails.MICRO_KIND
-                            );
-                            //   imageview_micro.setImageBitmap(bmThumbnail);
-
-// MINI_KIND, size: 512 x 384 thumbnail
-                            bmThumbnail =
-                                ThumbnailUtils.createVideoThumbnail(
-                                    fileUri,
-                                    MediaStore.Images.Thumbnails.MINI_KIND
-                                );
-                            //   imageview_mini.setImageBitmap(bmThumbnail);
-
-
-//                    file_upload = Utils.writeSendFileToExternalDirectory(null, "Video_" + selectedvideo.substring(selectedvideo.lastIndexOf("/") + 1), selectedvideo, "2");
-//            /    thumbnail_path = getInsertedPath(video_bitmap, "", "image");
-
-
                             mediaPlayer = MediaPlayer()
                             val file = File(uri)
                             videoFIle = file
                             binding!!.parentSelectedMedia.visibility = View.VISIBLE
                             binding!!.parentAudio.visibility = View.GONE
+
                             var ountDownTimer = object : CountDownTimer(1000, 1000) {
                                 override fun onTick(millisUntilFinished: Long) {
                                 }
@@ -538,6 +488,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                     //  createVideoThumbNail(fileUri)
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
@@ -584,7 +535,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         try {
             imagesList!!.removeAt(position)
             mAlbumFiles.removeAt(position)
-        }catch (e:java.lang.Exception){
+        } catch (e: java.lang.Exception) {
 
         }
 

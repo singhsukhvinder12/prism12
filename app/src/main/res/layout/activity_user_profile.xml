@@ -31,6 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar_line"
             android:fillViewport="true"
+            android:layout_marginBottom="@dimen/_20sdp"
+
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/includeView">
@@ -80,6 +82,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/sp_10"
                         android:layout_marginTop="@dimen/sp_12"
+
                         android:layout_marginEnd="@dimen/sp_10"
                         android:fontFamily="@font/opensans_regular"
                         android:text="@string/first_name"
@@ -94,7 +97,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_10"
+                        android:inputType="textPersonName|textCapWords"
                         android:layout_marginTop="@dimen/dp_10"
+                        android:maxLength="20"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
                         android:layout_marginEnd="@dimen/dp_10"
                         android:background="@drawable/rectangle_blue_stroke"
                         android:hint="@string/first_name"
@@ -128,6 +134,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_10"
                         android:layout_marginTop="@dimen/dp_10"
+                        android:maxLength="20"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
                         android:layout_marginEnd="@dimen/dp_10"
                         android:background="@drawable/rectangle_blue_stroke"
                         android:hint="@string/last_name"
@@ -159,6 +167,7 @@
                         android:background="@drawable/rectangle_blue_stroke"
                         android:hint="@string/phone_number"
                         android:inputType="phone"
+                        android:digits="0123456789"
                         android:maxLength="10"
                         android:padding="@dimen/dimen_10dp"
                         android:singleLine="true" />

@@ -109,6 +109,12 @@ public class BaseCameraActivity extends AppCompatActivity {
 
                                         cameraRecorder.stop();
                                     }
+//                                    Intent intent = getIntent();
+//                                    intent.putExtra("filePath", filepath);
+//                                    intent.putExtra("onBackPress",onBackPress);
+//                                    setResult(RESULT_OK, intent);
+                                    onBackPressed();
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -124,9 +130,7 @@ public class BaseCameraActivity extends AppCompatActivity {
                         countDownTimer.cancel();
                         countDownTimer.onFinish();
                         recordBtn.setText(getString(R.string.app_record));
-//                Intent intent=new Intent(this, AddPostActivity.class);
-//                intent.putExtra("filePath",filepath);
-//                 startActivity(intent);
+
                         Intent intent = getIntent();
                         intent.putExtra("filePath", filepath);
                         intent.putExtra("onBackPress",onBackPress);
@@ -240,12 +244,12 @@ public class BaseCameraActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setUpCamera();
-        try {
-            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-
-        } catch (Exception e ) {
-
-        }
+//        try {
+//            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+//
+//        } catch (Exception e ) {
+//
+//        }
     }
 
 
@@ -256,20 +260,31 @@ public class BaseCameraActivity extends AppCompatActivity {
     }
 
     private void releaseCamera() {
-        if (sampleGLView != null) {
-            sampleGLView.onPause();
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (sampleGLView != null) {
+                        sampleGLView.onPause();
+                    }
+
+                    if (cameraRecorder != null) {
+                        cameraRecorder.stop();
+                        cameraRecorder.release();
+                        cameraRecorder = null;
+                    }
+
+                    if (sampleGLView != null) {
+                        ((FrameLayout) findViewById(R.id.wrap_view)).removeView(sampleGLView);
+                        sampleGLView = null;
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (cameraRecorder != null) {
-            cameraRecorder.stop();
-            cameraRecorder.release();
-            cameraRecorder = null;
-        }
 
-        if (sampleGLView != null) {
-            ((FrameLayout) findViewById(R.id.wrap_view)).removeView(sampleGLView);
-            sampleGLView = null;
-        }
     }
 
 
@@ -459,9 +474,22 @@ public class BaseCameraActivity extends AppCompatActivity {
                 String selectedVideoPath = getAbsolutePath(this, data.getData());
                 if (selectedVideoPath != null) {
 
-                    Intent intent = new Intent(this, VideoTrimActivity.class);
-                    intent.putExtra("path", selectedVideoPath);
-                    startActivityForResult(intent, 2);
+
+
+                    try{
+                        if (cameraRecorder != null) {
+                            cameraRecorder.stop();
+                            cameraRecorder.release();
+                            cameraRecorder = null;
+                        }
+
+                        Intent intent = new Intent(this, VideoTrimActivity.class);
+                        intent.putExtra("path", selectedVideoPath);
+                        startActivityForResult(intent, 2);
+                    }catch(Exception e){
+
+                    }
+
                     //  finish();
 
 //                    Intent intent = new Intent(this,

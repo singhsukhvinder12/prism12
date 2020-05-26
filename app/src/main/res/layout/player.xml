@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#120000">
+    android:background="#000000">
 
     <!-- Player Header -->
     <LinearLayout
@@ -84,6 +84,7 @@
             android:paddingRight="10dp">
             <!-- Previous Button -->
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/btnPrevious"
                 android:src="@drawable/btn_previous"
                 android:layout_width="@dimen/_40sdp"
@@ -115,6 +116,7 @@
                 android:background="@null"/>
             <!-- Next Button -->
             <ImageView
+                android:visibility="gone"
                 android:layout_marginLeft="5dp"
                 android:id="@+id/btnNext"
                 android:src="@drawable/btn_next"

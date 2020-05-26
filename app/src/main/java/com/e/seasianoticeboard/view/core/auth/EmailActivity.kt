@@ -40,13 +40,14 @@ class EmailActivity : BaseActivity(), View.OnClickListener, EmailVeryfyCallback 
                     binding!!.edEmail.error = "Please enter email"
                     binding!!.edEmail.requestFocus()
                 }
-//
-//                else if ((!Utils.emailValidator(binding!!.edEmail.text.toString()) )&&(!Utils.emailValidatorSecond(binding!!.edEmail.text.toString()))) {
-//                    binding!!.edEmail.error = "Please check email"
-//                    binding!!.edEmail.requestFocus()
-//                }
 
-
+                else if ((!Utils.emailValidator(binding!!.edEmail.text.toString())) && (!Utils.emailValidatorSecond(
+                        binding!!.edEmail.text.toString()
+                    ))
+                ) {
+                    binding!!.edEmail.error = "Please check email"
+                    binding!!.edEmail.requestFocus()
+                }
                 else {
                     showDialog()
                     if (!UtilsFunctions.isNetworkAvailable(App.app)) {
@@ -54,7 +55,12 @@ class EmailActivity : BaseActivity(), View.OnClickListener, EmailVeryfyCallback 
                         return
                     }
                     presenter!!.signupVerification(binding!!.edEmail.text.toString())
-
+//
+//                    var intent = Intent(this@EmailActivity, UserProfileActivity::class.java)
+//                    intent.putExtra("email", "1234")
+//                    startActivity(intent)
+                    // finish()
+//
 //                    var intent = Intent(this@EmailActivity, OtpVerifyActivity::class.java)
 //                    intent.putExtra("OtpId", "")
 //                    intent.putExtra("email", binding!!.edEmail.text!!.toString())

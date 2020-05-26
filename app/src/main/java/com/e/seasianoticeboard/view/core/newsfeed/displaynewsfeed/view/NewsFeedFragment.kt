@@ -8,35 +8,35 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.e.seasianoticeboard.App
 import com.e.seasianoticeboard.R
 import com.e.seasianoticeboard.databinding.FragmentNewsFeedBinding
 import com.e.seasianoticeboard.model.DeviceTokenInput
 import com.e.seasianoticeboard.util.PreferenceKeys
+import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.callback.NewsFeedCallback
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.ReportPostInput
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.RepostPostResponse
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.pagination.EndlessRecyclerViewScrollListenerImplementation
-import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter.LikeInterface
+import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.callback.LikeInterface
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter.LikePresenter
-import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.repo.NewsFeedPresenter
-import com.e.seasianoticeboard.view.core.newsfeed.viewmodel.NewsFeedViewModel
+import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter.NewsFeedPresenter
 import com.e.seasianoticeboard.views.core.BaseFragment
 import com.e.seasianoticeboard.views.institute.newsfeed.AddPostActivity
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.adapter.NewsFeedAdapter
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.*
-import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.view.NewsFeedView
-import com.e.seasianoticeboard.views.institute.newsfeed.viewmodel.CommentViewModel
 import kotlinx.android.synthetic.main.fragment_news_feed.*
 
-class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.OnClickListener,
+class NewsFeedFragment : BaseFragment(true),
+    LikeInterface, View.OnClickListener,EndlessRecyclerViewScrollListenerImplementation.OnScrollPageChangeListener,
     NewsFeedCallback {
 
 
@@ -53,6 +53,7 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     private var token: String = ""
     var isFirst = true
     var deleteItemIndex = "0"
+    var pageSize: Int = 10
     var postiton: Int? = null
     var type = ""
     var RC_CODE_PICKER_LOGO = 2000
@@ -67,8 +68,6 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     var feedPresenter: NewsFeedPresenter? = null
     var horizontalLayoutManager: LinearLayoutManager? = null
     //pagination
-    var page: String = "0"
-    var perPage: String = "0"
     var endlessScrollListener: EndlessRecyclerViewScrollListenerImplementation? = null
     var pageCount: Int = 1
     var deleteItemposition: Int? = null
@@ -80,7 +79,7 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     var item: ArrayList<GetFeedResponse.ResultDataList>? = null
     var txtPostLikeNo: TextView? = null
 
-    var feedViewModel: NewsFeedViewModel? = null
+
 
     companion object {
         var change = 0
@@ -107,28 +106,26 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     }
 
     fun getFeedData() {
+        if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+            UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+            return
+        }
+
         baseActivity!!.showDialog()
+//        feedPresenter!!.fetchComplaints(UserId!!.toInt())
+        feedPresenter!!.fetchComplaints(noticeBoardInput(0))
+    }
 
-
-        feedPresenter!!.fetchComplaints(UserId.toInt())
-
-//        feedViewModel = ViewModelProviders.of(this).get(NewsFeedViewModel::class.java)
-//        feedViewModel!!.newsFeedInput(UserId.toInt())
-//
-//
-//        feedViewModel?.newsFeedResponse()!!.observe(
-//            viewLifecycleOwner,
-//            object : Observer<ArrayList<GetFeedResponse.ResultDataList>> {
-//                override fun onChanged(data: ArrayList<GetFeedResponse.ResultDataList>) {
-//                    if (data != null) {
-//                        complaints = data
-//                        setAdapter()
-//                    }
-//                    baseActivity!!.hideDialog()
-//
-//                }
-//            })
-
+    fun noticeBoardInput(itemCount: Int): GetFeedInput{
+        var input=GetFeedInput()
+        input.UserId=UserId.toString()
+        input.PageSize="10"
+        input.Search=""
+        input.Skip=itemCount.toString()
+        input.SortColumnDir=""
+        input.SortColumn=""
+        input.ParticularId="0"
+        return input
     }
 
 
@@ -138,65 +135,24 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     fun setAdapter() {
         adapter = NewsFeedAdapter(this@NewsFeedFragment, complaints, baseActivity)
         horizontalLayoutManager = LinearLayoutManager(mContext)
-        // rvPublic.setNestedScrollingEnabled(false)
         rvPublic?.layoutManager = horizontalLayoutManager
         rvPublic?.adapter = adapter
+        endlessScrollListener = EndlessRecyclerViewScrollListenerImplementation(
+            horizontalLayoutManager, this)
+        endlessScrollListener?.setmLayoutManager(horizontalLayoutManager)
+        rvPublic.addOnScrollListener(endlessScrollListener!!)
     }
 
     fun setupUI() {
-        feedPresenter = NewsFeedPresenter(this)
+        var feedList=ArrayList<GetFeedResponse.ResultDataList>()
+        feedPresenter =
+            NewsFeedPresenter(
+                this,
+                feedList
+            )
         sendDeviceToken()
-        setProfilePic()
         imgAdd.setOnClickListener(this)
         getFeedData()
-        txtAddPost.setOnClickListener {
-            //show the addPost layout
-            layoutAddPost.visibility = View.GONE
-            layoutPost.visibility = View.VISIBLE
-        }
-
-        btnPost.setOnClickListener {
-            if (edtPostInfo.text.toString().trim().equals("")) {
-//                Utilities.showMessage(activity!!, "Please enter post title")
-                Toast.makeText(activity, "Please enter post title", Toast.LENGTH_LONG).show()
-            } /*else if (path == null || path.equals("")) {
-                Utilities.showMessage(activity!!, "Please select image or video")
-            }*/ else {
-                //  Utilities.showProgress(mContext)
-                val pathArray = arrayOf(path)
-                //hit api to add post and display post layout
-                // val request = CreatePostRequest(edtPostInfo.text.toString().trim(), pathArray, media_type!!)
-                // authorizationToken = PreferenceHandler.readString(mContext, PreferenceHandler.AUTHORIZATION, "")
-                //   presenter.createPost(request, authorizationToken)
-                layoutAddPost.visibility = View.VISIBLE
-                layoutPost.visibility = View.GONE
-            }
-        }
-
-        btnCancel.setOnClickListener {
-            //show the addPost layout
-            imgPost.visibility = View.GONE
-            path = ""
-            layoutAddPost.visibility = View.VISIBLE
-            layoutPost.visibility = View.GONE
-            edtPostInfo.setText("")
-            imgPost.setImageResource(0)
-            try {
-                Glide.with(this)
-                    .load("")
-                    .apply(
-                        RequestOptions()
-                            .placeholder(R.drawable.camera_placeholder)
-                    )
-                    .into(imgPost)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        img_attach.setOnClickListener {
-
-        }
 
         itemsswipetorefresh.setProgressBackgroundColorSchemeColor(
             ContextCompat.getColor(
@@ -210,28 +166,14 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
             pageCount = 1
             adapter?.clear()
             endlessScrollListener?.resetState()
-            //   doApiCall()
             getFeedData()
-
-            // itemsCells.clear()
-            // setItemsData()
-            // adapter = Items_RVAdapter(itemsCells)
-            //  itemsrv.adapter = adapter
             itemsswipetorefresh.isRefreshing = false
         }
-    }
-
-    private fun galleryIntent() {
-        val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        pickIntent.type = "image/*" //"image/* video/*"
-        startActivityForResult(pickIntent, IMAGE_REQ_CODE)
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-//        complaints.get(0).TotalComments="50"
-//        adapter!!.notifyDataSetChanged()
         if (requestCode == IMAGE_REQ_CODE && resultCode == Activity.RESULT_OK && null != data) {
             imgPost.visibility = View.VISIBLE
             media_type = "photos"
@@ -251,10 +193,6 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
                 try {
                     Glide.with(this).load(picturePath).into(imgPost)
                     path = picturePath!!
-                    //compression
-                    /*val compClass = CompressImageUtilities()
-                    val newPathString = compClass.compressImage(mContext, picturePath!!)
-                    path = newPathString*/
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -294,7 +232,7 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
 
             try {
                 getFeedData()
-            } catch ( e:Exception) {
+            } catch (e: Exception) {
 
             }
 
@@ -313,78 +251,6 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
              }*/
         }
     }
-
-    fun setProfilePic() {
-
-    }
-
-    override fun showGetComplaintsResponse(response: ArrayList<GetFeedResponse.ResultDataList>) {
-        // Utilities.dismissProgress() //       val jsondata = GsonBuilder().create().fromJson(response, GetCasesResponse::class.java)
-        complaints = response
-        setAdapter()
-        if (complaints.isNotEmpty()) {
-            if (tvRecord != null) {
-                tvRecord.visibility = View.GONE
-                rvPublic.visibility = View.VISIBLE
-
-                if (!isLike) {
-                    if (commentChange == 0 && !whenDeleteCall) {
-                        if (pageCount == 1) {
-                            adapter?.clear()
-                            adapter?.setList(response) //now
-                        } else {
-                            progressBar.visibility = View.GONE
-                            adapter?.addDataInMyCases(
-                                horizontalLayoutManager!!,
-                                complaints
-                            )
-                            //adapter?.setList(response.data.toMutableList())
-                        }
-                    } else {
-                        if (whenDeleteCall) {
-                            adapter?.removeAt(deleteItemposition!!)
-                            whenDeleteCall = false
-                        } else {
-                            if (pageCount == 1) {
-                                adapter?.clear()
-                                adapter?.setList(response) //now
-                            } else {
-                                adapter?.notifyParticularItemWithComment(
-                                    commentChange.toString(),
-                                    response, commentsCount
-                                )
-                            }
-                            commentsCount = 0
-                            commentChange = 0
-                        }
-                    }
-                } else {
-                    //when to change like status
-                    adapter?.notifyParticularItem(complaintIdTobeLiked!!, response!!)
-                    isLike = false
-                }
-                //change = 1
-            }
-        } else {
-            if (pageCount == 1) {
-                tvRecord.visibility = View.VISIBLE
-                rvPublic.visibility = View.GONE
-            } else {
-                if (complaints.size == 0) {
-                    tvRecord.visibility = View.VISIBLE
-                    rvPublic.visibility = View.GONE
-                }
-            }
-            progressBar.visibility = View.GONE
-        }
-
-        setProfilePic()
-    }
-
-    override fun showDescError() {
-    }
-
-
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.imgAdd -> {
@@ -398,23 +264,6 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
 
     override fun onResume() {  //isfirst // !isfirst //
         super.onResume()
-
-//        if (isFirst) {
-//            doApiCall()
-//            isFirst = false
-//        } else if (!isFirst && change == 1) {
-//            adapter?.clear()
-//            endlessScrollListener?.resetState()
-//            doApiCall()
-//            change = 0
-//        } else {
-//            if (fromIncidentDetailScreen == 0) {
-//                if (commentChange != 0) {
-//                    doApiCall()
-//                }
-//
-//            }
-//        }
 
         fromIncidentDetailScreen == 0
     }
@@ -455,30 +304,13 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
         title.setText(getString(R.string.delete_post))
         btnDelete.setOnClickListener {
             dialog.hide()
+
             baseActivity!!.showDialog()
             var input = DeletePostInput()
             input.NewsLetterId = postId
             deleteItemIndex = index.toString()
             input.UserId = sharedPref!!.getString(PreferenceKeys.USER_ID, "");
             feedPresenter!!.deletaPost(input)
-//            commentViewModel.deletePostData(input)
-//            commentViewModel?.getDeletedData()!!.observe(
-//                this,
-//                object : Observer<DeletePostResponse> {
-//                    override fun onChanged(data: DeletePostResponse) {
-//                        if (data != null) {
-//                            ///txtPostLikeNo!!.setText(data.ResultData)
-//                            Toast.makeText(
-//                                activity,
-//                                "" + data.Message.toString(),
-//                                Toast.LENGTH_LONG
-//                            ).show()
-//
-//                            complaints.removeAt(index)
-//                            adapter!!.notifyDataSetChanged()
-//                        }
-//                    }
-//                })
         }
         btnCancel.setOnClickListener {
             dialog.hide()
@@ -487,8 +319,6 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
     }
 
     fun reportPost(postId: String) {
-        var commentViewModel: CommentViewModel? = null
-        commentViewModel = ViewModelProviders.of(this).get(CommentViewModel::class.java)
         var input = ReportPostInput()
         input.NewsletterId = postId.toString()
         input.IssueReportedId = "0"
@@ -508,18 +338,15 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
 
     }
 
-//    override fun onSuccess(data: ArrayList<GetFeedResponse.ResultDataList>?) {
-//        if (data != null) {
-//            complaints = data
-//            setAdapter()
-//        }
-//        baseActivity!!.hideDialog()
-//    }
 
     override fun onSuccess(resultData: ArrayList<GetFeedResponse.ResultDataList>?) {
         if (resultData != null) {
+//            if(complaints!=null){
+//                complaints.clear()
+//            }
             complaints = resultData
-            setAdapter()
+            adapter!!.setList(complaints)
+           /// setAdapter()
         }
         baseActivity!!.hideDialog()
     }
@@ -544,8 +371,7 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
                 "" + data.Message.toString(),
                 Toast.LENGTH_LONG
             ).show()
-            complaints.removeAt(deleteItemIndex.toInt())
-            adapter!!.notifyDataSetChanged()
+            getFeedData()
         }
     }
 
@@ -558,10 +384,20 @@ class NewsFeedFragment : BaseFragment(true), NewsFeedView, LikeInterface, View.O
 
 
     fun sendDeviceToken() {
+        if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+            UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+            return
+        }
         var input = DeviceTokenInput()
-        input.DeviceToken = sharedPref!!.getString(PreferenceKeys.DEVECE_TOKEN, "")
-        input.UserId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")
+        input.DeviceToken = UtilsFunctions.TOKEN
+        input.UserId =sharedPref!!.getString(PreferenceKeys.USER_ID, "")
         input.DeviceType = "1"
-        //  feedPresenter!!.sendDeviceToken(input)
+        feedPresenter!!.sendDeviceToken(input)
+        Log.e("device_token123", UtilsFunctions.TOKEN!!);
+    }
+
+    override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+        baseActivity?.showDialog()
+        feedPresenter!!.fetchComplaints(noticeBoardInput(adapter!!.itemCount))
     }
 }

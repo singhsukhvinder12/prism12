@@ -64,9 +64,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notification_code = remoteMessage.data["notification_code"]
         title = remoteMessage.data["title"]
         Log.i("pushData", remoteMessage.data.toString())
-        sendMessagePush(message!!);
 
 
+        try {
+            sendMessagePush(message!!);
+        }catch (e:Exception){
+
+        }
     }
 
 //    private fun popupExtraWorkOrder(id: String, orderId: String, extraTitle: String, extraDescription: String, imageVideoModels: ArrayList<ImageVideoModel2>) {

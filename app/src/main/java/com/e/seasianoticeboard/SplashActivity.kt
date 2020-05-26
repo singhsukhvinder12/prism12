@@ -5,11 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import com.e.seasianoticeboard.util.PreferenceKeys
+import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.view.core.auth.EmailActivity
 import com.e.seasianoticeboard.views.core.BaseActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import com.e.seasianoticeboard.util.PreferenceKeys as PreferenceKeys1
 
 class SplashActivity : BaseActivity() {
     private var timerThread: Thread? = null
@@ -19,7 +20,7 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun initViews() {
-        userId = sharedPref!!.getString(PreferenceKeys.USER_ID, "").toString()
+        userId = sharedPref!!.getString(PreferenceKeys1.USER_ID, "").toString()
 
 
         try {
@@ -32,12 +33,17 @@ class SplashActivity : BaseActivity() {
 
 // Get new Instance ID token
                     var token = task.result?.token
-                     token= token!!.replace("\"", "");
+                    var myToken= token!!.replace("\"", "");
 
-                    sharedPref!!.save(PreferenceKeys.DEVECE_TOKEN,token)
+                    sharedPref!!.save(PreferenceKeys1.DEVECE_TOKEN,myToken)
 
 
-                    Log.e("device_token",token)
+                    UtilsFunctions.TOKEN=token
+
+                //   var str = token.replace("","");
+                    Log.e("device_token",token);
+
+
 // Log and toast
 // Log.d(TAG, msg)
 // Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()

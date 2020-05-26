@@ -1,4 +1,4 @@
-package com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.repo
+package com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter
 
 import com.e.seasianoticeboard.api.GetRestAdapter
 import com.e.seasianoticeboard.model.DeviceTokenInput
@@ -17,24 +17,36 @@ import retrofit2.Call
 import retrofit2.Callback
 import java.util.HashMap
 
-class NewsFeedPresenter(var newsFeedFragment: NewsFeedFragment) {
+class NewsFeedPresenter(
+    var newsFeedFragment: NewsFeedFragment,
+    var feedList: ArrayList<GetFeedResponse.ResultDataList>
+) {
 
-    fun fetchComplaints(UserId: Int) {
-        var getNewsInput = GetFeedInput()
-        getNewsInput.UserId = UserId.toString()
 
-        val call = GetRestAdapter.getRestAdapter(true).getPostDara(getNewsInput)
+    fun fetchComplaints(input: GetFeedInput) {
+//        var getNewsInput = GetFeedInput()
+//        getNewsInput.UserId = UserId.toString()
+
+        val call = GetRestAdapter.getRestAdapter(true).getPostDara(input)
         call.enqueue(object : Callback<GetFeedResponse> {
             override fun onResponse(
                 call: Call<GetFeedResponse>, response: retrofit2.Response<GetFeedResponse>
             ) {
-                if (response!!.code() == 500) {
+                if (response.code() == 500) {
                     UtilsFunctions.showToastError(response.message())
                     newsFeedFragment.onError()
                     return
                 }
                 if (response.body()?.StatusCode == "200") {
-                    newsFeedFragment.onSuccess(response.body().ResultData)
+
+
+                    if(input.Skip.equals("0")){
+                        feedList=response.body().ResultData!!
+                    } else{
+                         feedList.addAll(response.body().ResultData!!)
+
+                    }
+                    newsFeedFragment.onSuccess(feedList)
                 } else {
                     newsFeedFragment.onError()
                 }

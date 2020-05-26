@@ -2,6 +2,7 @@ package com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter
 
 import com.e.seasianoticeboard.api.GetRestAdapter
 import com.e.seasianoticeboard.utils.UtilsFunctions
+import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.callback.LikeInterface
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.LikeInput
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.LikesResponse
 import retrofit2.Call

@@ -1,6 +1,5 @@
-package com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.repo
+package com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter
 
-import androidx.lifecycle.MutableLiveData
 import com.e.seasianoticeboard.api.GetRestAdapter
 import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.*

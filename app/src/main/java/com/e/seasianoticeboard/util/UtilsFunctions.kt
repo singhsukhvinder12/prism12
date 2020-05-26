@@ -17,6 +17,8 @@ import com.e.seasianoticeboard.R
 
 object UtilsFunctions {
 
+
+    public var TOKEN=""
     @JvmStatic
     fun showToastError(message: String?) {
 

@@ -20,8 +20,14 @@ class VerifyOtpPresenter(var otpVerifyActivity: OtpVerifyActivity) {
                 if (response!!.code() == 500) {
                     UtilsFunctions.showToastError("internal server error")
                     otpVerifyActivity.onFailer()
-                } else {
+                } else if (response.body() != null && response.body().StatusCode == "200") {
                     otpVerifyActivity.onOTPSucess(response!!.body())
+                } else if (response.body() != null) {
+                    UtilsFunctions.showToastError(response.body().Message)
+                    otpVerifyActivity.onFailer()
+                } else {
+                    UtilsFunctions.showToastError(response.message())
+                    otpVerifyActivity.onFailer()
                 }
             }
 
@@ -52,6 +58,7 @@ class VerifyOtpPresenter(var otpVerifyActivity: OtpVerifyActivity) {
                     }
                 }
             }
+
             override fun onFailure(call: Call<SignupVerificationResponse>, t: Throwable) {
                 otpVerifyActivity.onFailer()
                 UtilsFunctions.showToastError(t.message)

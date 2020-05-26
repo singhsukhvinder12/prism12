@@ -1,23 +1,17 @@
 package com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.view
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.e.seasianoticeboard.R
 import com.e.seasianoticeboard.databinding.ActivityLikeListBinding
+import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.callback.LikeListCallback
+import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.presenter.LikeListPresenter
 import com.e.seasianoticeboard.views.core.BaseActivity
-import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.adapter.CommentAdapter
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.adapter.LikeListAdapter
-import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.CommentResponse
-import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.GetFeedResponse
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.GetLikeResponse
-import com.e.seasianoticeboard.views.institute.newsfeed.viewmodel.CommentViewModel
 
-class LikeListActivity : BaseActivity(), View.OnClickListener {
-    var commentViewModel: CommentViewModel? = null
+class LikeListActivity : BaseActivity(), View.OnClickListener, LikeListCallback {
+    var likeListPresenter: LikeListPresenter?=null
 
     var binding: ActivityLikeListBinding?=null
     lateinit var adapter: LikeListAdapter
@@ -32,6 +26,11 @@ class LikeListActivity : BaseActivity(), View.OnClickListener {
         binding=viewDataBinding as ActivityLikeListBinding
         binding!!.includeView.toolbatTitle.setText("Likes")
         binding!!.includeView.ivBack.setOnClickListener(this)
+
+        likeListPresenter=
+            LikeListPresenter(
+                this
+            )
         if(intent.getStringExtra("postId")!=null){
            postId=intent.getStringExtra("postId")!!
             getLikeList()
@@ -42,20 +41,8 @@ class LikeListActivity : BaseActivity(), View.OnClickListener {
     }
 
     fun getLikeList(){
-        commentViewModel = ViewModelProviders.of(this).get(CommentViewModel::class.java)
         showDialog()
-        commentViewModel?.getLikeList(postId)
-        commentViewModel?.likeData()!!.observe(
-                this,
-                object : Observer<GetLikeResponse> {
-                    override fun onChanged(data: GetLikeResponse) {
-                        hideDialog()
-                        if (data.ResultData != null) {
-                            likeList=data.ResultData!!.lstgetLikesListViewModels!!
-                            setAdapterData()
-                        }
-                    }
-                })
+        likeListPresenter!!.getLikeList(postId)
     }
 
 
@@ -75,4 +62,14 @@ class LikeListActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
+    override fun onSuccess(data: GetLikeResponse) {
+        hideDialog()
+        if (data.ResultData != null) {
+            likeList=data.ResultData!!.lstgetLikesListViewModels!!
+            setAdapterData()
+        }    }
+
+    override fun onError() {
+        hideDialog()
+    }
 }
