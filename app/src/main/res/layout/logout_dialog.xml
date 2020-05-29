@@ -9,38 +9,38 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_90">
 
-    <ImageView
-        android:layout_marginLeft="20dp"
-        android:src="@drawable/ic_appicon"
-        android:layout_width="80dp"
-        android:id="@+id/iv_delete"
-        android:layout_height="80dp"/>
+        <ImageView
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/ic_appicon"
+            android:layout_width="80dp"
+            android:id="@+id/iv_delete"
+            android:layout_height="80dp"/>
 
-    <TextView
-        android:text="Delete Student"
-        android:textStyle="bold"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/color_navy_blue"
-        android:id="@+id/std_name"
-        android:fontFamily="@font/opensans_regular"
+        <TextView
+            android:text="@string/app_name"
+            android:textStyle="bold"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/color_navy_blue"
+            android:id="@+id/std_name"
+            android:fontFamily="@font/opensans_regular"
 
-        android:textSize="@dimen/dp_20"
-        android:layout_toRightOf="@+id/iv_delete"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:text="Are you sure want to delete?"
-        android:layout_below="@+id/std_name"
-        android:textSize="@dimen/dp_16"
-        android:fontFamily="@font/opensans_regular"
+            android:textSize="@dimen/dp_20"
+            android:layout_toRightOf="@+id/iv_delete"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="Are you sure want to logout?"
+            android:layout_below="@+id/std_name"
+            android:textSize="@dimen/dp_16"
+            android:fontFamily="@font/opensans_regular"
 
-        android:layout_toRightOf="@+id/iv_delete"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+            android:layout_toRightOf="@+id/iv_delete"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
     <View
         android:layout_centerInParent="true"
@@ -78,7 +78,7 @@
             android:fontFamily="@font/opensans_regular"
             android:id="@+id/tv_delete"
             android:layout_marginRight="@dimen/dp_20"
-            android:text="Delete"
+            android:text="Logout"
 
             android:textColor="@android:color/white"
             android:textSize="16sp" />

@@ -114,15 +114,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_20"
         android:background="#50000000"
-        android:padding="@dimen/dp_8">
+        android:padding="@dimen/dp_6">
 
         <ImageView
             android:id="@+id/btn_flash"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
 
             android:src="@drawable/ic_flash" />
     </RelativeLayout>

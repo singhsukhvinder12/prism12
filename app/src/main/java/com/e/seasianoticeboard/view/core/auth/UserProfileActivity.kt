@@ -34,6 +34,7 @@ import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.utils.UtilsFunctions.showToast
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.AddUpdateImageInput
 import com.e.seasianoticeboard.views.core.BaseActivity
+import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.pagination.NewsFeedFragment
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.api.widget.Widget
@@ -58,7 +59,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     var presenter: UpdateUserProfilePresenter? = null
     var status = "0"
     var mytext = ""
-
+    var videoOpenStatus = 0
 
     var day = ""
     var month = ""
@@ -198,23 +199,21 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             )
             .onResult { result ->
                 mAlbumFiles = result
-                      fileUri=mAlbumFiles.get(0).path
+                fileUri = mAlbumFiles.get(0).path
 
                 val file = File(fileUri)
                 imageFile = file
-                    Glide.with(this)
-                        .load(fileUri)
-                        .placeholder(R.drawable.user)
-                        .error(R.drawable.user)
-                        .into(binding!!.ivProfile)
+                Glide.with(this)
+                    .load(fileUri)
+                    .placeholder(R.drawable.user)
+                    .error(R.drawable.user)
+                    .into(binding!!.ivProfile)
 
 //                fileUri = getAbsolutePath(this@UserProfileActivity, tempUri)!!
 //
 //                Glide.with(this).load(tempUri).placeholder(R.drawable.user).error(R.drawable.user)
 //                    .into(binding!!.ivProfile)
 //
-
-
 
             }
             .onCancel {
@@ -224,7 +223,10 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     }
 
 
-
+    override fun onResume() {
+        super.onResume()
+        videoOpenStatus = 0
+    }
 
 
     override fun onClick(view: View?) {
@@ -244,9 +246,13 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                         PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
                     )
                 ) {
-                    mAlbumFiles=ArrayList()
-                    selectAlbum()
-                  //  selectImage()
+                    if (videoOpenStatus == 0) {
+                        mAlbumFiles = ArrayList()
+                        selectAlbum()
+                        videoOpenStatus = 1
+                    }
+
+                    //  selectImage()
                 }
             }
         }
@@ -309,6 +315,10 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 
         if (TextUtils.isEmpty(binding!!.etFirstName.text.toString())) {
             showToast(getString(R.string.enter_first_name))
+        } else if (binding!!.etFirstName.text.length < 3) {
+            showToast(getString(R.string.first_name_characters))
+        } else if (binding!!.etLastName.text.length < 3) {
+            showToast(getString(R.string.last_name_characters))
         } else if (TextUtils.isEmpty(binding!!.etLastName.text.toString())) {
             showToast(getString(R.string.enter_last_name))
         } else if (TextUtils.isEmpty(binding!!.etPhone.text.toString())) {
@@ -520,10 +530,22 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 binding!!.etFirstName.setText(firstName)
                 binding!!.etLastName.setText(lastName)
 
-                sharedPref!!.saveString(
-                    PreferenceKeys.USERNAME,
-                    firstName + " " + lastName
-                )
+
+
+                if (postedByMail.equals(emailId)) {
+                    sharedPref!!.saveString(
+                        PreferenceKeys.USERNAME,
+                        firstName + " " + lastName
+                    )
+                    binding!!.etPhone.setText(data.ResultData!!.PhoneNo)
+                } else {
+                    try {
+                        var phNum = data.ResultData!!.PhoneNo!!.substring(0, 2)
+                        var last = data.ResultData!!.PhoneNo!!.substring(0, phNum.length - 1)
+                        binding!!.etPhone.setText(phNum + "*******" + last)
+                    } catch (e: java.lang.Exception) {
+                    }
+                }
 
             } catch (e: Exception) {
 
@@ -531,18 +553,6 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 
             binding!!.etEmail.setText(data.ResultData!!.Email)
 
-            if (postedByMail.equals(emailId)) {
-                binding!!.etPhone.setText(data.ResultData!!.PhoneNo)
-
-            } else {
-                try {
-                    var phNum = data.ResultData!!.PhoneNo!!.substring(0, 2)
-                    var last = data.ResultData!!.PhoneNo!!.substring(0, phNum.length - 1)
-                    binding!!.etPhone.setText(phNum + "*******" + last)
-                } catch (e: java.lang.Exception) {
-                }
-            }
-            // binding!!.etDob.setText(data.ResultData.StrDOB)
 
             try {
                 binding!!.etDob.setText(

@@ -40,10 +40,13 @@ class NewsFeedPresenter(
                 if (response.body()?.StatusCode == "200") {
 
 
-                    if(input.Skip.equals("0")){
-                        feedList=response.body().ResultData!!
-                    } else{
-                         feedList.addAll(response.body().ResultData!!)
+                    if (input.Skip.equals("0")) {
+                        if (feedList != null && feedList.size > 0) {
+                            feedList.clear()
+                        }
+                        feedList = response.body().ResultData!!
+                    } else {
+                        feedList.addAll(response.body().ResultData!!)
 
                     }
                     newsFeedFragment.onSuccess(feedList)
@@ -58,12 +61,12 @@ class NewsFeedPresenter(
             }
         })
     }
+
     fun toRequestBody(value: String): RequestBody {
         return RequestBody.create(MediaType.parse("text/plain"), value)
     }
 
-    fun reportPost(input: ReportPostInput){
-
+    fun reportPost(input: ReportPostInput) {
 
 
         val map = HashMap<String, RequestBody>()
@@ -73,10 +76,10 @@ class NewsFeedPresenter(
         map["UserId"] = toRequestBody(input.UserId.toString())
 
 
-
         val call = GetRestAdapter.getRestAdapter(true).reportPost(map)
         call.enqueue(object : Callback<RepostPostResponse> {
-            override fun onResponse(call: Call<RepostPostResponse>, response: retrofit2.Response<RepostPostResponse>?
+            override fun onResponse(
+                call: Call<RepostPostResponse>, response: retrofit2.Response<RepostPostResponse>?
             ) {
 
                 if (response!!.code() == 500) {
@@ -100,10 +103,11 @@ class NewsFeedPresenter(
         })
     }
 
-    fun deletaPost(input: DeletePostInput){
+    fun deletaPost(input: DeletePostInput) {
         val call = GetRestAdapter.getRestAdapter(true).deletePost(input)
         call.enqueue(object : Callback<DeletePostResponse> {
-            override fun onResponse(call: Call<DeletePostResponse>, response: retrofit2.Response<DeletePostResponse>?
+            override fun onResponse(
+                call: Call<DeletePostResponse>, response: retrofit2.Response<DeletePostResponse>?
             ) {
                 if (response!!.code() == 500) {
                     UtilsFunctions.showToastError(response.message())
@@ -126,14 +130,15 @@ class NewsFeedPresenter(
 
     }
 
-    fun sendDeviceToken(input:DeviceTokenInput){
+    fun sendDeviceToken(input: DeviceTokenInput) {
         val call = GetRestAdapter.getRestAdapter(true).sendDeviceToken(input)
         call.enqueue(object : Callback<DeviceTokenResponse> {
-            override fun onResponse(call: Call<DeviceTokenResponse>, response: retrofit2.Response<DeviceTokenResponse>?
+            override fun onResponse(
+                call: Call<DeviceTokenResponse>, response: retrofit2.Response<DeviceTokenResponse>?
             ) {
                 if (response!!.code() == 500) {
-                   // UtilsFunctions.showToastError(response.message())
-                   // newsFeedFragment.onError()
+                    // UtilsFunctions.showToastError(response.message())
+                    // newsFeedFragment.onError()
                     return
                 }
             }

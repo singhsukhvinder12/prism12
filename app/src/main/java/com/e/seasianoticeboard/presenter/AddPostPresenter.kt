@@ -1,6 +1,5 @@
 package com.e.seasianoticeboard.presenter
 
-import androidx.lifecycle.MutableLiveData
 import com.e.seasianoticeboard.api.GetRestAdapter
 import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.AddUpdateImageInput
@@ -13,6 +12,7 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import java.io.File
+import java.lang.Exception
 import java.util.HashMap
 
 class AddPostPresenter(var addPostActivity: AddPostActivity) {
@@ -20,12 +20,24 @@ class AddPostPresenter(var addPostActivity: AddPostActivity) {
     private val IMAGE_EXTENSION = "image/*"
     private val AUDIO_EXTENSION = "audio/*"
     private val VIDEO_EXTENSION = "video/*"
+    private val THUMBNAIL_EXTENSION = "videoThumbnail/*"
+
+//    private val IMAGE_EXTENSION = "FeedImage/*"
+//    private val AUDIO_EXTENSION = "FeedAudio/*"
+//    private val VIDEO_EXTENSION = "FeedVideo/*"
+//    private val THUMBNAIL_EXTENSION = "FeedThumbNil/*"
 
     fun toRequestBody(value: String): RequestBody {
         return RequestBody.create(MediaType.parse("text/plain"), value)
     }
-    fun getPostData(addPost: AddPostInput, videoFIle: File?, audioFIle: File?, imagesList: ArrayList<AddUpdateImageInput>?){
-        val callResponse: Call<AddPostResponse>
+    fun getPostData(
+        addPost: AddPostInput,
+        videoFIle: File?,
+        audioFIle: File?,
+        imagesList: ArrayList<AddUpdateImageInput>?,
+        thumbNailFile: File?
+    ){
+        var callResponse: Call<AddPostResponse>
 
         val map = HashMap<String, RequestBody>()
         map["Title"] = toRequestBody(addPost.Title.toString())
@@ -42,7 +54,7 @@ class AddPostPresenter(var addPostActivity: AddPostActivity) {
                 RequestBody.create(MediaType.parse(AUDIO_EXTENSION), audioFIle!!)
             val audioFile =
                 MultipartBody.Part.createFormData(
-                    "IstNewsLetterVideo",
+                    "FeedAudio",
                     audioFIle!!.name,
                     audioRequestFile
                 )
@@ -54,12 +66,25 @@ class AddPostPresenter(var addPostActivity: AddPostActivity) {
                 RequestBody.create(MediaType.parse(VIDEO_EXTENSION), videoFIle)
             val videoFile =
                 MultipartBody.Part.createFormData(
-                    "IstNewsLetterAudio",
+                    "FeedVideo",
                     videoFIle!!.name,
                     videoRequestFile
                 )
-            callResponse = GetRestAdapter.getRestAdapter(true)
-                .addPost(map, videoFile)
+            try {
+                val thumbNailRequest =
+                    RequestBody.create(MediaType.parse(THUMBNAIL_EXTENSION), thumbNailFile)
+                val thumbNail = MultipartBody.Part.createFormData(
+                    "FeedThumbNil",
+                    thumbNailFile!!.name,
+                    thumbNailRequest
+                )
+                callResponse = GetRestAdapter.getRestAdapter(true).addPostThumb(map, videoFile,thumbNail)
+            }catch (e:Exception){
+                callResponse = GetRestAdapter.getRestAdapter(true).addPost(map, videoFile)
+            }
+
+
+           // callResponse = GetRestAdapter.getRestAdapter(true).addPost(map, videoFile)
         } else if (imagesList!!.size > 0) {
 
             imageParts = arrayOfNulls(imagesList.size)
@@ -67,20 +92,18 @@ class AddPostPresenter(var addPostActivity: AddPostActivity) {
             for (i in 0..imagesList.size - 1) {
                 val imageBody = RequestBody.create(
                     MediaType.parse(IMAGE_EXTENSION),
-                    imagesList!![i].fileUrl!!
+                    imagesList[i].fileUrl!!
                 )
                 imageParts!![i] =
                     MultipartBody.Part.createFormData(
-                        "IstNewsLetterImage",
-                        imagesList!![i].fileUrl!!.name,
+                        "FeedImage",
+                        imagesList[i].fileUrl!!.name,
                         imageBody
                     )
             }
 
-
             callResponse = GetRestAdapter.getRestAdapter(true)
                 .addPost(map, imageParts)
-
         } else {
             callResponse = GetRestAdapter.getRestAdapter(true)
                 .addPost(map)

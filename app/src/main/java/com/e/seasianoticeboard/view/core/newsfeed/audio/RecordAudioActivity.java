@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -42,6 +44,8 @@ public class RecordAudioActivity extends AppCompatActivity {
     private long milisecont;
     private boolean timerStart = false;
     MediaPlayer mp;
+    boolean ispause=false;
+    long audioTime=60000;
 
 
     @Override
@@ -62,6 +66,7 @@ public class RecordAudioActivity extends AppCompatActivity {
                 .into(gifImage);
 
         recordAudio.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
                 if (timerStart == true) {
@@ -69,7 +74,10 @@ public class RecordAudioActivity extends AppCompatActivity {
                         mp.stop();
                     }
                 }
+
                 startResording();
+
+
             }
         });
 //
@@ -170,6 +178,8 @@ public class RecordAudioActivity extends AppCompatActivity {
     }
 
     private void startResording() {
+
+
         if (startRecording == false) {
             if (checkPermission()) {
 
@@ -182,8 +192,10 @@ public class RecordAudioActivity extends AppCompatActivity {
                     recordAudio.setBackground(getDrawable(R.drawable.ic_pause));
                     //     recordAudio.setBackground(getDrawable(R.drawable.ic_stop_audio));
                     startRecording = true;
+
                     mediaRecorder.prepare();
                     mediaRecorder.start();
+                    ispause=true;
                     btnRestart.setVisibility(View.GONE);
                     btnPlay.setVisibility(View.GONE);
                     ivCheck.setVisibility(View.GONE);

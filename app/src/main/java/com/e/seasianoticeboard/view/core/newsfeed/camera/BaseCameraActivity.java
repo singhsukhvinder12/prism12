@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.opengl.GLException;
 import android.os.CountDownTimer;
@@ -237,13 +238,19 @@ public class BaseCameraActivity extends AppCompatActivity {
 
             }
         });
-
+       // setUpCamera();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setUpCamera();
+
+        try {
+            setUpCamera();
+
+        }catch (Exception e){
+
+        }
 //        try {
 //            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 //
@@ -320,7 +327,7 @@ public class BaseCameraActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                findViewById(R.id.btn_flash).setEnabled(flashSupport);
+                               findViewById(R.id.btn_flash).setEnabled(flashSupport);
                             }
                         });
                     }

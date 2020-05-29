@@ -42,8 +42,6 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
         binding!!.includeView.toolbatTitle.setText(getString(R.string.account_verification))
         otpVerifyPresenter = VerifyOtpPresenter(this)
 
-
-        //  hideKeyboard()
         if (intent.getStringExtra("OtpId") != null) {
             OtpId = intent.getStringExtra("OtpId");
         }
@@ -102,6 +100,10 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
                         PreferenceKeys.USERNAME,
                         data.ResultData!!.FirstName.toString() + " " + data.ResultData!!.LastName.toString()
                     )
+
+                    sharedPref!!.saveString(
+                        PreferenceKeys.USER_IMAGE, data.ResultData!!.ImageUrl.toString())
+
                     var intent =
                         Intent(
                             this@OtpVerifyActivity,

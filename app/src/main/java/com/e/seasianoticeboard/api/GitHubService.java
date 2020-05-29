@@ -1,7 +1,6 @@
 package com.e.seasianoticeboard.api;
 
 
-
 import com.e.seasianoticeboard.model.DeviceTokenInput;
 import com.e.seasianoticeboard.model.DeviceTokenResponse;
 import com.e.seasianoticeboard.model.GetUserProfileInput;
@@ -12,6 +11,8 @@ import com.e.seasianoticeboard.model.UserProfileInput;
 import com.e.seasianoticeboard.model.UserProfileResponse;
 import com.e.seasianoticeboard.model.VerifyEmailInput;
 import com.e.seasianoticeboard.model.VerifyEmailResponse;
+import com.e.seasianoticeboard.model.input.LogoutInput;
+import com.e.seasianoticeboard.model.output.LogoutResponse;
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.ReportPostInput;
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.RepostPostResponse;
 import com.e.seasianoticeboard.views.institute.newsfeed.AddPostResponse;
@@ -47,6 +48,12 @@ public interface GitHubService {
     @POST("Social/AddUpdateNewsLetter")
     Call<AddPostResponse> addPost(@PartMap Map<String, RequestBody> params,
                                   @Part MultipartBody.Part updateImage);
+
+    @Multipart
+    @POST("Social/AddUpdateNewsLetter")
+    Call<AddPostResponse> addPostThumb(@PartMap Map<String, RequestBody> params,
+                                       @Part MultipartBody.Part updateImage, @Part MultipartBody.Part updateThumbNail);
+
     @Multipart
     @POST("Social/AddUpdateNewsLetter")
     Call<AddPostResponse> addPost(@PartMap Map<String, RequestBody> params,
@@ -92,14 +99,18 @@ public interface GitHubService {
     @POST("User/GetUserDetailByPhoneEmail")
     Call<GetUserProfileResponse> getProfile(@Body GetUserProfileInput email);
 
-   @POST("User/EmailVerificationForSignUp")
-   Call<SignupVerificationResponse> signupVerification(@Query("email") String email);
+    @POST("User/Logout")
+    Call<LogoutResponse> logout(@Query("userId") String userId, @Query("deviceType") String deviceType);
+
+    @POST("User/EmailVerificationForSignUp")
+    Call<SignupVerificationResponse> signupVerification(@Query("email") String email);
 
 
     @Multipart
     @POST("User/UserSignUp")
     Call<UserProfileResponse> signupUser(@PartMap Map<String, RequestBody> params,
                                          @Part MultipartBody.Part signupUser);
+
     @Multipart
     @POST("User/UserSignUp")
     Call<UserProfileResponse> signupUser(@PartMap Map<String, RequestBody> params);
@@ -107,7 +118,8 @@ public interface GitHubService {
     @Multipart
     @POST("User/UpdateUser")
     Call<UserProfileResponse> updateUser(@PartMap Map<String, RequestBody> params,
-                                           @Part MultipartBody.Part signupUser);
+                                         @Part MultipartBody.Part signupUser);
+
     @Multipart
     @POST("User/UpdateUser")
     Call<UserProfileResponse> updateUser(@PartMap Map<String, RequestBody> params);

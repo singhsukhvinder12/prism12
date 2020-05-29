@@ -55,6 +55,7 @@ class NewsFeedFragment : BaseFragment(true),
     var deleteItemIndex = "0"
     var pageSize: Int = 10
     var postiton: Int? = null
+    var setAdapter=0;
     var type = ""
     var RC_CODE_PICKER_LOGO = 2000
     val PERMISSION_READ_STORAGE = arrayOf(
@@ -64,6 +65,8 @@ class NewsFeedFragment : BaseFragment(true),
         Manifest.permission.RECORD_AUDIO
     )
     var REQUEST_PERMISSIONS = 1
+
+
 
     var feedPresenter: NewsFeedPresenter? = null
     var horizontalLayoutManager: LinearLayoutManager? = null
@@ -82,6 +85,9 @@ class NewsFeedFragment : BaseFragment(true),
 
 
     companion object {
+        var videoOpenStatus=0
+
+
         var change = 0
         var commentChange = 0
         var fromIncidentDetailScreen = 0
@@ -89,8 +95,8 @@ class NewsFeedFragment : BaseFragment(true),
     }
 
 
-    private var complaints = ArrayList<GetFeedResponse.ResultDataList>()
-    private var adapter: NewsFeedAdapter? = null
+     var complaints = ArrayList<GetFeedResponse.ResultDataList>()
+     var adapter: NewsFeedAdapter? = null
     private var statusId = "-1"
     private var complaintId = "-1"
     private var currentStatus = ""
@@ -111,8 +117,7 @@ class NewsFeedFragment : BaseFragment(true),
             return
         }
 
-        baseActivity!!.showDialog()
-//        feedPresenter!!.fetchComplaints(UserId!!.toInt())
+         baseActivity!!.showDialog()
         feedPresenter!!.fetchComplaints(noticeBoardInput(0))
     }
 
@@ -134,13 +139,14 @@ class NewsFeedFragment : BaseFragment(true),
 
     fun setAdapter() {
         adapter = NewsFeedAdapter(this@NewsFeedFragment, complaints, baseActivity)
-        horizontalLayoutManager = LinearLayoutManager(mContext)
+        horizontalLayoutManager = LinearLayoutManager(baseActivity)
         rvPublic?.layoutManager = horizontalLayoutManager
-        rvPublic?.adapter = adapter
         endlessScrollListener = EndlessRecyclerViewScrollListenerImplementation(
             horizontalLayoutManager, this)
         endlessScrollListener?.setmLayoutManager(horizontalLayoutManager)
         rvPublic.addOnScrollListener(endlessScrollListener!!)
+        rvPublic?.adapter = adapter
+
     }
 
     fun setupUI() {
@@ -164,7 +170,6 @@ class NewsFeedFragment : BaseFragment(true),
 
         itemsswipetorefresh.setOnRefreshListener {
             pageCount = 1
-            adapter?.clear()
             endlessScrollListener?.resetState()
             getFeedData()
             itemsswipetorefresh.isRefreshing = false
@@ -207,10 +212,10 @@ class NewsFeedFragment : BaseFragment(true),
             try {
                 if (data != null) {
                     if (data.getStringExtra("backPress").equals("1")) {
+                        setAdapter=1
                         getFeedData()
                     }
                 }
-
 
             } catch (e: Exception) {
             }
@@ -231,7 +236,11 @@ class NewsFeedFragment : BaseFragment(true),
         } else if (requestCode == 205) {
 
             try {
-                getFeedData()
+                if (data != null) {
+                    if (data.getStringExtra("imageCode").equals("1")) {
+                        getFeedData()
+                    }
+                }
             } catch (e: Exception) {
 
             }
@@ -254,17 +263,20 @@ class NewsFeedFragment : BaseFragment(true),
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.imgAdd -> {
-                this.startActivityForResult(
-                    Intent(context, AddPostActivity::class.java),
-                    HOME_REQUEST_CODE
-                )
+                if(videoOpenStatus==0){
+                    this.startActivityForResult(
+                        Intent(context, AddPostActivity::class.java),
+                        HOME_REQUEST_CODE
+                    )
+                    videoOpenStatus=1
+                }
             }
         }
     }
 
     override fun onResume() {  //isfirst // !isfirst //
         super.onResume()
-
+        videoOpenStatus=0
         fromIncidentDetailScreen == 0
     }
 
@@ -341,12 +353,21 @@ class NewsFeedFragment : BaseFragment(true),
 
     override fun onSuccess(resultData: ArrayList<GetFeedResponse.ResultDataList>?) {
         if (resultData != null) {
-//            if(complaints!=null){
-//                complaints.clear()
-//            }
+
             complaints = resultData
             adapter!!.setList(complaints)
-           /// setAdapter()
+            adapter!!.notifyDataSetChanged()
+
+//             baseActivity!!.runOnUiThread {
+//                complaints = resultData
+//                 if(setAdapter==1){
+//                     setAdapter()
+//                     setAdapter=0
+//                 } else{
+//                     adapter!!.setList(complaints)
+//                     adapter!!.notifyDataSetChanged()
+//                 }
+//            }
         }
         baseActivity!!.hideDialog()
     }
@@ -371,7 +392,9 @@ class NewsFeedFragment : BaseFragment(true),
                 "" + data.Message.toString(),
                 Toast.LENGTH_LONG
             ).show()
-            getFeedData()
+            complaints.removeAt(deleteItemIndex.toInt())
+            adapter!!.notifyDataSetChanged()
+          //  getFeedData()
         }
     }
 

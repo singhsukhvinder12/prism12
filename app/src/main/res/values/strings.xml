@@ -14,10 +14,11 @@
     <string name="other">NA</string>
     <string name="dob">DOB</string>
     <string name="email">Email</string>
-    <string name="submit">Submit</string>
-
     <string name="enter_first_name">Enter first name</string>
     <string name="enter_last_name">Enter last name</string>
+    <string name="first_name_characters">First name has minimum 3 characters</string>
+    <string name="last_name_characters">Last name has minimum 3 characters</string>
+
     <string name="phone_length">Please check phone number length</string>
     <string name="enter_phone_number">Enter phone number</string>
     <string name="select_gender">Select Gender</string>
@@ -25,5 +26,9 @@
     <string name="please_add_a_comment">Please add your comment</string>
     <string name="max_five_photos">Max 5 photos can selected for a single post</string>
     <string name="account_verification">Account Verification</string>
+    <string name="seasia_in_seasiainfotech_com">seasia.in/seasiainfotech.com</string>
+    <string name="video_playing">Video Playing</string>
+    <string name="upload">Upload</string>
+    <string name="submit">Submit</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.e.seasianoticeboard.views.institute.newsfeed
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ProgressDialog
@@ -9,7 +10,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.media.ThumbnailUtils
 import android.net.Uri
@@ -31,6 +32,7 @@ import com.e.seasianoticeboard.presenter.AddPostPresenter
 import com.e.seasianoticeboard.util.CheckRuntimePermissions
 import com.e.seasianoticeboard.util.PreferenceKeys
 import com.e.seasianoticeboard.utils.UtilsFunctions
+import com.e.seasianoticeboard.view.core.auth.EmailActivity
 import com.e.seasianoticeboard.view.core.newsfeed.audio.RecordAudioActivity
 import com.e.seasianoticeboard.view.core.newsfeed.audioplayer.AndroidBuildingMusicPlayerActivity
 import com.e.seasianoticeboard.view.core.newsfeed.camera.SquareActivity
@@ -41,11 +43,11 @@ import com.vincent.videocompressor.VideoCompress
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.api.widget.Widget
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import android.os.CancellationSignal as CancellationSignal1
 
 
 @Suppress("INACCESSIBLE_TYPE")
@@ -56,6 +58,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     private var mAlbumFiles = ArrayList<AlbumFile>()
     var presenter: AddPostPresenter? = null
     var status = "0"
+    var doubleClick = 0
     var AudioSavePathInDevice = ""
     private var isFullscreen = false
     val PERMISSION_READ_STORAGE = arrayOf(
@@ -71,10 +74,11 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     private val Video_AUDIO = 2
     var imagesAdapter: ImageListAdapter? = null
     var fileUri = ""
+    var outputCompressPath = ""
     var mediaController: MediaController? = null
-    var addPost: AddPostViewModel? = null
     var audioFIle: File? = null
     var videoFIle: File? = null
+    var thumbNailFile: File? = null
     var RandomAudioFileName = "ABCDEFGHIJKLMNOP"
     var deletedImageList: ArrayList<UpdateSchoolInput.LstDeleteAttachment>? = ArrayList()
     var random: Random? = null
@@ -90,6 +94,12 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
     override fun getLayoutId(): Int {
         return R.layout.activity_add_post
+    }
+
+    override fun onResume() {
+        super.onResume()
+        doubleClick = 0
+        outputCompressPath = ""
     }
 
     override fun initViews() {
@@ -108,7 +118,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         presenter = AddPostPresenter(this)
         setImagesAdapter()
         mediaPlayer = MediaPlayer()
-        addPost = ViewModelProviders.of(this).get(AddPostViewModel::class.java)
         random = Random()
         binding!!.userName.setText(sharedPref!!.getString(PreferenceKeys.USERNAME, "").toString())
 
@@ -145,7 +154,10 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                                 PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
                             )
                         ) {
-                            selectAlbum()
+                            if (doubleClick == 0) {
+                                selectAlbum()
+                                doubleClick = 1
+                            }
 
                         }
                     } else {
@@ -162,11 +174,16 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                         PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
                     )
                 ) {
-                    if (imagesList!!.size == 0 && fileUri.isEmpty()) {
-                        var intent = Intent(this, SquareActivity::class.java)
-                        startActivityForResult(intent, Video_AUDIO);
-                    } else {
-                        baseActivity!!.showMessage(this, "Please delete selected media")
+                    if (doubleClick == 0) {
+                        if (imagesList!!.size == 0 && fileUri.isEmpty()) {
+                            //
+                            var intent = Intent(this, SquareActivity::class.java)
+                            startActivityForResult(intent, Video_AUDIO);
+                            doubleClick = 1
+                            //  }
+                        } else {
+                            baseActivity!!.showMessage(this, "Please delete selected media")
+                        }
                     }
                 }
 
@@ -179,9 +196,11 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                         )
                     ) {
                         ///   recordActivity()
-
-                        var intent = Intent(this, RecordAudioActivity::class.java)
-                        startActivityForResult(intent, 1)
+                        if (doubleClick == 0) {
+                            var intent = Intent(this, RecordAudioActivity::class.java)
+                            startActivityForResult(intent, 1)
+                            doubleClick = 1
+                        }
                     }
                 } else {
                     baseActivity!!.showMessage(this, "Please delete selected media")
@@ -203,9 +222,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 if (binding!!.textPost.text.toString().trim().isEmpty()) {
 
                     showMessage(this, "Please enter description")
-                }
-
-                else {
+                } else {
                     if (videoFIle != null) {
                         binding!!.videoView1.stopPlayback()
                         videoCompressorCustom()
@@ -215,7 +232,13 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                             UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
                             return
                         }
-                        presenter!!.getPostData(addPostData(), videoFIle, audioFIle, imagesList)
+                        presenter!!.getPostData(
+                            addPostData(),
+                            videoFIle,
+                            audioFIle,
+                            imagesList,
+                            thumbNailFile
+                        )
 
                     }
 
@@ -300,65 +323,89 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
     private fun videoCompressorCustom() {
 
-        var myDirectory = File(Environment.getExternalStorageDirectory(), "Pictures");
 
-        if (!myDirectory.exists()) {
-            myDirectory.mkdirs();
+        if (outputCompressPath.isEmpty()) {
+            var myDirectory = File(Environment.getExternalStorageDirectory(), "Pictures");
+
+            if (!myDirectory.exists()) {
+                myDirectory.mkdirs();
+            }
+
+            var outPath =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath + File.separator + "VID_" + SimpleDateFormat(
+                    "yyyyMMdd_HHmmss",
+                    getLocale()
+                ).format(Date()) + ".mp4";
+
+
+            var progressDialog = ProgressDialog(this)
+
+            VideoCompress.compressVideoMedium(fileUri, outPath, object :
+                VideoCompress.CompressListener {
+                override fun onStart() {
+                    Log.e("Compressing", "Compress Start")
+                    progressDialog.setCancelable(false)
+                    progressDialog.setMessage("Processing Video...")
+                    progressDialog.show()
+                }
+
+                override fun onSuccess() {
+
+                    try {
+                        if (progressDialog != null && progressDialog.isShowing) progressDialog.dismiss()
+                    } catch (e: IllegalArgumentException) { // Handle or log or ignore
+
+                    } catch (e: java.lang.Exception) { // Handle or log or ignore
+
+                    }
+
+                    outputCompressPath = outPath
+                    showDialog()
+                    if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+                        UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+                        return
+                    }
+                    presenter!!.getPostData(
+                        addPostData(),
+                        File(outPath),
+                        audioFIle,
+                        imagesList,
+                        thumbNailFile
+                    )
+
+                }
+
+                override fun onFail() {
+                    Log.e("Compressing", "Compress Failed!")
+                    try {
+                        if (progressDialog != null && progressDialog.isShowing) progressDialog.dismiss()
+                    } catch (e: IllegalArgumentException) { // Handle or log or ignore
+
+                    } catch (e: java.lang.Exception) { // Handle or log or ignore
+
+                    }
+                }
+
+                override fun onProgress(percent: Float) {
+                    progressDialog.setMessage("Compressing video " + percent.toInt() + "%")
+                    Log.e("Compressing", percent.toString())
+
+                }
+            })
+        } else {
+            showDialog()
+            if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+                UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+                return
+            }
+            presenter!!.getPostData(
+                addPostData(),
+                File(outputCompressPath),
+                audioFIle,
+                imagesList,
+                thumbNailFile
+            )
         }
-
-        var outPath =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath + File.separator + "VID_" + SimpleDateFormat(
-                "yyyyMMdd_HHmmss",
-                getLocale()
-            ).format(Date()) + ".mp4";
-
-
-        var progressDialog = ProgressDialog(this)
-
-        VideoCompress.compressVideoMedium(fileUri, outPath, object :
-            VideoCompress.CompressListener {
-            override fun onStart() {
-                Log.e("Compressing", "Compress Start")
-                progressDialog.setCancelable(false)
-                progressDialog.setMessage("Processing Video...")
-                progressDialog.show()
-            }
-
-            override fun onSuccess() {
-
-                try {
-                    if (progressDialog != null && progressDialog.isShowing) progressDialog.dismiss()
-                } catch (e: IllegalArgumentException) { // Handle or log or ignore
-
-                } catch (e: java.lang.Exception) { // Handle or log or ignore
-
-                }
-                showDialog()
-                if (!UtilsFunctions.isNetworkAvailable(App.app)) {
-                    UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
-                    return
-                }
-                presenter!!.getPostData(addPostData(), File(outPath), audioFIle, imagesList)
-
-            }
-
-            override fun onFail() {
-                Log.e("Compressing", "Compress Failed!")
-                try {
-                    if (progressDialog != null && progressDialog.isShowing) progressDialog.dismiss()
-                } catch (e: IllegalArgumentException) { // Handle or log or ignore
-
-                } catch (e: java.lang.Exception) { // Handle or log or ignore
-
-                }
-            }
-
-            override fun onProgress(percent: Float) {
-                progressDialog.setMessage("Compressing video " + percent.toInt() + "%")
-                Log.e("Compressing", percent.toString())
-
-            }
-        })
 
 
     }
@@ -462,16 +509,37 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                             var uri = bundle.getString("filePath")!!
                             fileUri = uri
 
-                            var video_bitmap = ThumbnailUtils.createVideoThumbnail(
-                                fileUri,
-                                MediaStore.Video.Thumbnails.MINI_KIND
-                            );
+
+                            try {
+                                runOnUiThread {
+                                    var ountDownTimer = object : CountDownTimer(1000, 1000) {
+                                        override fun onTick(millisUntilFinished: Long) {
+                                        }
+
+                                        override fun onFinish() {
+                                            val thumb = ThumbnailUtils.createVideoThumbnail(
+                                                uri,
+                                                MediaStore.Images.Thumbnails.MINI_KIND
+                                            );
+                                            val tempUri =
+                                                getImageUri(getApplicationContext(), thumb!!);
+                                            val thumPath =
+                                                getAbsolutePath(baseActivity!!, tempUri)!!
+                                            val file = File(thumPath)
+
+                                            thumbNailFile = file
+                                        }
+                                    }.start()
+
+                                }
+                            } catch (e: Exception) {
+
+                            }
                             mediaPlayer = MediaPlayer()
                             val file = File(uri)
                             videoFIle = file
                             binding!!.parentSelectedMedia.visibility = View.VISIBLE
                             binding!!.parentAudio.visibility = View.GONE
-
                             var ountDownTimer = object : CountDownTimer(1000, 1000) {
                                 override fun onTick(millisUntilFinished: Long) {
                                 }
@@ -481,11 +549,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                                 }
                             }.start()
                         }
-
-
                     }
-
-                    //  createVideoThumbNail(fileUri)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -494,6 +558,18 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
     }
 
+
+    fun getImageUri(inContext: Context, inImage: Bitmap): Uri {
+        var bytes = ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        var path = MediaStore.Images.Media.insertImage(
+            inContext.getContentResolver(),
+            inImage,
+            "Title",
+            null
+        );
+        return Uri.parse(path);
+    }
 
     fun getAbsolutePath(activity: Context, uri: Uri): String? {
         if ("content".equals(uri.scheme, ignoreCase = true)) {
@@ -555,8 +631,12 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 //finish()
                 status = "1"
                 onBackPressed()
-            } else {
-                showMessage(this@AddPostActivity, data.Message!!)
+            } else if(data.StatusCode==400) {
+                sharedPref!!.cleanPref()
+                val intent = Intent(this@AddPostActivity, EmailActivity::class.java)
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                showMessage(this@AddPostActivity, "Session Expire")
             }
         } else {
             showMessage(this@AddPostActivity, "Somthing went wrong")
