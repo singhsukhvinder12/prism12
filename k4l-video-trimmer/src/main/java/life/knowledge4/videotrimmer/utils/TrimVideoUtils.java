@@ -69,9 +69,15 @@ public class TrimVideoUtils {
     private static void genVideoUsingMp4Parser(@NonNull File src, @NonNull File dst, long startMs, long endMs, @NonNull OnTrimVideoListener callback) throws IOException {
         // NOTE: Switched to using FileDataSourceViaHeapImpl since it does not use memory mapping (VM).
         // Otherwise we get OOM with large movie files.
-      //  Movie movie = MovieCreator.build(new FileDataSourceViaHeapImpl(src.getAbsolutePath()));
+        try {
+//            try {
+//                movie = MovieCreator.build(new FileDataSourceViaHeapImpl(src.getAbsolutePath()));
+//            }catch (Exception e){
+//                movie = MovieCreator.build(src.getAbsolutePath());
+//            }
+//        Movie movie = MovieCreator.build(new FileDataSourceViaHeapImpl(src.getAbsolutePath()));
 
-        Movie movie = MovieCreator.build(src.getAbsolutePath());
+           Movie movie = MovieCreator.build(src.getAbsolutePath());
 
 
         List<Track> tracks = movie.getTracks();
@@ -143,6 +149,11 @@ public class TrimVideoUtils {
         fos.close();
         if (callback != null)
             callback.getResult(Uri.parse(dst.toString()));
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.d("TrimVideoUtils","finding_exceptions:  "+e.getMessage());
+        }
     }
 
     private static double correctTimeToSyncSample(@NonNull Track track, double cutHere, boolean next) {
@@ -187,5 +198,7 @@ public class TrimVideoUtils {
         } else {
             return mFormatter.format("%02d:%02d", minutes, seconds).toString();
         }
+
+
     }
 }

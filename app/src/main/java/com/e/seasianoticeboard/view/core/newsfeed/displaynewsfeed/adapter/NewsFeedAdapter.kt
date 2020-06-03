@@ -174,6 +174,7 @@ class NewsFeedAdapter(
                                     var intent =
                                         Intent(context.activity, PlayVideoActivity::class.java)
                                     intent.putExtra("videoPath", url)
+                                    intent.putExtra("thumbNail", thumbNail)
                                     context.startActivity(intent)
                                 }
                                 //baseActivity!!.showDialog()
@@ -185,8 +186,6 @@ class NewsFeedAdapter(
                                 if (mList.get(position).lstDocuments!!.get(1).URL != null) {
                                     thumbNail = mList.get(position).lstDocuments!!.get(1).URL!!
                                 }
-
-
                                 Glide.with(context)
                                     .asBitmap()
                                     .load(thumbNail)
@@ -205,27 +204,6 @@ class NewsFeedAdapter(
                                     .error(R.drawable.video_thumbnail)
                                     .into(holder!!.videoView1!!);
                             }
-//
-//                            if(thumbNail.isEmpty()){
-//                                Glide.with(context)
-//                                    .asBitmap()
-//                                    .load(url)
-//                                    .timeout(60000)
-//                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                                    .placeholder(R.drawable.video_thumbnail)
-//                                    .error(R.drawable.video_thumbnail)
-//                                    .into(holder!!.videoView1!!);
-//                            }else{
-//                                Glide.with(context)
-//                                    .asBitmap()
-//                                    .load(thumbNail)
-//                                    .timeout(60000)
-//                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                                    .placeholder(R.drawable.video_thumbnail)
-//                                    .error(R.drawable.video_thumbnail)
-//                                    .into(holder!!.videoView1!!);
-//                            }
-
 
                         } catch (e: Exception) {
                             e.printStackTrace()

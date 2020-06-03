@@ -7,5 +7,6 @@ class AddChoiceInput {
     class ChoiceQuestionAnswersList {
         var ChoiceQuestionId: String? = null
         var Option: String? = null
+
     }
 }

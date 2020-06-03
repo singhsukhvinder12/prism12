@@ -19,6 +19,7 @@ import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.MediaController
 import android.widget.SeekBar
 import androidx.lifecycle.ViewModelProviders
@@ -118,6 +119,9 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         binding!!.cardView.setOnClickListener(this)
         presenter = AddPostPresenter(this)
         setImagesAdapter()
+
+
+
         mediaPlayer = MediaPlayer()
         random = Random()
         binding!!.userName.setText(sharedPref!!.getString(PreferenceKeys.USERNAME, "").toString())
@@ -221,6 +225,9 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 videoFIle = null
                 binding!!.parentSelectedMedia.visibility = View.GONE
                 binding!!.videoView1.stopPlayback()
+                if(thumbNailFile!=null){
+                    thumbNailFile!!.delete()
+                }
             }
 
             R.id.deleteAudio -> {

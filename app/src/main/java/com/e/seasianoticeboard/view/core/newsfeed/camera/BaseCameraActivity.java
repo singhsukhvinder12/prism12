@@ -35,6 +35,7 @@ import com.daasuu.camerarecorder.CameraRecorderBuilder;
 import com.daasuu.camerarecorder.LensFacing;
 import com.e.seasianoticeboard.R;
 import com.e.seasianoticeboard.camera.audio.UtilKotlin;
+import com.e.seasianoticeboard.util.FileUtils;
 import com.e.seasianoticeboard.view.core.auth.TrimmerActivity;
 import com.e.seasianoticeboard.views.institute.newsfeed.AddPostActivity;
 
@@ -63,10 +64,17 @@ public class BaseCameraActivity extends AppCompatActivity {
     private TextView recordBtn;
     private ImageView cameraRecord;
     protected LensFacing lensFacing = LensFacing.BACK;
-    protected int cameraWidth = 1280;
-    protected int cameraHeight = 720;
+    protected int cameraWidth = 720;
+    protected int cameraHeight = 1280;
     protected int videoWidth = 720;
-    protected int videoHeight = 720;
+    protected int videoHeight = 1280;
+
+
+//    protected int cameraWidth = 1280;
+//    protected int cameraHeight = 720;
+//    protected int videoWidth = 720;
+//    protected int videoHeight = 720;
+
     private AlertDialog filterDialog;
     private boolean toggleClick = false;
     private TextView mTIme;
@@ -85,6 +93,13 @@ public class BaseCameraActivity extends AppCompatActivity {
         front_camera = findViewById(R.id.front_camera);
         cameraRecord = findViewById(R.id.camera_record);
         mGallary = findViewById(R.id.ic_gallary);
+
+        try {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        }catch (Exception e){
+        }
+
         cameraRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,10 +121,10 @@ public class BaseCameraActivity extends AppCompatActivity {
 
                             public void onFinish() {
                                 try {
-                                    onBackPress="1";
+                                    onBackPress = "1";
                                     mTIme.setText("00:" + milisecont);
 
-                                    if (cameraRecorder!=null){
+                                    if (cameraRecorder != null) {
 
                                         cameraRecorder.stop();
                                     }
@@ -137,7 +152,7 @@ public class BaseCameraActivity extends AppCompatActivity {
 
                         Intent intent = getIntent();
                         intent.putExtra("filePath", filepath);
-                        intent.putExtra("onBackPress",onBackPress);
+                        intent.putExtra("onBackPress", onBackPress);
                         setResult(RESULT_OK, intent);
                         finish();
                     } catch (Exception e) {
@@ -230,18 +245,23 @@ public class BaseCameraActivity extends AppCompatActivity {
         mGallary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("video/*");
-                intent.setAction(Intent.ACTION_PICK);
-                BaseCameraActivity.this.startActivityForResult(intent, REQUEST_TAKE_GALLERY_VIDEO);
+//
+//                Intent intent = new Intent();
+//                intent.setType("video/*");
+//                intent.setAction(Intent.ACTION_PICK);
+//                BaseCameraActivity.this.startActivityForResult(intent, REQUEST_TAKE_GALLERY_VIDEO);
 
-//            Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-//            startActivityForResult(i, SELECT_VIDEO);
+
+                Intent intent = new Intent();
+                intent.setTypeAndNormalize("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO);
 
 
             }
         });
-       // setUpCamera();
+        // setUpCamera();
     }
 
     @Override
@@ -251,7 +271,7 @@ public class BaseCameraActivity extends AppCompatActivity {
         try {
             setUpCamera();
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 //        try {
@@ -330,7 +350,7 @@ public class BaseCameraActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                               findViewById(R.id.btn_flash).setEnabled(flashSupport);
+                                findViewById(R.id.btn_flash).setEnabled(flashSupport);
                             }
                         });
                     }
@@ -369,7 +389,6 @@ public class BaseCameraActivity extends AppCompatActivity {
                 .build();
 
     }
-
 
 
     private void changeFilter(Filters filters) {
@@ -480,32 +499,47 @@ public class BaseCameraActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
-                String selectedVideoPath = getAbsolutePath(this, data.getData());
-                if (selectedVideoPath != null) {
+                 // String selectedVideoPath = getAbsolutePath(this, data.getData());
 
+                final Uri selectedUri = data.getData();
 
-                    try{
-                        if (cameraRecorder != null) {
-                            cameraRecorder.stop();
-                            cameraRecorder.release();
-                            cameraRecorder = null;
-                        }
-
+                try {
+                    if(selectedUri!=null) {
                         Intent intent = new Intent(this, TrimmerActivity.class);
-                        intent.putExtra("path", selectedVideoPath);
+                        intent.putExtra("path", FileUtils.getPath(this,selectedUri));
                         startActivityForResult(intent, 2);
-
-
-                    }catch(Exception e){
-
                     }
+                }catch (Exception e){
+
                 }
+
+
+
+//                if (selectedVideoPath != null) {
+//
+//
+//                    try{
+//                        if (cameraRecorder != null) {
+//                            cameraRecorder.stop();
+//                            cameraRecorder.release();
+//                            cameraRecorder = null;
+//                        }
+//
+//                        Intent intent = new Intent(this, TrimmerActivity.class);
+//                        intent.putExtra("path", selectedVideoPath);
+//                        startActivityForResult(intent, 2);
+//
+//
+//                    }catch(Exception e){
+//
+//                    }
+//                }
             } else if (requestCode == 2) {
                 try {
                     if (data.getStringExtra("filePath") != null) {
                         //Toast.makeText(this,""+data.getStringExtra("filePath"),Toast.LENGTH_LONG).show();
                         filepath = data.getStringExtra("filePath");
-                        onBackPress="1";
+                        onBackPress = "1";
                         onBackPressed();
 
                     }
@@ -520,7 +554,7 @@ public class BaseCameraActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = getIntent();
         intent.putExtra("filePath", filepath);
-        intent.putExtra("onBackPress",onBackPress);
+        intent.putExtra("onBackPress", onBackPress);
         setResult(RESULT_OK, intent);
         finish();
     }

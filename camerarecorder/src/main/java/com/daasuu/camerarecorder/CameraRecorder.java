@@ -254,7 +254,6 @@ public class CameraRecorder {
                 } catch (Exception e) {
                     notifyOnError(e);
                 }
-
             }
         });
 

@@ -1,2 +1,2 @@
 rootProject.name='SeasiaNoticeBoard'
-include ':app', ':camerarecorder', ':videocompressor',':audio_recorder',':k4l-video-trimmer'
+include ':app', ':camerarecorder', ':videocompressor',':k4l-video-trimmer'

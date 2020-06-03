@@ -40,8 +40,13 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
-        <activity android:name=".view.core.auth.HobbiesActivity"></activity>
-        <activity android:name=".view.core.newsfeed.displaynewsfeed.view.ViewImageActivity" />
+        <activity android:name=".view.core.auth.HobbiesActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+           />
+        <activity android:name=".view.core.newsfeed.displaynewsfeed.view.ViewImageActivity"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".view.core.auth.UserProfileActivity"
             android:screenOrientation="portrait"
@@ -128,10 +133,10 @@
             android:name=".view.core.newsfeed.audioplayer.AndroidBuildingMusicPlayerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".camera.VideoTrimActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+<!--        <activity-->
+<!--            android:name=".camera.VideoTrimActivity"-->
+<!--            android:screenOrientation="portrait"-->
+<!--            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
 
         <service android:name="com.seasia.isms.fcm.MyFirebaseMessagingService">
             <intent-filter>

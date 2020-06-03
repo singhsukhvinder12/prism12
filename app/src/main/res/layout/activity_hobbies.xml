@@ -18,6 +18,7 @@
         android:layout_height="wrap_content" />
     <LinearLayout
         android:id="@+id/linear_layout"
+        android:orientation="horizontal"
         android:layout_below="@+id/includeView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -29,16 +30,16 @@
             android:textAllCaps="false"
             android:layout_margin="1dp"
             android:background="@color/colorPrimaryDark"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="@dimen/_35sdp"/>
         <Button
             android:id="@+id/btn_coridor"
             android:layout_weight=".5"
-            android:text="Corridor"
+            android:text="Lockdown Memories"
             android:textColor="@color/colorWhite"
             android:layout_margin="1dp"
             android:textAllCaps="false"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:background="@color/colorPrimary"
 
             android:layout_height="@dimen/_35sdp"/>

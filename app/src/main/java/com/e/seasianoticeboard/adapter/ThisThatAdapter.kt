@@ -33,8 +33,8 @@ var btnTwoSelect=false
 
 
       if(holder!!.btnOne!!.text.equals(arrayList!!.get(position).Selected)){
-          btnOneSelect=true
-          btnTwoSelect = false
+          arrayList!!.get(position).selectOne=true
+          arrayList!!.get(position).selectTwo = false
           holder.btnOne!!.setBackgroundResource(R.drawable.gredent_color)
           holder.btnTwo!!.setBackgroundResource(R.drawable.delete_shape)
           var listInput=AddChoiceInput.ChoiceQuestionAnswersList()
@@ -44,8 +44,8 @@ var btnTwoSelect=false
           context.choice(choiceAnsArray!!,position,arrayList!!.get(position).Option1!!)
       }
       else if(holder!!.btnTwo!!.text.equals(arrayList!!.get(position).Selected)){
-          btnTwoSelect=true
-          btnOneSelect = false
+          arrayList!!.get(position).selectTwo=true
+          arrayList!!.get(position).selectOne = false
           holder.btnTwo!!.setBackgroundResource(R.drawable.gredent_color)
           holder.btnOne!!.setBackgroundResource(R.drawable.delete_shape)
           var listInput=AddChoiceInput.ChoiceQuestionAnswersList()
@@ -56,9 +56,9 @@ var btnTwoSelect=false
       }
 
         holder.btnOne!!.setOnClickListener {
-            btnTwoSelect = false
-            if(btnOneSelect==false) {
-                btnOneSelect = true
+            arrayList!!.get(position).selectTwo = false
+            if(arrayList!!.get(position).selectOne==false) {
+                arrayList!!.get(position).selectOne = true
                 holder.btnOne!!.setBackgroundResource(R.drawable.gredent_color)
                 holder.btnTwo!!.setBackgroundResource(R.drawable.delete_shape)
                 var listInput = AddChoiceInput.ChoiceQuestionAnswersList()
@@ -67,7 +67,7 @@ var btnTwoSelect=false
                 choiceAnsArray!!.set(position, listInput)
                 context.choice(choiceAnsArray!!, position, arrayList!!.get(position).Option1!!)
             } else{
-                btnOneSelect = false
+                arrayList!!.get(position).selectOne = false
                 holder.btnOne!!.setBackgroundResource(R.drawable.delete_shape)
                 holder.btnTwo!!.setBackgroundResource(R.drawable.delete_shape)
                 var listInput = AddChoiceInput.ChoiceQuestionAnswersList()
@@ -79,9 +79,9 @@ var btnTwoSelect=false
 
         }
         holder.btnTwo!!.setOnClickListener {
-            btnOneSelect = false
-            if(btnTwoSelect==false) {
-                btnTwoSelect = true
+            arrayList!!.get(position).selectOne = false
+            if(arrayList!!.get(position).selectTwo==false) {
+                arrayList!!.get(position).selectTwo = true
                 holder.btnOne!!.setBackgroundResource(R.drawable.delete_shape)
                 holder.btnTwo!!.setBackgroundResource(R.drawable.gredent_color)
                 var listInput = AddChoiceInput.ChoiceQuestionAnswersList()
@@ -97,7 +97,7 @@ var btnTwoSelect=false
                 listInput.ChoiceQuestionId = arrayList!!.get(position).ChoiceQuestionId
                 choiceAnsArray!!.set(position, listInput)
                 context.choice(choiceAnsArray!!, position, "")
-                btnTwoSelect = false
+                arrayList!!.get(position).selectTwo = false
             }
         }
     }

@@ -294,6 +294,7 @@ public class K4LVideoTrimmer extends FrameLayout {
                                 try {
                                     TrimVideoUtils.startTrim(file, getDestinationPath(), mStartPosition, mEndPosition, mOnTrimVideoListener);
                                 } catch (Exception e) {
+                                    e.printStackTrace();
                                  //   Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
                                 }
                             }

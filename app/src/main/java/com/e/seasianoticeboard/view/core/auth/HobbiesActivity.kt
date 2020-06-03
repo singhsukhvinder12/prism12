@@ -5,12 +5,14 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.e.seasianoticeboard.App
 import com.e.seasianoticeboard.R
 import com.e.seasianoticeboard.callbacks.HobbiesCallback
 import com.e.seasianoticeboard.databinding.ActivityHobbiesBinding
 import com.e.seasianoticeboard.model.output.ChoiceResponse
 import com.e.seasianoticeboard.model.output.QuestionResponse
 import com.e.seasianoticeboard.presenter.HobbiesPresenter
+import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.view.core.fragment.ChoiceFragment
 import com.e.seasianoticeboard.view.core.fragment.CorridorFragment
 import com.e.seasianoticeboard.views.core.BaseActivity
@@ -36,24 +38,25 @@ class HobbiesActivity : BaseActivity(), View.OnClickListener, HobbiesCallback {
     override fun initViews() {
 
         binding = viewDataBinding as ActivityHobbiesBinding
-        binding!!.includeView.toolbatTitle.setText("Hobbies")
+        binding!!.includeView.toolbatTitle.setText("Corridor Conversations")
         binding!!.includeView.ivBack.setOnClickListener { finish() }
         binding!!.btnCoridor.setOnClickListener(this)
         binding!!.btnThis.setOnClickListener(this)
         if(intent.getStringExtra("userId")!=null){
             userId=  intent.getStringExtra("userId")
         }
-
+        fragmentManager = supportFragmentManager
+        tab1 = true
         choiceQuestion= ArrayList()
         hobbiesPresenter = HobbiesPresenter(this)
+        if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+            UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+            return
+        }
         showDialog()
         hobbiesPresenter!!.getData(userId)
         hobbiesPresenter!!.getQuestionData(userId)
 
-         fragmentManager = supportFragmentManager
-
-
-        tab1 = true
     }
 
 

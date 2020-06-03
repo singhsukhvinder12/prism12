@@ -110,6 +110,10 @@ class ChoiceFragment : Fragment(),ChoiceCallback, View.OnClickListener {
     override fun onClick(p0: View?) {
         when(p0!!.id){
             R.id.btnSubmit->{
+                if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+                    UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+                    return
+                }
                 presenter!!.getData(input!!)
                 (activity as HobbiesActivity?)!!.progressDialog()
             }

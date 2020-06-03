@@ -26,5 +26,6 @@ public class PortraitFrameLayout extends FrameLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = getMeasuredWidth();
         setMeasuredDimension(width, width / 9 * 16);
+//        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
     }
 }

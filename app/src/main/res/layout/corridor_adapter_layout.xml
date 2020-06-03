@@ -7,7 +7,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="3dp"
+        >
 
         <TextView
             android:id="@+id/txtQuestion"
@@ -24,27 +25,40 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
 
-        <EditText
-            android:id="@+id/et_ansswer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+
+        <RelativeLayout
             android:layout_below="@+id/txtQuestion"
+
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_10"
-            android:background="@drawable/rectangle_blue_stroke"
-            android:fontFamily="@font/opensans_regular"
-            android:hint="Write your answer"
-            android:maxLength="250"
-            android:visibility="gone"
-            android:padding="@dimen/dimen_10dp"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_70"
+            >
+            <EditText
+                android:id="@+id/et_ansswer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:background="@drawable/rectangle_blue_stroke"
+                android:fontFamily="@font/opensans_regular"
+                android:hint="Write your answer"
+                android:maxLength="250"
+                android:visibility="gone"
+                android:padding="@dimen/dimen_10dp"
+                />
+        </RelativeLayout>
+
+
 
 
         <TextView
             android:id="@+id/et_another_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_below="@+id/txtQuestion"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_5"

@@ -91,6 +91,10 @@ class CorridorFragment : Fragment(), QuestionCallback, View.OnClickListener {
                     var addQuestion = AskQuestionInput()
                     addQuestion.UserId = UserId
                     addQuestion!!.QuestionAnswers = thisThatAdapter!!.getAnswer()
+                    if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+                        UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+                        return
+                    }
                     presenter!!.getData(addQuestion)
                     (activity as HobbiesActivity?)!!.progressDialog()
                     (activity as HobbiesActivity?)!!.myQuestionList(choiceAnsArray!!)

@@ -39,7 +39,7 @@ public class TrimmerActivity extends AppCompatActivity implements OnTrimVideoLis
         mProgressDialog1.setMessage(getString(R.string.trimming_progress));
 
         mVideoTrimmer = ((K4LVideoTrimmer) findViewById(R.id.timeLine));
-        if (mVideoTrimmer != null) {
+        if (mVideoTrimmer != null && path!=null) {
             mVideoTrimmer.setMaxDuration(60);
             mVideoTrimmer.setOnTrimVideoListener(this);
             mVideoTrimmer.setOnK4LVideoListener(this);
@@ -96,7 +96,7 @@ public class TrimmerActivity extends AppCompatActivity implements OnTrimVideoLis
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(TrimmerActivity.this, "onVideoPrepared", Toast.LENGTH_SHORT).show();
+                ///Toast.makeText(TrimmerActivity.this, "onVideoPrepared", Toast.LENGTH_SHORT).show();
             }
         });
     }

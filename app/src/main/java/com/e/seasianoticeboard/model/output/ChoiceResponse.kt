@@ -20,5 +20,7 @@ class ChoiceResponse:Serializable {
         var ChoiceQuestionAnswerId: String? = null
         var Selected: String? = null
         var SelectedOption: String? = null
+        var selectOne=false
+        var selectTwo=false
     }
 }
