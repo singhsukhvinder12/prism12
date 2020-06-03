@@ -33,6 +33,8 @@ class GetCommentResponse {
             var Count: String? = null
 
             var CommentId: String? = null
+
+            var PostedBy: String? = null
         }
 
     }

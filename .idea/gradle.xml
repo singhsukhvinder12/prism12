@@ -11,8 +11,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/audio_recorder" />
             <option value="$PROJECT_DIR$/camerarecorder" />
-            <option value="$PROJECT_DIR$/video-editor" />
+            <option value="$PROJECT_DIR$/k4l-video-trimmer" />
             <option value="$PROJECT_DIR$/videocompressor" />
           </set>
         </option>

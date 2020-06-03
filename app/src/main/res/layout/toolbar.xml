@@ -95,6 +95,23 @@
                 />
 
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_question"
+                android:layout_width="30dp"
+                android:visibility="gone"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:background="@drawable/ic_question"
+                android:elevation="@dimen/dp_5"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -56,7 +56,7 @@ class EmailActivity : BaseActivity(), View.OnClickListener, EmailVeryfyCallback 
                     }
                     presenter!!.signupVerification(binding!!.edEmail.text.toString())
 //
-//                    var intent = Intent(this@EmailActivity, UserProfileActivity::class.java)
+//                    var intent = Intent(this@EmailActivity, HobbiesActivity::class.java)
 //                    intent.putExtra("email", "1234")
 //                    startActivity(intent)
                     // finish()

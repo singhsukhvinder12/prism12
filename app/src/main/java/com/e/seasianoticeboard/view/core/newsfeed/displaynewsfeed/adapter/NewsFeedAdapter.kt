@@ -256,6 +256,7 @@ class NewsFeedAdapter(
                                 Intent(context.activity, UserProfileActivity::class.java)
                             intent.putExtra("comingFrom", "editProfile")
                             intent.putExtra("postedByMail", mList.get(position).Email)
+                            intent.putExtra("anotherUser", mList.get(position).PostedById)
                             context.startActivityForResult(intent, 205)
                             videoOpenStatus = 1
                         }

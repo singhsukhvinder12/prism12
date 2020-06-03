@@ -11,10 +11,17 @@ import com.e.seasianoticeboard.model.UserProfileInput;
 import com.e.seasianoticeboard.model.UserProfileResponse;
 import com.e.seasianoticeboard.model.VerifyEmailInput;
 import com.e.seasianoticeboard.model.VerifyEmailResponse;
+import com.e.seasianoticeboard.model.input.AddChoiceInput;
+import com.e.seasianoticeboard.model.input.AskQuestionInput;
 import com.e.seasianoticeboard.model.input.LogoutInput;
+import com.e.seasianoticeboard.model.output.AddChoiceResponse;
+import com.e.seasianoticeboard.model.output.AskQuestionResponse;
+import com.e.seasianoticeboard.model.output.ChoiceResponse;
 import com.e.seasianoticeboard.model.output.LogoutResponse;
+import com.e.seasianoticeboard.model.output.QuestionResponse;
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.ReportPostInput;
 import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.RepostPostResponse;
+import com.e.seasianoticeboard.views.institute.newsfeed.AddPostInput;
 import com.e.seasianoticeboard.views.institute.newsfeed.AddPostResponse;
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.CommentResponse;
 import com.e.seasianoticeboard.views.institute.newsfeed.displaynewsfeed.model.DeleteCommentInput;
@@ -105,6 +112,18 @@ public interface GitHubService {
     @POST("User/EmailVerificationForSignUp")
     Call<SignupVerificationResponse> signupVerification(@Query("email") String email);
 
+    @GET("Social/GetChoiceQuestions")
+    Call<ChoiceResponse> getChoiceQuestion(@Query("userId") String userId);
+
+    @POST("Social/AddUpdateChoiceQuestionAnswers")
+    Call<AddChoiceResponse> addChoice(@Body AddChoiceInput input);
+
+
+    @GET("Social/GetQuestions")
+    Call<QuestionResponse> getQuestion(@Query("userId") String userId);
+
+    @POST("Social/AddUpdateQuestionAnswers")
+    Call<AskQuestionResponse> addQuestion(@Body AskQuestionInput input);
 
     @Multipart
     @POST("User/UserSignUp")

@@ -59,7 +59,9 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     var presenter: UpdateUserProfilePresenter? = null
     var status = "0"
     var mytext = ""
+    var anouterUserId = ""
     var videoOpenStatus = 0
+    var senderId = ""
 
     var day = ""
     var month = ""
@@ -98,17 +100,26 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             emailId = sharedPref!!.getString(PreferenceKeys.EMAIL, "")!!
 
             postedByMail = intent.getStringExtra("postedByMail")
+            anouterUserId = intent.getStringExtra("anotherUser")
             if (postedByMail.equals(emailId)) {
                 binding!!.includeView.toolbatTitle.text = "Edit Profile"
                 updateUser = true
                 enabledField(true)
                 binding!!.btSubmit.visibility = View.VISIBLE
                 getUserProfile(emailId)
+                senderId=userId;
             } else {
                 binding!!.btSubmit.visibility = View.GONE
                 binding!!.includeView.toolbatTitle.text = "Profile"
                 enabledField(false)
                 getUserProfile(postedByMail)
+                senderId=anouterUserId;
+            }
+            binding!!.includeView.ivQuestion.visibility=View.VISIBLE
+            binding!!.includeView.ivQuestion.setOnClickListener {
+                var intent = Intent(this@UserProfileActivity, HobbiesActivity::class.java)
+               intent.putExtra("userId",senderId)
+                startActivity(intent)
             }
 
         } else {
@@ -119,7 +130,6 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             email = intent.getStringExtra("email")!!;
             binding!!.etEmail.setText(email)
         }
-
     }
 
     fun enabledField(status: Boolean) {

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/txtQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/sp_10"
+            android:layout_marginTop="@dimen/sp_12"
+            android:layout_marginEnd="@dimen/sp_10"
+            android:fontFamily="@font/opensans_regular"
+            android:text="Q 1. What is your name?"
+            android:textColor="@color/color_navy_blue"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
+
+        <EditText
+            android:id="@+id/et_ansswer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtQuestion"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:background="@drawable/rectangle_blue_stroke"
+            android:fontFamily="@font/opensans_regular"
+            android:hint="Write your answer"
+            android:maxLength="250"
+            android:visibility="gone"
+            android:padding="@dimen/dimen_10dp"
+            />
+
+
+        <TextView
+            android:id="@+id/et_another_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtQuestion"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:fontFamily="@font/opensans_regular"
+            android:hint="Write your answer"
+            android:padding="@dimen/dimen_10dp"
+            />
+
+
+    </RelativeLayout>
+</RelativeLayout>

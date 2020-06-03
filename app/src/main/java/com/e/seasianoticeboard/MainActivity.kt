@@ -55,6 +55,7 @@ class MainActivity : BaseActivity(), LogoutCallback {
                 var intent = Intent(this, UserProfileActivity::class.java)
                 intent.putExtra("comingFrom", "editProfile")
                 intent.putExtra("postedByMail", sharedPref!!.getString(PreferenceKeys.EMAIL, "")!!)
+                intent.putExtra("anotherUser",sharedPref!!.getString(PreferenceKeys.USER_ID, "")!!)
                 startActivityForResult(intent, 205)
                 click = 1
             }

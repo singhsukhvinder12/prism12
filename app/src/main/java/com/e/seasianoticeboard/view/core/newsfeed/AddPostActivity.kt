@@ -30,6 +30,7 @@ import com.e.seasianoticeboard.callbacks.AddPostCallback
 import com.e.seasianoticeboard.databinding.ActivityAddPostBinding
 import com.e.seasianoticeboard.presenter.AddPostPresenter
 import com.e.seasianoticeboard.util.CheckRuntimePermissions
+import com.e.seasianoticeboard.util.MediaLoader
 import com.e.seasianoticeboard.util.PreferenceKeys
 import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.view.core.auth.EmailActivity
@@ -41,6 +42,7 @@ import com.e.seasianoticeboard.view.core.newsfeed.displaynewsfeed.model.UpdateSc
 import com.e.seasianoticeboard.views.core.BaseActivity
 import com.vincent.videocompressor.VideoCompress
 import com.yanzhenjie.album.Album
+import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.api.widget.Widget
 import java.io.ByteArrayOutputStream
@@ -99,7 +101,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     override fun onResume() {
         super.onResume()
         doubleClick = 0
-        outputCompressPath = ""
     }
 
     override fun initViews() {
@@ -126,6 +127,11 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 R.drawable.user
             ).into(binding!!.imgLogo)
     }
+
+
+
+
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -154,6 +160,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                                 PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
                             )
                         ) {
+                            outputCompressPath=""
                             if (doubleClick == 0) {
                                 selectAlbum()
                                 doubleClick = 1
@@ -174,9 +181,11 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                         PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
                     )
                 ) {
+
                     if (doubleClick == 0) {
                         if (imagesList!!.size == 0 && fileUri.isEmpty()) {
                             //
+                            outputCompressPath=""
                             var intent = Intent(this, SquareActivity::class.java)
                             startActivityForResult(intent, Video_AUDIO);
                             doubleClick = 1
@@ -196,6 +205,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                         )
                     ) {
                         ///   recordActivity()
+                        outputCompressPath=""
                         if (doubleClick == 0) {
                             var intent = Intent(this, RecordAudioActivity::class.java)
                             startActivityForResult(intent, 1)
@@ -215,6 +225,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
             R.id.deleteAudio -> {
                 fileUri = ""
+
                 audioFIle = null
                 binding!!.parentAudio.visibility = View.GONE
             }
@@ -521,16 +532,15 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                                                 uri,
                                                 MediaStore.Images.Thumbnails.MINI_KIND
                                             );
-                                            val tempUri =
-                                                getImageUri(getApplicationContext(), thumb!!);
-                                            val thumPath =
-                                                getAbsolutePath(baseActivity!!, tempUri)!!
+                                            val tempUri = getImageUri(getApplicationContext(), thumb!!);
+                                            val thumPath = getAbsolutePath(baseActivity!!, tempUri)!!
                                             val file = File(thumPath)
-
                                             thumbNailFile = file
+                                          //  file.delete()
+                                          //  deleteFiles(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath)
+
                                         }
                                     }.start()
-
                                 }
                             } catch (e: Exception) {
 
@@ -543,11 +553,11 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                             var ountDownTimer = object : CountDownTimer(1000, 1000) {
                                 override fun onTick(millisUntilFinished: Long) {
                                 }
-
                                 override fun onFinish() {
                                     playVideo(uri)
                                 }
                             }.start()
+
                         }
                     }
                 }
@@ -557,6 +567,24 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         }
 
     }
+
+
+    public fun deleteFiles( path:String) {
+
+        try {
+            var file =  File(path);
+
+            if (file.exists()) {
+                var deleteCmd = "rm -r " + path;
+                var runtime = Runtime.getRuntime();
+
+                runtime.exec(deleteCmd);
+
+            }
+        } catch (e: Exception) {
+        }
+    }
+
 
 
     fun getImageUri(inContext: Context, inImage: Bitmap): Uri {
@@ -630,13 +658,21 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 showMessage(this@AddPostActivity, data.Message!!)
                 //finish()
                 status = "1"
+                if(thumbNailFile!=null){
+                    thumbNailFile!!.delete()
+                }
+
                 onBackPressed()
             } else if(data.StatusCode==400) {
+                if(thumbNailFile!=null){
+                    thumbNailFile!!.delete()
+                }
                 sharedPref!!.cleanPref()
                 val intent = Intent(this@AddPostActivity, EmailActivity::class.java)
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
                 showMessage(this@AddPostActivity, "Session Expire")
+
             }
         } else {
             showMessage(this@AddPostActivity, "Somthing went wrong")

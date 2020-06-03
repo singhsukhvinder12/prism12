@@ -22,7 +22,7 @@
             android:layout_below="@+id/includeView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/_20sdp">
+            android:layout_marginBottom="20dp">
 
 
             <RelativeLayout
@@ -263,7 +263,7 @@
                             android:layout_height="40dp"
                             android:layout_centerVertical="true"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginLeft="@dimen/dimen_10dp"
                             android:layout_marginRight="60dp">
 
                             <RelativeLayout
@@ -275,7 +275,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_centerVertical="true"
-                                    android:layout_margin="@dimen/_8sdp"
+                                    android:layout_margin="8dp"
                                     android:background="@color/colorWhite"
                                     android:textColor="@color/black" />
                             </RelativeLayout>
@@ -289,7 +289,7 @@
                             android:layout_height="30dp"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginRight="10dp"
                             android:src="@drawable/ic_signs" />
 
 
@@ -317,7 +317,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_alignParentRight="true"
-                            android:layout_margin="@dimen/_5sdp"
+                            android:layout_margin="5dp"
                             android:src="@drawable/ic_dlt" />
                     </RelativeLayout>
 

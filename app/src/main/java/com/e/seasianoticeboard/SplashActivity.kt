@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Log
 import com.e.seasianoticeboard.utils.UtilsFunctions
 import com.e.seasianoticeboard.view.core.auth.EmailActivity
+import com.e.seasianoticeboard.view.core.auth.HobbiesActivity
 import com.e.seasianoticeboard.views.core.BaseActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId

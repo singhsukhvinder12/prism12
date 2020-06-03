@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:layout_marginTop="5dp"
+        android:id="@+id/parent"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btnSelected"
+            android:text="selected"
+            android:layout_centerVertical="true"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/delete_shape"
+            android:textAllCaps="false"
+            android:fontFamily="@font/opensans_regular"
+            android:layout_margin="5dp"
+            android:layout_width="180dp"
+            android:layout_height="40dp"/>
+        <Button
+            android:layout_toRightOf="@+id/btnSelected"
+            android:id="@+id/btnUNSelected"
+            android:text="unselected"
+            android:fontFamily="@font/opensans_regular"
+            android:layout_margin="5dp"
+            android:layout_centerVertical="true"
+            android:textAllCaps="false"
+            android:background="@drawable/delete_shape"
+            android:textColor="@color/colorWhite"
+            android:layout_width="180dp"
+            android:layout_height="40dp"/>
+    </RelativeLayout>
+    <View
+        android:background="#EAE4E4"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/parent"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+</RelativeLayout>

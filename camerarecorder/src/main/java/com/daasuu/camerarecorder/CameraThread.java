@@ -247,17 +247,21 @@ public class CameraThread extends Thread {
      * stop camera preview
      */
     void stopPreview() {
-        Log.v(TAG, "stopPreview:");
-        isFlashTorch = false;
-        if (requestBuilder != null) {
-            requestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
-            try {
-                cameraCaptureSession.setRepeatingRequest(requestBuilder.build(), null, null);
-                cameraDevice.close();
-                Log.v(TAG, "stopPreview: cameraDevice.close()");
-            } catch (CameraAccessException e) {
-                e.printStackTrace();
+        try {
+            Log.v(TAG, "stopPreview:");
+            isFlashTorch = false;
+            if (requestBuilder != null) {
+                requestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
+                try {
+                    cameraCaptureSession.setRepeatingRequest(requestBuilder.build(), null, null);
+                    cameraDevice.close();
+                    Log.v(TAG, "stopPreview: cameraDevice.close()");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -267,30 +271,34 @@ public class CameraThread extends Thread {
      */
     void changeManualFocusPoint(float eventX, float eventY, int viewWidth, int viewHeight) {
 
-        final int y = (int) ((eventX / (float) viewWidth) * (float) sensorArraySize.height());
-        final int x = (int) ((eventY / (float) viewHeight) * (float) sensorArraySize.width());
-        final int halfTouchWidth = 400;
-        final int halfTouchHeight = 400;
-        MeteringRectangle focusAreaTouch = new MeteringRectangle(Math.max(x - halfTouchWidth, 0),
-                Math.max(y - halfTouchHeight, 0),
-                halfTouchWidth * 2,
-                halfTouchHeight * 2,
-                MeteringRectangle.METERING_WEIGHT_MAX - 1);
-        requestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, new MeteringRectangle[]{focusAreaTouch});
         try {
-            cameraCaptureSession.setRepeatingRequest(requestBuilder.build(), null, null);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
+            final int y = (int) ((eventX / (float) viewWidth) * (float) sensorArraySize.height());
+            final int x = (int) ((eventY / (float) viewHeight) * (float) sensorArraySize.width());
+            final int halfTouchWidth = 400;
+            final int halfTouchHeight = 400;
+            MeteringRectangle focusAreaTouch = new MeteringRectangle(Math.max(x - halfTouchWidth, 0),
+                    Math.max(y - halfTouchHeight, 0),
+                    halfTouchWidth * 2,
+                    halfTouchHeight * 2,
+                    MeteringRectangle.METERING_WEIGHT_MAX - 1);
+            requestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, new MeteringRectangle[]{focusAreaTouch});
+            try {
+                cameraCaptureSession.setRepeatingRequest(requestBuilder.build(), null, null);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
 
-        requestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
-        requestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
-        requestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
+            requestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+            requestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
+            requestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
 
-        //then we ask for a single request (not repeating!)
-        try {
-            cameraCaptureSession.setRepeatingRequest(requestBuilder.build(), null, null);
-        } catch (CameraAccessException e) {
+            //then we ask for a single request (not repeating!)
+            try {
+                cameraCaptureSession.setRepeatingRequest(requestBuilder.build(), null, null);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

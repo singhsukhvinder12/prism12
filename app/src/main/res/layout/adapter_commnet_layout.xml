@@ -93,8 +93,8 @@
             android:layout_marginRight="10dp"
             android:src="@drawable/ic_dlt"
             android:layout_alignParentRight="true"
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"/>
+            android:layout_width="20dp"
+            android:layout_height="20dp"/>
     </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

@@ -14,7 +14,6 @@ class App : Application() {
         app = this
 
         //application class oncreate
-
         //application class oncreate
         Album.initialize(
             AlbumConfig.newBuilder(this)

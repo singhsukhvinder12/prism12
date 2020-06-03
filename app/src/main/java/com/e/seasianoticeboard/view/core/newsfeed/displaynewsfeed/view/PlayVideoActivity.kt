@@ -52,6 +52,8 @@ class PlayVideoActivity : BaseActivity() {
 
          mediaController = MediaController(this)
      //   mediaController.setAnchorView(binding!!.videoView)
+        mediaController!!.setAnchorView(binding!!.videoView);
+        mediaController!!.setMediaPlayer(binding!!.videoView);
         binding!!.videoView.setMediaController(mediaController)
 
         binding!!.videoView.setVideoURI(myUri)
@@ -62,6 +64,9 @@ class PlayVideoActivity : BaseActivity() {
 
         progressDialog.dismiss()
         binding!!.progress.visibility = View.VISIBLE
+        progressDialog.dismiss()
+        binding!!.videoView.start()
+
         binding!!.videoView.setOnPreparedListener(MediaPlayer.OnPreparedListener {
             progressDialog.dismiss()
             binding!!.videoView.start()

@@ -4,6 +4,7 @@
     <!--<color name="colorPrimaryDark">#A4101E</color>-->
     <color name="colorPrimary">#40bfff</color>
     <color name="colorPrimaryDark">#08A4DD</color>
+    <color name="colorPrimaryDarkMore">#0692C5</color>
 
     <color name="colorAccent">#D81B60</color>
     <color name="colorRed">#E31A0B</color>
@@ -15,6 +16,7 @@
 
     <color name="color_primary_blue">#40bfff</color>
     <color name="color_navy_blue">#223263</color>
+    <color name="color_green">#85EC63</color>
     <color name="color_grey_toolbar">#ebf0ff</color>
     <color name="color_grey_text">#757575</color>
     <color name="grey">#9098b1</color>

@@ -296,6 +296,23 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try{
+            if(mp.isPlaying()) {
+                if (mp != null) {
+                    mp.pause();
+                    // Changing button image to play button
+                    btnPlay.setImageResource(R.drawable.btn_play);
+                }
+            }
+        }catch (Exception e){
+
+        }
+
+    }
+
     /**
      * Function to play a song
      * @param songIndex - index of song

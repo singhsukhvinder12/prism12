@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.core.auth.HobbiesActivity">
+
+
+
+    <include
+        android:id="@+id/includeView"
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        android:layout_below="@+id/includeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_this"
+            android:layout_weight=".5"
+            android:text="This/That"
+            android:textColor="@color/colorWhite"
+            android:textAllCaps="false"
+            android:layout_margin="1dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_35sdp"/>
+        <Button
+            android:id="@+id/btn_coridor"
+            android:layout_weight=".5"
+            android:text="Corridor"
+            android:textColor="@color/colorWhite"
+            android:layout_margin="1dp"
+            android:textAllCaps="false"
+            android:layout_width="wrap_content"
+            android:background="@color/colorPrimary"
+
+            android:layout_height="@dimen/_35sdp"/>
+
+
+    </LinearLayout>
+    <FrameLayout
+        android:layout_below="@+id/linear_layout"
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite" />
+</RelativeLayout>
+</layout>

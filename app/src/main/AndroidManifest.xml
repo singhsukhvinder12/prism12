@@ -40,7 +40,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
-        <activity android:name=".view.core.newsfeed.displaynewsfeed.view.ViewImageActivity"></activity>
+        <activity android:name=".view.core.auth.HobbiesActivity"></activity>
+        <activity android:name=".view.core.newsfeed.displaynewsfeed.view.ViewImageActivity" />
         <activity
             android:name=".view.core.auth.UserProfileActivity"
             android:screenOrientation="portrait"
@@ -59,14 +60,18 @@
         <activity
             android:name=".view.core.auth.OtpVerifyActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-           />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".view.core.auth.EmailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".view.core.auth.TrimmerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity

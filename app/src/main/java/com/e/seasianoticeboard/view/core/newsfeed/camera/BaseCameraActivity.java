@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.opengl.GLException;
@@ -32,8 +34,8 @@ import com.daasuu.camerarecorder.CameraRecorder;
 import com.daasuu.camerarecorder.CameraRecorderBuilder;
 import com.daasuu.camerarecorder.LensFacing;
 import com.e.seasianoticeboard.R;
-import com.e.seasianoticeboard.camera.VideoTrimActivity;
 import com.e.seasianoticeboard.camera.audio.UtilKotlin;
+import com.e.seasianoticeboard.view.core.auth.TrimmerActivity;
 import com.e.seasianoticeboard.views.institute.newsfeed.AddPostActivity;
 
 import java.io.File;
@@ -43,6 +45,7 @@ import java.io.IOException;
 import java.nio.IntBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
@@ -230,7 +233,7 @@ public class BaseCameraActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setType("video/*");
                 intent.setAction(Intent.ACTION_PICK);
-                BaseCameraActivity.this.startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO);
+                BaseCameraActivity.this.startActivityForResult(intent, REQUEST_TAKE_GALLERY_VIDEO);
 
 //            Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
 //            startActivityForResult(i, SELECT_VIDEO);
@@ -477,10 +480,8 @@ public class BaseCameraActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
-                Uri selectedImageUri = data.getData();
                 String selectedVideoPath = getAbsolutePath(this, data.getData());
                 if (selectedVideoPath != null) {
-
 
 
                     try{
@@ -490,19 +491,14 @@ public class BaseCameraActivity extends AppCompatActivity {
                             cameraRecorder = null;
                         }
 
-                        Intent intent = new Intent(this, VideoTrimActivity.class);
+                        Intent intent = new Intent(this, TrimmerActivity.class);
                         intent.putExtra("path", selectedVideoPath);
                         startActivityForResult(intent, 2);
+
+
                     }catch(Exception e){
 
                     }
-
-                    //  finish();
-
-//                    Intent intent = new Intent(this,
-//                            VideoTrimActivity.class);
-//                    intent.putExtra("path", selectedVideoPath);
-//                    startActivity(intent);
                 }
             } else if (requestCode == 2) {
                 try {
@@ -522,14 +518,11 @@ public class BaseCameraActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         Intent intent = getIntent();
         intent.putExtra("filePath", filepath);
         intent.putExtra("onBackPress",onBackPress);
         setResult(RESULT_OK, intent);
         finish();
-
-
     }
 
     public static String getAbsolutePath(Context activity, Uri uri) {

@@ -54,25 +54,26 @@ class CommentAdapter(
             holder.ivTitle!!.text = first
         }
 
-        if (context.sharedPref!!.getString(PreferenceKeys.USER_ID, "").equals(
+        if (context.sharedPref!!.getString(PreferenceKeys.USER_ID, "").equals(studentList.get(position).PostedBy)) {
+            holder.btnDeleteComment!!.visibility = View.VISIBLE
+        } else if (context.sharedPref!!.getString(PreferenceKeys.USER_ID, "").equals(
                 studentList.get(
                     position
                 ).CommentedById
             )
         ) {
             holder.btnDeleteComment!!.visibility = View.VISIBLE
+        } else{
+            holder.btnDeleteComment!!.visibility = View.GONE
         }
-
         holder.btnDeleteComment!!.setOnClickListener {
             context.deleteComment(studentList.get(position).CommentId, position)
         }
     }
 
-
     override fun getItemViewType(position: Int): Int {
         return position
     }
-
     override fun getItemCount(): Int {
         return studentList.size
     }
@@ -81,7 +82,6 @@ class CommentAdapter(
         this.studentList = data
         notifyDataSetChanged()
     }
-
     inner class MyViewHolder(
         itemView: View,
         var context: CommentActivity,
@@ -107,21 +107,16 @@ class CommentAdapter(
         }
     }
 
-
     fun getLocalDate(format: String, milisec: String?, outputFormat: String?): String {
         val inputFormat = SimpleDateFormat(format, Locale.getDefault())
         val outputFormat1 = SimpleDateFormat(outputFormat, Locale.getDefault())
-
         //val tz = TimeZone.getTimeZone("Local")
         // inputFormat.timeZone = tz
         val date = inputFormat.parse(milisec)
-
         val tzLocal = TimeZone.getDefault()
         outputFormat1.timeZone = tzLocal
         return outputFormat1.format(date)
     }
-
-
 }
 
 
