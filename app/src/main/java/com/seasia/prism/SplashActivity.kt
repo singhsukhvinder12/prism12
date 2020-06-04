@@ -11,7 +11,6 @@ import com.seasia.prism.core.auth.HobbiesActivity
 import com.seasia.prism.core.BaseActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
-import com.seasia.prism.core.newsfeed.AddPostActivity
 import com.seasia.prism.util.PreferenceKeys as PreferenceKeys1
 
 class SplashActivity : BaseActivity() {
@@ -65,7 +64,7 @@ class SplashActivity : BaseActivity() {
                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                     } else {
-                        val intent = Intent(this@SplashActivity, AddPostActivity::class.java)
+                        val intent = Intent(this@SplashActivity, MainActivity::class.java)
                         intent.flags =
                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
