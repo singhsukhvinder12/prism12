@@ -439,17 +439,30 @@ public class K4LVideoTrimmer extends FrameLayout {
     }
 
     private void onSeekThumbs(int index, float value) {
+
+        int val=(int)value;
+
         switch (index) {
             case Thumb.LEFT: {
-                mStartPosition = (int) ((mDuration * value) / 100L);
+                mStartPosition = (int) ((mDuration * val) / 100L);
                 mVideoView.seekTo(mStartPosition);
                 break;
             }
             case Thumb.RIGHT: {
-                mEndPosition = (int) ((mDuration * value) / 100L);
+                mEndPosition = (int) ((mDuration * val) / 100L);
                 break;
             }
         }
+
+        if(mDuration>59000){
+            int pp=mStartPosition;
+            int test=pp+59000;
+
+            if(mEndPosition>test){
+                mEndPosition=pp+59000;
+            }
+        }
+
         setProgressBarPosition(mStartPosition);
 
         setTimeFrames();

@@ -95,7 +95,7 @@ public class RangeSeekBarView extends View {
     public void initMaxWidth() {
         mMaxWidth = mThumbs.get(1).getPos() - mThumbs.get(0).getPos();
 
-        onSeekStop(this, 0, mThumbs.get(0).getVal());
+        onSeekStart(this, 0, mThumbs.get(0).getVal());
         onSeekStop(this, 1, mThumbs.get(1).getVal());
     }
 
@@ -251,6 +251,9 @@ public class RangeSeekBarView extends View {
         }
     }
 
+
+
+
     private float scaleToPixel(int index, float scaleValue) {
         float px = (scaleValue * mPixelRangeMax) / 100;
         if (index == 0) {
@@ -266,6 +269,8 @@ public class RangeSeekBarView extends View {
         if (index < mThumbs.size() && !mThumbs.isEmpty()) {
             Thumb th = mThumbs.get(index);
             th.setVal(pixelToScale(index, th.getPos()));
+
+
             onSeek(this, index, th.getVal());
         }
     }

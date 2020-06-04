@@ -1,4 +1,4 @@
-package com.e.seasianoticeboard
+package com.seasia.prism
 
 import org.junit.Test
 

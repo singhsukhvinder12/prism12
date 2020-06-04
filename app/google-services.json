@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:331684327713:android:858e1bbdbd933d13100e60",
+        "mobilesdk_app_id": "1:331684327713:android:0e2f4a15ef93b90d100e60",
         "android_client_info": {
-          "package_name": "com.e.seasianoticeboard"
+          "package_name": "com.seasia.prism"
         }
       },
       "oauth_client": [
         {
-          "client_id": "331684327713-ebpbvmcavm20384f7brerupb6579hc4k.apps.googleusercontent.com",
+          "client_id": "331684327713-tj2d0l6hbb2em81rdrc081k2q9db1nuh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.e.seasianoticeboard",
+            "package_name": "com.seasia.prism",
             "certificate_hash": "841619edb3425fd838aab97431c80bca149abbf3"
           }
         },
