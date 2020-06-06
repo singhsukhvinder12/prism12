@@ -19,6 +19,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.MediaController
 import android.widget.SeekBar
@@ -128,6 +129,24 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
             .placeholder(R.drawable.user).error(
                 R.drawable.user
             ).into(binding!!.imgLogo)
+
+
+
+        try {
+            binding!!.textPost.setOnTouchListener(object : View.OnTouchListener {
+                override fun onTouch(v: View, event: MotionEvent): Boolean {
+                    if (v.id ===   R.id.textPost) {
+                        v.parent.requestDisallowInterceptTouchEvent(true)
+                        when (event.action and MotionEvent.ACTION_MASK) {
+                            MotionEvent.ACTION_UP -> v.parent
+                                .requestDisallowInterceptTouchEvent(false)
+                        }
+                    }
+                    return false
+                }
+            })
+        } catch (e: Exception) {
+        }
     }
 
 

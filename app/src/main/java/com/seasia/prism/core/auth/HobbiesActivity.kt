@@ -1,22 +1,23 @@
 package com.seasia.prism.core.auth
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.seasia.prism.App
 import com.seasia.prism.R
 import com.seasia.prism.callbacks.HobbiesCallback
+import com.seasia.prism.core.BaseActivity
+import com.seasia.prism.core.fragment.ChoiceFragment
+import com.seasia.prism.core.fragment.CorridorFragment
 import com.seasia.prism.databinding.ActivityHobbiesBinding
 import com.seasia.prism.model.output.ChoiceResponse
 import com.seasia.prism.model.output.QuestionResponse
 import com.seasia.prism.presenter.HobbiesPresenter
 import com.seasia.prism.util.UtilsFunctions
-import com.seasia.prism.core.fragment.ChoiceFragment
-import com.seasia.prism.core.fragment.CorridorFragment
-import com.seasia.prism.core.BaseActivity
-import kotlin.collections.ArrayList
 
 
 class HobbiesActivity : BaseActivity(), View.OnClickListener, HobbiesCallback {
@@ -162,4 +163,6 @@ class HobbiesActivity : BaseActivity(), View.OnClickListener, HobbiesCallback {
     fun myQuestionList(arrayList: ArrayList<QuestionResponse.ResultDataList>) {
         questionList=arrayList
     }
+
+
 }

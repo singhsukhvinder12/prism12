@@ -67,7 +67,7 @@ class CommentAdapter(
             holder.btnDeleteComment!!.visibility = View.GONE
         }
         holder.btnDeleteComment!!.setOnClickListener {
-            context.deleteComment(studentList.get(position).CommentId, position)
+            context.deleteComment(studentList.get(position).CommentId, position,studentList.get(position).CommentedById)
         }
     }
 

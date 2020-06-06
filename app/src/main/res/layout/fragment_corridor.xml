@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecyclerView"
         android:layout_width="match_parent"
@@ -12,6 +18,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp_10" />
 
+
+    </RelativeLayout>
     <Button
         android:id="@+id/btnSubmit"
         android:layout_alignParentBottom="true"
@@ -28,9 +36,6 @@
         android:textAllCaps="false"
         android:textSize="@dimen/dp_16"
         android:textColor="@color/colorWhite"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edEmail"
         android:textStyle="bold" />
 
 </RelativeLayout>

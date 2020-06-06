@@ -36,16 +36,18 @@
         android:roundIcon="@drawable/ic_app_icon"
         android:supportsRtl="true"
         android:hardwareAccelerated="false"
-
-
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
-        <activity android:name=".core.auth.HobbiesActivity"
+
+        <activity
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            android:name=".core.auth.HobbiesActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-           />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            </activity>
+
         <activity android:name=".core.newsfeed.displaynewsfeed.view.ViewImageActivity"
             android:screenOrientation="portrait"
             />
@@ -140,7 +142,10 @@
 <!--            android:screenOrientation="portrait"-->
 <!--            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
 
-        <service android:name=".fcm.MyFirebaseMessagingService">
+        <service
+            android:enabled="true"
+            android:exported="true"
+            android:name=".fcm.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

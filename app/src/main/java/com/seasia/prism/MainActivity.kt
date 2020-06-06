@@ -44,7 +44,7 @@ class MainActivity : BaseActivity(), LogoutCallback {
         binding!!.includeView.ivBack.visibility = View.GONE
         binding!!.includeView.ivEditProfile.visibility = View.VISIBLE
         binding!!.includeView.ivLogout.visibility = View.VISIBLE
-        binding!!.includeView.toolbatTitle.setText("Notice Board")
+        binding!!.includeView.toolbatTitle.setText("Seasia Prism")
         val transaction = supportFragmentManager.beginTransaction()
         logoutPresenter = LogoutPresenter(this)
         transaction.replace(R.id.frame_layout, newsFeedFragment)

@@ -33,18 +33,17 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 
-        <androidx.cardview.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_view"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+
+
+        <RelativeLayout
             android:layout_marginLeft="@dimen/_10sdp"
+            android:elevation="3dp"
+            android:background="@drawable/shadow_gray"
             android:layout_marginRight="100dp"
             android:layout_centerVertical="true"
-
-            >
-
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_50">
             <EditText
                 android:id="@+id/etComment"
                 android:singleLine="true"
@@ -56,7 +55,40 @@
                 android:background="@color/colorWhite"
                 android:layout_height="match_parent"/>
 
-        </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+
+<!--        <androidx.cardview.widget.CardView-->
+<!--            xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+<!--            android:id="@+id/card_view"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="@dimen/_10sdp"-->
+<!--            android:layout_marginRight="100dp"-->
+<!--            android:layout_centerVertical="true">-->
+
+<!--            <RelativeLayout -->
+<!--                android:layout_marginLeft="@dimen/_10sdp"-->
+<!--                android:elevation="3dp"-->
+<!--                android:background="@drawable/shadow_gray"-->
+<!--                android:layout_marginRight="100dp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content">-->
+<!--                <EditText-->
+<!--                    android:id="@+id/etComment"-->
+<!--                    android:singleLine="true"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:padding="10dp"-->
+<!--                    android:hint="@string/please_add_a_comment"-->
+<!--                    android:layout_marginLeft="@dimen/_10sdp"-->
+<!--                    android:background="@color/colorWhite"-->
+<!--                    android:layout_height="match_parent"/>-->
+
+<!--            </RelativeLayout>-->
+
+<!--          -->
+<!--        </androidx.cardview.widget.CardView>-->
 
 
         <ImageView

@@ -7,14 +7,21 @@
     >
 
 
-    <androidx.cardview.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_view"
-        android:layout_gravity="center"
+<!--    <androidx.cardview.widget.CardView-->
+<!--        xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+<!--        android:id="@+id/card_view"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_margin="5dp"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        >-->
+
+    <RelativeLayout
+        android:elevation="3dp"
+        android:background="@drawable/shadow_gray"
         android:layout_margin="5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
     <RelativeLayout
         android:id="@+id/parentLayout"
         android:layout_width="match_parent"
@@ -91,10 +98,12 @@
             android:id="@+id/btnDeleteComment"
             android:layout_margin="5dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/ic_dlt"
+            android:src="@drawable/gray_icon"
             android:layout_alignParentRight="true"
             android:layout_width="20dp"
             android:layout_height="20dp"/>
     </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
+<!--    </androidx.cardview.widget.CardView>-->
 </RelativeLayout>

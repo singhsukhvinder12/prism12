@@ -1,7 +1,6 @@
 package com.seasia.prism.fcm
 
 
-import android.R
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -12,18 +11,16 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
-import android.os.Handler
-import android.provider.SyncStateContract
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
-import com.seasia.prism.App
-import com.seasia.prism.util.PreferenceKeys.DEVECE_TOKEN
-import com.seasia.prism.util.PrefStore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.seasia.prism.App
+import com.seasia.prism.MainActivity
+import com.seasia.prism.R
+import com.seasia.prism.util.PrefStore
+import com.seasia.prism.util.PreferenceKeys.DEVECE_TOKEN
 import org.json.JSONObject
-import java.util.*
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -60,16 +57,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notificationChannel!!.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         }
         Log.e(TAG, "Notification Message Body: " + remoteMessage.data)
-        message = remoteMessage.data["message"]
-        notification_code = remoteMessage.data["notification_code"]
-        title = remoteMessage.data["title"]
-        Log.i("pushData", remoteMessage.data.toString())
-
-
+        message = remoteMessage.data.get("message")
+        title = remoteMessage.data.get("title")
         try {
             sendMessagePush(message!!);
         }catch (e:Exception){
-
+            e.printStackTrace()
         }
     }
 
@@ -95,11 +88,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun sendMessagePush(message: String) {
         var intent: Intent? = null
 
-        intent!!.putExtra("goto_to_notification_screen", "getnotification")
-        intent!!.putExtra("message", message)
+        intent=Intent(applicationContext,MainActivity::class.java)
+//        intent!!.putExtra("goto_to_notification_screen", "getnotification")
+//        intent!!.putExtra("message", message)
         intent!!.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-        val icon1 = BitmapFactory.decodeResource(resources, R.mipmap.sym_def_app_icon)
+        val icon1 = BitmapFactory.decodeResource(resources, R.mipmap.ic_icon)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = Notification.Builder(applicationContext)
                 .setSmallIcon(notificationIcon).setLargeIcon(icon1)
@@ -110,6 +104,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationBuilder.setChannelId(CHANNEL_ID)
             notificationManager!!.createNotificationChannel(notificationChannel!!)
@@ -129,7 +124,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private val notificationIcon: Int
          get() {
             val useWhiteIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-            return if (useWhiteIcon) R.mipmap.sym_def_app_icon else R.mipmap.sym_def_app_icon
+            return if (useWhiteIcon) R.mipmap.ic_icon else R.mipmap.ic_icon
         }
 
     companion object {

@@ -112,13 +112,13 @@ class CommentActivity : BaseActivity(), View.OnClickListener,
                 }
             }
             R.id.iv_back->{
-               finish()
+                onBackPressed()
             }
         }
     }
 
 
-    fun deleteComment(commentId: String?, position: Int) {
+    fun deleteComment(commentId: String?, position: Int,userId:String?) {
         var input= DeleteCommentInput()
         input.CommentId=commentId
         input.PostId=postId
@@ -152,7 +152,6 @@ class CommentActivity : BaseActivity(), View.OnClickListener,
 
         if(deleteComment!=null){
             commentCount = deleteComment.ResultData!!
-
         }
     }
 
@@ -160,6 +159,7 @@ class CommentActivity : BaseActivity(), View.OnClickListener,
         hideDialog()
         if (sendComment.ResultData != null) {
             commentCount = sendComment.ResultData!!
+            showDialog()
             commentPresenter!!.getComment(postId)
         }
     }

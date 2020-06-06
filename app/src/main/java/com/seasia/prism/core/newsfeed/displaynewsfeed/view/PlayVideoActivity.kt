@@ -9,6 +9,8 @@ import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import android.widget.MediaController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.seasia.prism.R
 import com.seasia.prism.core.BaseActivity
 import com.seasia.prism.databinding.ActivityPlayVideoBinding
@@ -16,12 +18,11 @@ import com.seasia.prism.databinding.ActivityPlayVideoBinding
 
 class PlayVideoActivity : BaseActivity() {
     var mediaController: MediaController? = null
-
+    var thumbNail=""
     companion object{
         var binding: ActivityPlayVideoBinding? = null
 
     }
-    var thumbnail=""
     override fun getLayoutId(): Int {
         return R.layout.activity_play_video
     }
@@ -37,17 +38,30 @@ class PlayVideoActivity : BaseActivity() {
         }
 
         val videoPath = intent.getStringExtra("videoPath")
+        if(intent.getStringExtra("thumbNail")!=null){
+            thumbNail = intent.getStringExtra("thumbNail")
+
+        }
+        if(!thumbNail.isEmpty()){
+            Glide.with(this)
+                .asBitmap()
+                .load(thumbNail)
+                .timeout(60000)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.video_thumbnail)
+                .error(R.drawable.video_thumbnail)
+                .into( binding!!.imageView);
+            binding!!.imageView.visibility=View.VISIBLE
+        }
+
 
         var ountDownTimer = object : CountDownTimer(1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
             }
-
             override fun onFinish() {
                 playVideo(videoPath)
             }
         }.start()
-
-
     }
 
 // onH
@@ -77,13 +91,13 @@ class PlayVideoActivity : BaseActivity() {
         binding!!.videoView.setVideoURI(myUri)
         binding!!.videoView.requestFocus()
         binding!!.progress.visibility = View.VISIBLE
-      binding!!.videoView.start()
+         binding!!.videoView.start()
         var  current =  binding!!.videoView.getCurrentPosition()
 
         binding!!.videoView.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
             override fun onPrepared(mp: MediaPlayer?) {
-
                 mp!!.start()
+                binding!!.imageView.visibility=View.GONE
                 mp.setOnVideoSizeChangedListener(object : MediaPlayer.OnVideoSizeChangedListener {
                     override fun onVideoSizeChanged(p0: MediaPlayer?, p1: Int, p2: Int) {
                         binding!!.progress.visibility = View.GONE

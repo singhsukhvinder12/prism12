@@ -60,6 +60,7 @@ class CorridorFragment : Fragment(), QuestionCallback, View.OnClickListener {
 
         presenter= QuestionsPresenter(this)
         receylerView=view.findViewById(R.id.rvRecyclerView)
+
         setAdapter()
         return view
     }
@@ -73,6 +74,7 @@ class CorridorFragment : Fragment(), QuestionCallback, View.OnClickListener {
             receylerView!!.adapter = thisThatAdapter
         }
     }
+
 
     override fun onSuccess(body: AskQuestionResponse) {
         (activity as HobbiesActivity?)!!.progressHide()

@@ -61,7 +61,6 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     var anouterUserId = ""
     var videoOpenStatus = 0
     var senderId = ""
-
     var day = ""
     var month = ""
     var year = ""
@@ -86,7 +85,9 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     @SuppressLint("SetTextI18n")
     override fun initViews() {
         binding = viewDataBinding as ActivityUserProfileBinding
-        binding!!.includeView.ivBack.setOnClickListener { finish() }
+        binding!!.includeView.ivBack.setOnClickListener {
+                finish()
+        }
         binding!!.etDob.setOnClickListener(this)
         binding!!.btSubmit.setOnClickListener(this)
         binding!!.ivProfile.setOnClickListener(this)
@@ -106,18 +107,18 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 enabledField(true)
                 binding!!.btSubmit.visibility = View.VISIBLE
                 getUserProfile(emailId)
-                senderId=userId;
+                senderId = userId;
             } else {
                 binding!!.btSubmit.visibility = View.GONE
                 binding!!.includeView.toolbatTitle.text = "Profile"
                 enabledField(false)
                 getUserProfile(postedByMail)
-                senderId=anouterUserId;
+                senderId = anouterUserId;
             }
-            binding!!.includeView.ivQuestion.visibility=View.VISIBLE
+            binding!!.includeView.ivQuestion.visibility = View.VISIBLE
             binding!!.includeView.ivQuestion.setOnClickListener {
                 var intent = Intent(this@UserProfileActivity, HobbiesActivity::class.java)
-               intent.putExtra("userId",senderId)
+                intent.putExtra("userId", senderId)
                 startActivity(intent)
             }
 
@@ -527,14 +528,10 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         if (data != null && data!!.ResultData != null) {
 
             try {
-                var firstName = data.ResultData!!.FirstName!!.substring(
-                    0,
-                    1
-                ).toUpperCase() + data.ResultData!!.FirstName!!.substring(1).toLowerCase();
-                var lastName = data.ResultData!!.LastName!!.substring(
-                    0,
-                    1
-                ).toUpperCase() + data.ResultData!!.LastName!!.substring(1).toLowerCase();
+                var firstName = data.ResultData!!.FirstName!!.substring(0, 1)
+                    .toUpperCase() + data.ResultData!!.FirstName!!.substring(1).toLowerCase();
+                var lastName = data.ResultData!!.LastName!!.substring(0, 1)
+                    .toUpperCase() + data.ResultData!!.LastName!!.substring(1).toLowerCase();
 
                 binding!!.etFirstName.setText(firstName)
                 binding!!.etLastName.setText(lastName)
@@ -550,7 +547,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 } else {
                     try {
                         var phNum = data.ResultData!!.PhoneNo!!.substring(0, 2)
-                        var last = data.ResultData!!.PhoneNo!!.substring(0, phNum.length - 1)
+                        var last = data.ResultData!!.PhoneNo!!.substring(9, 10)
                         binding!!.etPhone.setText(phNum + "*******" + last)
                     } catch (e: java.lang.Exception) {
                     }
