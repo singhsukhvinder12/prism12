@@ -26,12 +26,14 @@ import com.seasia.prism.model.VerifyEmailResponse;
 import com.seasia.prism.model.input.AddChoiceInput;
 import com.seasia.prism.model.input.AskQuestionInput;
 import com.seasia.prism.model.input.LogoutInput;
+import com.seasia.prism.model.input.SearchInput;
 import com.seasia.prism.model.output.AddChoiceResponse;
 import com.seasia.prism.model.output.AskQuestionResponse;
 import com.seasia.prism.model.output.ChoiceResponse;
 import com.seasia.prism.model.output.LogoutResponse;
 import com.seasia.prism.model.output.QuestionResponse;
 import com.seasia.prism.core.newsfeed.displaynewsfeed.model.RepostPostResponse;
+import com.seasia.prism.model.output.SearchResponse;
 
 
 import java.util.ArrayList;
@@ -123,6 +125,10 @@ public interface GitHubService {
 
     @POST("Social/AddUpdateQuestionAnswers")
     Call<AskQuestionResponse> addQuestion(@Body AskQuestionInput input);
+
+    @POST("User/GetUserlist")
+    Call<SearchResponse> searchUser(@Body SearchInput input);
+
 
     @Multipart
     @POST("User/UserSignUp")

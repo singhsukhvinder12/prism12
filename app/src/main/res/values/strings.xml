@@ -30,6 +30,7 @@
     <string name="video_playing">Video Player</string>
     <string name="upload">Upload</string>
     <string name="submit">Submit</string>
+    <string name="others_profile">Others Profile</string>
     <string name="trimming_progress">Trimming your video...</string>
     <string name="video_saved_at">Video saves at : $%1s</string>
 

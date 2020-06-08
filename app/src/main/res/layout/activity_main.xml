@@ -14,14 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <View
-        android:id="@+id/toolbar_line"
-        android:layout_below="@+id/includeView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/color_grey_toolbar"/>
+
+
     <FrameLayout
-        android:layout_below="@+id/toolbar_line"
+        android:layout_below="@+id/includeView"
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

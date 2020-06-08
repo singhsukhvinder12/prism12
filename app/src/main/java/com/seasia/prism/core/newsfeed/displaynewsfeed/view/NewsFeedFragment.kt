@@ -314,8 +314,7 @@ class NewsFeedFragment : BaseFragment(true),
         val title = dialog.findViewById<TextView>(R.id.std_name)
         title.setText(getString(R.string.delete_post))
         btnDelete.setOnClickListener {
-            dialog.hide()
-
+            dialog.dismiss()
             baseActivity!!.showDialog()
             var input = DeletePostInput()
             input.NewsLetterId = postId
@@ -324,9 +323,10 @@ class NewsFeedFragment : BaseFragment(true),
             feedPresenter!!.deletaPost(input)
         }
         btnCancel.setOnClickListener {
-            dialog.hide()
+            dialog.dismiss()
+
         }
-        dialog.show()
+            dialog.show()
     }
 
     fun reportPost(postId: String) {

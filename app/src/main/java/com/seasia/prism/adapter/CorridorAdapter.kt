@@ -157,7 +157,6 @@ class CorridorAdapter(
             input.QuestionId=choiceAnsArray!!.get(i).QuestionId
             addAnswer!!.add(input)
         }
-
         return addAnswer!!
     }
 }

@@ -243,6 +243,28 @@ class NewsFeedAdapter(
 
             }
 
+            holder.txtUserNameForPost!!.setOnClickListener {
+                if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+                    UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+                } else {
+                    if (mList.get(position).PostedById != null) {
+                        if (videoOpenStatus == 0) {
+                            var intent =
+                                Intent(context.activity, UserProfileActivity::class.java)
+                            intent.putExtra("comingFrom", "editProfile")
+                            intent.putExtra("postedByMail", mList.get(position).Email)
+                            intent.putExtra("anotherUser", mList.get(position).PostedById)
+                            context.startActivityForResult(intent, 205)
+                            videoOpenStatus = 1
+                        }
+                    } else {
+                        Toast.makeText(context.activity, "Somthing went wrong", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
+
+            }
+
             holder.iv_menu!!.setOnClickListener {
                 popup1.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
                     override fun onMenuItemClick(item1: MenuItem): Boolean {

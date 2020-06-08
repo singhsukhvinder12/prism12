@@ -12,6 +12,7 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
     <color name="colorGray">#DCDCDC</color>
+    <color name="colorGrayDark">#CDC9C9</color>
     <color name="colorBackgroundGrey">#e7e7e7</color>
 
     <color name="color_primary_blue">#40bfff</color>

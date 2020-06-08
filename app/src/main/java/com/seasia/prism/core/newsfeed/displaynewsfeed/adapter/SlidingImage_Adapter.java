@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.seasia.prism.R;
 import com.seasia.prism.core.newsfeed.displaynewsfeed.view.ViewImageActivity;
 
@@ -47,7 +48,12 @@ public class SlidingImage_Adapter extends PagerAdapter {
         assert imageLayout != null;
         final ImageView imageView = (ImageView) imageLayout.findViewById(R.id.image);
         final TextView mCount = imageLayout.findViewById(R.id.count);
-        Glide.with(context).load(IMAGES.get(position)).placeholder(R.drawable.image_placeholder).error(R.drawable.image_placeholder).into(imageView);
+        Glide.with(context)
+                .load(IMAGES.get(position))
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_placeholder)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView);
         view.addView(imageLayout, 0);
         int count = position + 1;
         if(IMAGES.size()!=1){

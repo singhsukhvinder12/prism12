@@ -1,12 +1,12 @@
 package com.seasia.prism.core.newsfeed.displaynewsfeed.view
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.View
 import android.widget.MediaController
 import com.bumptech.glide.Glide
@@ -164,38 +164,7 @@ class PlayVideoActivity : BaseActivity() {
 
     }
 
-
-//    fun playVideo(videoPath: String?) {
-//        val myUri = Uri.parse(videoPath)
-//
-//        mediaController = MediaController(this)
-//        //   mediaController.setAnchorView(binding!!.videoView)
-//        mediaController!!.setAnchorView(binding!!.videoView);
-//        mediaController!!.setMediaPlayer(binding!!.videoView);
-//        binding!!.videoView.setMediaController(mediaController)
-//
-//        binding!!.videoView.setVideoURI(myUri)
-//        binding!!.videoView.requestFocus()
-//
-//        // itemView.btnPlayVideo.visibility= View.GONE
-//        val progressDialog = ProgressDialog.show(this, "", "Loading...", true);
-//
-//        progressDialog.dismiss()
-//        binding!!.progress.visibility = View.VISIBLE
-//        progressDialog.dismiss()
-//        binding!!.videoView.start()
-//
-//        binding!!.videoView.setOnPreparedListener(MediaPlayer.OnPreparedListener {
-//            progressDialog.dismiss()
-//            binding!!.videoView.start()
-//            binding!!.progress.visibility = View.GONE
-//        })
-//
-//    }
-//
-
-
-
-
-
 }
+
+
+

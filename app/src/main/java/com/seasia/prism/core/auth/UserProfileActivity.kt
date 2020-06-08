@@ -63,10 +63,11 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     var senderId = ""
     var day = ""
     var month = ""
+    var imageUrl=""
+    var enabeledField="false"
     var year = ""
     private val REQUEST_PERMISSIONS = 1
     private var mAlbumFiles = ArrayList<AlbumFile>()
-
     val PERMISSION_READ_STORAGE = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -91,6 +92,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         binding!!.etDob.setOnClickListener(this)
         binding!!.btSubmit.setOnClickListener(this)
         binding!!.ivProfile.setOnClickListener(this)
+        binding!!.btnFlooting.setOnClickListener(this)
         binding!!.relMain.setOnClickListener(this)
         binding!!.radioGroupGender.setOnCheckedChangeListener(this)
         presenter = UpdateUserProfilePresenter(this)
@@ -102,16 +104,20 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             postedByMail = intent.getStringExtra("postedByMail")
             anouterUserId = intent.getStringExtra("anotherUser")
             if (postedByMail.equals(emailId)) {
-                binding!!.includeView.toolbatTitle.text = "Edit Profile"
+                binding!!.includeView.toolbatTitle.text = "Profile"
                 updateUser = true
+                enabeledField="true"
                 enabledField(true)
                 binding!!.btSubmit.visibility = View.VISIBLE
+                binding!!.btnFlooting.show()
                 getUserProfile(emailId)
                 senderId = userId;
             } else {
                 binding!!.btSubmit.visibility = View.GONE
+                binding!!.btnFlooting.hide()
                 binding!!.includeView.toolbatTitle.text = "Profile"
                 enabledField(false)
+                enabeledField="false"
                 getUserProfile(postedByMail)
                 senderId = anouterUserId;
             }
@@ -121,8 +127,8 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 intent.putExtra("userId", senderId)
                 startActivity(intent)
             }
-
         } else {
+            binding!!.btnFlooting.hide()
             binding!!.includeView.toolbatTitle.setText("Signup")
         }
 
@@ -137,7 +143,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         binding!!.etLastName.isEnabled = status
         binding!!.etPhone.isEnabled = status
         binding!!.etDob.isEnabled = status
-        binding!!.ivProfile.isEnabled = status
+      //  binding!!.ivProfile.isEnabled = status
         binding!!.rbMale.isClickable = status
         binding!!.rbFemale.isClickable = status
         binding!!.rbNa.isClickable = status
@@ -248,22 +254,40 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             R.id.bt_submit -> {
                 validations()
             }
+
+            R.id.btnFlooting -> {
+                var intent = Intent(this@UserProfileActivity, SearchUserActivity::class.java)
+                startActivity(intent)
+            }
             R.id.iv_profile -> {
 
 
-                if (CheckRuntimePermissions.checkMashMallowPermissions(
-                        baseActivity,
-                        PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
-                    )
-                ) {
-                    if (videoOpenStatus == 0) {
-                        mAlbumFiles = ArrayList()
-                        selectAlbum()
-                        videoOpenStatus = 1
-                    }
 
-                    //  selectImage()
+
+                if(enabeledField.equals("false")){
+                    var intent=Intent(this,ProfileImageActivity::class.java)
+                    intent.putExtra("imageUrl",imageUrl)
+                    startActivity(intent)
+
+                } else{
+                    if (CheckRuntimePermissions.checkMashMallowPermissions(
+                            baseActivity,
+                            PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
+                        )
+                    ) {
+                        if (videoOpenStatus == 0) {
+                            mAlbumFiles = ArrayList()
+                            selectAlbum()
+                            videoOpenStatus = 1
+                        }
+
+                        //  selectImage()
+                    }
                 }
+
+
+
+
             }
         }
     }
@@ -575,6 +599,8 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 Glide.with(this@UserProfileActivity).load(data!!.ResultData!!.ImageUrl)
                     .placeholder(R.drawable.user).error(R.drawable.user)
                     .into(binding!!.ivProfile!!)
+
+                imageUrl=data!!.ResultData!!.ImageUrl!!
 
                 if (postedByMail.equals(emailId)) {
                     sharedPref!!.saveString(
