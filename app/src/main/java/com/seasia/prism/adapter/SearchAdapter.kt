@@ -35,9 +35,9 @@ class SearchAdapter(
 
         try {
 
-            var fiestName=studentList.get(position).FirstName
-            var lastName=studentList.get(position).LastName
-            holder.tvName!!.setText(fiestName+" "+lastName)
+//            var fiestName=studentList.get(position).FirstName
+//            var lastName=studentList.get(position).LastName
+            holder.tvName!!.setText(studentList.get(position).UserName)
 
 
 

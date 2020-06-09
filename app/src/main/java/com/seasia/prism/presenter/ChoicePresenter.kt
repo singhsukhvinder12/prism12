@@ -1,5 +1,7 @@
 package com.seasia.prism.presenter
 
+import com.seasia.prism.App
+import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.core.fragment.ChoiceFragment
 import com.seasia.prism.model.input.AddChoiceInput
@@ -34,7 +36,8 @@ class ChoicePresenter(var choiceFragment: ChoiceFragment) {
 
             override fun onFailure(call: Call<AddChoiceResponse>, t: Throwable) {
                 choiceFragment.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }

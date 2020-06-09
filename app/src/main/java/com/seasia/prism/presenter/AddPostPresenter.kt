@@ -1,5 +1,7 @@
 package com.seasia.prism.presenter
 
+import com.seasia.prism.App
+import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.core.newsfeed.AddPostActivity
 import com.seasia.prism.core.newsfeed.AddPostInput
@@ -130,7 +132,8 @@ class AddPostPresenter(var addPostActivity: AddPostActivity) {
 
             override fun onFailure(call: Call<AddPostResponse>, t: Throwable) {
                 addPostActivity.onError()
-                UtilsFunctions.showToastError(t?.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
 

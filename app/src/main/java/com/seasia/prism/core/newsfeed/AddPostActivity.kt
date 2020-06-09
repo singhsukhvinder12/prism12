@@ -289,6 +289,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
 
     private fun selectAlbum() {
+
         Album.image(this)
             .multipleChoice()
             .columnCount(4)

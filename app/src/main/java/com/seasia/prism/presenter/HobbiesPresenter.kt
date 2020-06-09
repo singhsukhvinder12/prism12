@@ -1,5 +1,7 @@
 package com.seasia.prism.presenter
 
+import com.seasia.prism.App
+import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.model.output.ChoiceResponse
 import com.seasia.prism.model.output.QuestionResponse
@@ -33,7 +35,8 @@ class HobbiesPresenter(var choiceFragment: HobbiesActivity) {
 
             override fun onFailure(call: Call<ChoiceResponse>, t: Throwable) {
                 choiceFragment.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }
@@ -61,7 +64,8 @@ class HobbiesPresenter(var choiceFragment: HobbiesActivity) {
 
             override fun onFailure(call: Call<QuestionResponse>, t: Throwable) {
                 choiceFragment.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }

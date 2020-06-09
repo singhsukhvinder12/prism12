@@ -1,6 +1,8 @@
 package com.seasia.prism.presenter
 
 import androidx.lifecycle.MutableLiveData
+import com.seasia.prism.App
+import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.model.GetUserProfileInput
 import com.seasia.prism.model.GetUserProfileResponse
@@ -74,7 +76,8 @@ class UpdateUserProfilePresenter(var userProfileActivity: UserProfileActivity) {
             override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
                 //      signupCallbacks.onSignupError(call, t)
                 userProfileActivity.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }
@@ -124,7 +127,8 @@ class UpdateUserProfilePresenter(var userProfileActivity: UserProfileActivity) {
             override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
                 //      signupCallbacks.onSignupError(call, t)
                 userProfileActivity.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }
@@ -145,7 +149,8 @@ class UpdateUserProfilePresenter(var userProfileActivity: UserProfileActivity) {
 
             override fun onFailure(call: Call<GetUserProfileResponse>, t: Throwable) {
                 userProfileActivity.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }

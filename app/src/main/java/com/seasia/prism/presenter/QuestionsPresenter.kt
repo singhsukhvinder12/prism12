@@ -1,5 +1,7 @@
 package com.seasia.prism.presenter
 
+import com.seasia.prism.App
+import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.model.input.AskQuestionInput
 import com.seasia.prism.model.output.AskQuestionResponse
@@ -31,7 +33,8 @@ class QuestionsPresenter(var corridorFragment: CorridorFragment) {
 
             override fun onFailure(call: Call<AskQuestionResponse>, t: Throwable) {
                 corridorFragment.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }

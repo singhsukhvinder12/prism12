@@ -1,5 +1,7 @@
 package com.seasia.prism.core.newsfeed.displaynewsfeed.presenter
 
+import com.seasia.prism.App
+import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.core.newsfeed.displaynewsfeed.model.GetLikeResponse
 import com.seasia.prism.core.newsfeed.displaynewsfeed.view.LikeListActivity
@@ -29,7 +31,8 @@ class LikeListPresenter(var likeListActivity: LikeListActivity) {
 
             override fun onFailure(call: Call<GetLikeResponse>, t: Throwable) {
                 likeListActivity.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }

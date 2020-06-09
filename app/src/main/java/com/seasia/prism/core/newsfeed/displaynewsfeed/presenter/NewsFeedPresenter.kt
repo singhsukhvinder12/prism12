@@ -1,5 +1,7 @@
 package com.seasia.prism.core.newsfeed.displaynewsfeed.presenter
 
+import com.seasia.prism.App
+import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.core.newsfeed.displaynewsfeed.model.*
 import com.seasia.prism.model.DeviceTokenInput
@@ -52,7 +54,8 @@ class NewsFeedPresenter(
             }
 
             override fun onFailure(call: Call<GetFeedResponse>, t: Throwable) {
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
                 newsFeedFragment.onError()
             }
         })
@@ -94,7 +97,8 @@ class NewsFeedPresenter(
             override fun onFailure(call: Call<RepostPostResponse>, t: Throwable) {
                 newsFeedFragment.onError()
 
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }
@@ -120,7 +124,8 @@ class NewsFeedPresenter(
 
             override fun onFailure(call: Call<DeletePostResponse>, t: Throwable) {
                 newsFeedFragment.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
 
@@ -141,7 +146,8 @@ class NewsFeedPresenter(
 
             override fun onFailure(call: Call<DeviceTokenResponse>, t: Throwable) {
                 newsFeedFragment.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }

@@ -21,6 +21,7 @@ import com.seasia.prism.model.output.SearchResponse
 import com.seasia.prism.presenter.SearchPresenter
 import com.seasia.prism.util.PreferenceKeys
 import com.seasia.prism.util.UtilsFunctions
+import kotlinx.android.synthetic.main.fragment_news_feed.*
 
 class SearchUserActivity : BaseActivity(), SearchUsersCallback,
     EndlessRecyclerViewScrollListenerImplementation.OnScrollPageChangeListener {
@@ -112,15 +113,14 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
 
     fun setAdapterData() {
         if (searchList != null) {
+            adapter = SearchAdapter(this@SearchUserActivity, searchList!!)
             val mLayoutManager = LinearLayoutManager(this)
             binding!!.rvPublic.layoutManager = mLayoutManager
-            adapter = SearchAdapter(this@SearchUserActivity, searchList!!)
-
             endlessScrollListener = EndlessRecyclerViewScrollListenerImplementation(
                 mLayoutManager, this
             )
             endlessScrollListener?.setmLayoutManager(mLayoutManager)
-
+            rvPublic.addOnScrollListener(endlessScrollListener!!)
             binding!!.rvPublic.adapter = adapter
         }
     }
@@ -130,6 +130,7 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
             UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
             return
         }
+        showDialog()
         searchPresenter!!.getData(searchInput(adapter!!.itemCount,""))
     }
 

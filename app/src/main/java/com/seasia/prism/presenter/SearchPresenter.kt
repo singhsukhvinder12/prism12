@@ -1,5 +1,7 @@
 package com.seasia.prism.presenter
 
+import com.seasia.prism.App
+import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.core.auth.SearchUserActivity
 import com.seasia.prism.core.newsfeed.displaynewsfeed.model.GetFeedResponse
@@ -32,7 +34,6 @@ class SearchPresenter(var searchUserActivity: SearchUserActivity,  var userList:
                                 userList = response.body().ResultData!!
                             } else {
                                 userList.addAll(response.body().ResultData!!)
-
                             }
 
                             searchUserActivity.onSuccess(userList)
@@ -45,7 +46,7 @@ class SearchPresenter(var searchUserActivity: SearchUserActivity,  var userList:
 
                 override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                     searchUserActivity.onError()
-                    UtilsFunctions.showToastError(t.message)
+                    UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
                 }
             })
         }

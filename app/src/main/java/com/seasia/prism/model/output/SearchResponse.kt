@@ -32,6 +32,7 @@ class SearchResponse {
         var  Gender:String?=null
 
         var  StrDOB:String?=null
+        var  UserName:String?=null
     }
 
 }

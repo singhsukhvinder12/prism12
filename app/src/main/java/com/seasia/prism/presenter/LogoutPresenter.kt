@@ -1,6 +1,8 @@
 package com.seasia.prism.presenter
 
+import com.seasia.prism.App
 import com.seasia.prism.MainActivity
+import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.model.output.LogoutResponse
 import com.seasia.prism.util.UtilsFunctions
@@ -32,7 +34,8 @@ class LogoutPresenter(var mainActivity: MainActivity) {
 
             override fun onFailure(call: Call<LogoutResponse>, t: Throwable) {
                 mainActivity.onFailer()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         }) }
 }

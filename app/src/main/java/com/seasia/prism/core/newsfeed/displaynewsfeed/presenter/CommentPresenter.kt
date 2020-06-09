@@ -1,5 +1,7 @@
 package com.seasia.prism.core.newsfeed.displaynewsfeed.presenter
 
+import com.seasia.prism.App
+import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.core.newsfeed.displaynewsfeed.model.*
 import com.seasia.prism.core.newsfeed.displaynewsfeed.view.CommentActivity
@@ -37,7 +39,8 @@ class CommentPresenter(var commentActivity: CommentActivity) {
 
             override fun onFailure(call: Call<GetCommentResponse>, t: Throwable) {
                 commentActivity.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }
@@ -73,7 +76,8 @@ class CommentPresenter(var commentActivity: CommentActivity) {
 
             override fun onFailure(call: Call<CommentResponse>, t: Throwable) {
                 commentActivity.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }
@@ -101,7 +105,8 @@ class CommentPresenter(var commentActivity: CommentActivity) {
 
             override fun onFailure(call: Call<DeleteCommentResponse>, t: Throwable) {
                 commentActivity.onError()
-                UtilsFunctions.showToastError(t.message)
+                UtilsFunctions.showToastError(App.app.getString(R.string.somthing_went_wrong))
+
             }
         })
     }

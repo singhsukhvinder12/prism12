@@ -130,6 +130,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         } else {
             binding!!.btnFlooting.hide()
             binding!!.includeView.toolbatTitle.setText("Signup")
+            enabeledField="true"
         }
 
         if (intent.getStringExtra("email") != null) {
