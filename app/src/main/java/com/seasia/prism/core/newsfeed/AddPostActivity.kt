@@ -1,28 +1,29 @@
 package com.seasia.prism.core.newsfeed
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import android.media.ThumbnailUtils
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Environment
+import android.os.*
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.widget.MediaController
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.seasia.prism.App
@@ -36,17 +37,21 @@ import com.seasia.prism.core.newsfeed.camera.SquareActivity
 import com.seasia.prism.core.newsfeed.displaynewsfeed.model.AddUpdateImageInput
 import com.seasia.prism.core.newsfeed.displaynewsfeed.model.UpdateSchoolInput
 import com.seasia.prism.databinding.ActivityAddPostBinding
+import com.seasia.prism.imagecroper.crop.CroppedActivity
 import com.seasia.prism.presenter.AddPostPresenter
 import com.seasia.prism.util.CheckRuntimePermissions
+import com.seasia.prism.util.FileUtils
 import com.seasia.prism.util.PreferenceKeys
 import com.seasia.prism.util.UtilsFunctions
-
+import com.theartofdev.edmodo.cropper.CropImage
 import com.vincent.videocompressor.VideoCompress
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.api.widget.Widget
+import kotlinx.android.synthetic.main.upload_document_dialog.*
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -61,6 +66,10 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     var presenter: AddPostPresenter? = null
     var status = "0"
     var doubleClick = 0
+    var tempPath = ""
+
+    private val RESULT_LOAD_IMAGE = 1999
+    private val CAMERA_REQUEST = 1888
     var AudioSavePathInDevice = ""
     private var isFullscreen = false
     val PERMISSION_READ_STORAGE = arrayOf(
@@ -135,7 +144,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         try {
             binding!!.textPost.setOnTouchListener(object : View.OnTouchListener {
                 override fun onTouch(v: View, event: MotionEvent): Boolean {
-                    if (v.id ===   R.id.textPost) {
+                    if (v.id === R.id.textPost) {
                         v.parent.requestDisallowInterceptTouchEvent(true)
                         when (event.action and MotionEvent.ACTION_MASK) {
                             MotionEvent.ACTION_UP -> v.parent
@@ -148,10 +157,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         } catch (e: Exception) {
         }
     }
-
-
-
-
 
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -181,11 +186,13 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                                 PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
                             )
                         ) {
-                            outputCompressPath=""
-                            if (doubleClick == 0) {
-                                selectAlbum()
-                                doubleClick = 1
-                            }
+                            outputCompressPath = ""
+//                            if (doubleClick == 0) {
+//                                selectAlbum()
+//                                doubleClick = 1
+//                            }
+
+                            uploadImage()
 
                         }
                     } else {
@@ -206,7 +213,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                     if (doubleClick == 0) {
                         if (imagesList!!.size == 0 && fileUri.isEmpty()) {
                             //
-                            outputCompressPath=""
+                            outputCompressPath = ""
                             var intent = Intent(this, SquareActivity::class.java)
                             startActivityForResult(intent, Video_AUDIO);
                             doubleClick = 1
@@ -226,7 +233,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                         )
                     ) {
                         ///   recordActivity()
-                        outputCompressPath=""
+                        outputCompressPath = ""
                         if (doubleClick == 0) {
                             var intent = Intent(this, RecordAudioActivity::class.java)
                             startActivityForResult(intent, 1)
@@ -242,7 +249,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 videoFIle = null
                 binding!!.parentSelectedMedia.visibility = View.GONE
                 binding!!.videoView1.stopPlayback()
-                if(thumbNailFile!=null){
+                if (thumbNailFile != null) {
                     thumbNailFile!!.delete()
                 }
             }
@@ -331,7 +338,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                     imagesList!!.addAll(list)
                 }
                 imagesAdapter!!.notifyDataSetChanged()
-
             }
             .onCancel {
 
@@ -503,8 +509,22 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_CODE_PICKER_LOGO && resultCode == RESULT_OK) {
-//            binding!!.parentImage.visibility = View.VISIBLE
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK) {
+
+            val selectedImage: Uri = data!!.getData()!!
+           var imageUri= FileUtils.getPath(this, selectedImage)
+
+
+            var intent=Intent(this, CroppedActivity::class.java)
+            intent.putExtra("imagePath",imageUri)
+            startActivityForResult(intent,127)
+
+
+//            CropImage.activity(selectedImage)
+//
+//                .setMinCropWindowSize(50000, 700)
+//                .start(this);
+
 //            val selectedVideoPath = getAbsolutePath(this, data!!.data!!)
 //            val list = ArrayList<AddUpdateImageInput>()
 //            val addUpdateImageInput = AddUpdateImageInput()
@@ -516,6 +536,66 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 //            list.add(addUpdateImageInput)
 //            imagesList!!.addAll(list)
 //            imagesAdapter!!.notifyDataSetChanged()
+        }
+       else if(requestCode==127){
+
+            if (data != null) {
+                val bundle = data.getExtras();
+                if (bundle!!.getString("filePath") != null && !bundle.getString("filePath")
+                        .equals("null")
+                ) {
+                    binding!!.parentImage.visibility = View.VISIBLE
+                    val selectedVideoPath = bundle!!.getString("filePath")!!
+                    val list = ArrayList<AddUpdateImageInput>()
+                    val addUpdateImageInput = AddUpdateImageInput()
+                    addUpdateImageInput.imageUrl = selectedVideoPath
+                    val file = File(selectedVideoPath)
+                    addUpdateImageInput.fileType = "Image"
+                    addUpdateImageInput.fileUrl = file
+                    addUpdateImageInput.imageFileName = selectedVideoPath
+                    list.add(addUpdateImageInput)
+                    imagesList!!.addAll(list)
+                    imagesAdapter!!.notifyDataSetChanged()
+                }
+            }
+        }
+
+       else if (requestCode === CAMERA_REQUEST && resultCode === Activity.RESULT_OK) {
+//            val extras = data!!.getExtras();
+//
+//            val imageBitmap = extras!!.get("data") as Bitmap;
+//            val tempUri = getImageUriPath(getApplicationContext(), imageBitmap);
+
+            var imageUri= FileUtils.getPath(this, Uri.parse(tempPath))
+            var intent=Intent(this, CroppedActivity::class.java)
+            intent.putExtra("imagePath",imageUri)
+            startActivityForResult(intent,127)
+
+//            CropImage.activity(Uri.parse(tempPath))
+////                .setMinCropResultSize(  5000, 1200)
+////                .setMaxCropResultSize(  5000, 1200)
+//                .setMinCropWindowSize(50000, 700)
+//                .start(this);
+        }
+
+
+        else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (result != null) {
+                binding!!.parentImage.visibility = View.VISIBLE
+                val resultUri = result.uri
+                val selectedVideoPath = getAbsolutePath(this@AddPostActivity, resultUri)!!
+                val list = ArrayList<AddUpdateImageInput>()
+                val addUpdateImageInput = AddUpdateImageInput()
+                addUpdateImageInput.imageUrl = selectedVideoPath
+                val file = File(selectedVideoPath)
+                addUpdateImageInput.fileType = "Image"
+                addUpdateImageInput.fileUrl = file
+                addUpdateImageInput.imageFileName = selectedVideoPath
+                list.add(addUpdateImageInput)
+                imagesList!!.addAll(list)
+                imagesAdapter!!.notifyDataSetChanged()
+            }
 
         } else if (requestCode == RECODE_AUDIO && resultCode == RESULT_OK) {
 
@@ -535,9 +615,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
             try {
                 if (data != null) {
                     val bundle = data.getExtras();
-                    if (bundle!!.getString("filePath") != null && !bundle.getString("filePath").equals(
-                            "null"
-                        )
+                    if (bundle!!.getString("filePath") != null && !bundle.getString("filePath").equals("null")
                     ) {
                         var status = bundle.getString("onBackPress")
 
@@ -547,37 +625,39 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
 
                             try {
-                              //  runOnUiThread {
-                                    var ountDownTimer = object : CountDownTimer(1000, 1000) {
-                                        override fun onTick(millisUntilFinished: Long) {
-                                        }
+                                //  runOnUiThread {
+                                var ountDownTimer = object : CountDownTimer(1000, 1000) {
+                                    override fun onTick(millisUntilFinished: Long) {
+                                    }
 
-                                        override fun onFinish() {
-                                            try {
+                                    override fun onFinish() {
+                                        try {
 
-                                                val thumb = ThumbnailUtils.createVideoThumbnail(
-                                                    uri,
-                                                    MediaStore.Images.Thumbnails.MINI_KIND
-                                                );
-                                                if(thumb!=null){
-                                                    val tempUri = getImageUri(getApplicationContext(), thumb!!);
-                                                    val thumPath = getAbsolutePath(baseActivity!!, tempUri)!!
-                                                    val file = File(thumPath)
-                                                    thumbNailFile = file
-                                                } else{
-                                                    val file = File("")
-                                                    thumbNailFile=file
-                                                }
-
-                                            }catch (e:Exception){
-
+                                            val thumb = ThumbnailUtils.createVideoThumbnail(
+                                                uri,
+                                                MediaStore.Images.Thumbnails.MINI_KIND
+                                            );
+                                            if (thumb != null) {
+                                                val tempUri =
+                                                    getImageUri(getApplicationContext(), thumb!!);
+                                                val thumPath =
+                                                    getAbsolutePath(baseActivity!!, tempUri)!!
+                                                val file = File(thumPath)
+                                                thumbNailFile = file
+                                            } else {
+                                                val file = File("")
+                                                thumbNailFile = file
                                             }
-                                          //  file.delete()
-                                          //  deleteFiles(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath)
+
+                                        } catch (e: Exception) {
 
                                         }
-                                    }.start()
-                              //  }
+                                        //  file.delete()
+                                        //  deleteFiles(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath)
+
+                                    }
+                                }.start()
+                                //  }
                             } catch (e: Exception) {
 
                             }
@@ -589,6 +669,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                             var ountDownTimer = object : CountDownTimer(1000, 1000) {
                                 override fun onTick(millisUntilFinished: Long) {
                                 }
+
                                 override fun onFinish() {
                                     playVideo(uri)
                                 }
@@ -604,6 +685,22 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
     }
 
+
+    fun getImageUriPath(
+        inContext: Context,
+        inImage: Bitmap?
+    ): Uri? {
+        val OutImage =
+            Bitmap.createScaledBitmap(inImage!!, 2000, 2000, false)
+        val path = MediaStore.Images.Media.insertImage(
+            inContext.contentResolver,
+            OutImage,
+            "Title",
+            null
+        )
+        return Uri.parse(path)
+    }
+
     fun getPath(uri: Uri?): String? {
         val projection =
             arrayOf(MediaStore.Images.Media.DATA)
@@ -616,12 +713,10 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     }
 
 
-
-
-    public fun deleteFiles( path:String) {
+    public fun deleteFiles(path: String) {
 
         try {
-            var file =  File(path);
+            var file = File(path);
 
             if (file.exists()) {
                 var deleteCmd = "rm -r " + path;
@@ -633,7 +728,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         } catch (e: Exception) {
         }
     }
-
 
 
     fun getImageUri(inContext: Context, inImage: Bitmap): Uri {
@@ -707,13 +801,13 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 showMessage(this@AddPostActivity, data.Message!!)
                 //finish()
                 status = "1"
-                if(thumbNailFile!=null){
+                if (thumbNailFile != null) {
                     thumbNailFile!!.delete()
                 }
 
                 onBackPressed()
-            } else if(data.StatusCode==400) {
-                if(thumbNailFile!=null){
+            } else if (data.StatusCode == 400) {
+                if (thumbNailFile != null) {
                     thumbNailFile!!.delete()
                 }
                 sharedPref!!.cleanPref()
@@ -731,6 +825,108 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     override fun onError() {
         hideDialog()
     }
+
+    private fun uploadImage() {
+
+        val uploadImage = Dialog(this)
+        uploadImage.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        uploadImage.setContentView(R.layout.upload_document_dialog)
+
+        uploadImage.window!!.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+        uploadImage.setCancelable(true)
+        uploadImage.setCanceledOnTouchOutside(true)
+        uploadImage.window!!.setGravity(Gravity.BOTTOM)
+
+        uploadImage.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        uploadImage.tvGallery.setOnClickListener {
+            uploadImage.dismiss()
+            gallery()
+        }
+        uploadImage.tvCamera.setOnClickListener {
+            uploadImage.dismiss()
+            camera()
+        }
+        uploadImage.tv_cancel.setOnClickListener {
+            uploadImage.dismiss()
+        }
+        uploadImage.show()
+    }
+
+    fun camera() {
+
+        if (CheckRuntimePermissions.checkMashMallowPermissions(
+                baseActivity,
+                PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
+            )
+        ) {
+//            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//            //  cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri1);
+//            startActivityForResult(cameraIntent, CAMERA_REQUEST)
+
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (cameraIntent.resolveActivity(this!!.packageManager) != null) {
+                var photoFile: File? = null
+                try {
+                    photoFile = createImageFile()
+                } catch (ex: IOException) {
+                }
+                if (photoFile != null) {
+                    val builder = StrictMode.VmPolicy.Builder()
+                    StrictMode.setVmPolicy(builder.build())
+                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile))
+                    startActivityForResult(cameraIntent, CAMERA_REQUEST)
+                }
+            }
+
+        }
+    }
+
+
+    @SuppressLint("SimpleDateFormat")
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val imageFileName = "JPEG_" + timeStamp + "_"
+        val storageDir = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES
+        )
+        val image = File.createTempFile(
+            imageFileName, // prefix
+            ".jpg", // suffix
+            storageDir      // directory
+        )
+
+        // Save a file: path for use with ACTION_VIEW intents
+        tempPath = "file:" + image.absolutePath
+        return image
+    }
+
+
+    fun gallery() {
+//        val i = Intent(
+//            Intent.ACTION_PICK,
+//            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+//        )
+//        startActivityForResult(i, RESULT_LOAD_IMAGE)
+
+
+        val intent = Intent()
+        intent.setTypeAndNormalize("image/*")
+        intent.action = Intent.ACTION_GET_CONTENT
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Video"),
+            RESULT_LOAD_IMAGE
+        )
+
+
+    }
+
 }
 
 

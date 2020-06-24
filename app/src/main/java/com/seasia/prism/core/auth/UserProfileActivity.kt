@@ -5,43 +5,52 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Environment
+import android.os.StrictMode
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.InputFilter
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.View
-import android.widget.EditText
+import android.view.Window
+import android.view.WindowManager
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.seasia.prism.App
 import com.seasia.prism.MainActivity
 import com.seasia.prism.R
 import com.seasia.prism.callbacks.UserProfileCallback
+import com.seasia.prism.core.BaseActivity
 import com.seasia.prism.databinding.ActivityUserProfileBinding
-import com.seasia.prism.model.*
+import com.seasia.prism.model.GetUserProfileInput
+import com.seasia.prism.model.GetUserProfileResponse
+import com.seasia.prism.model.UserProfileInput
+import com.seasia.prism.model.UserProfileResponse
 import com.seasia.prism.presenter.UpdateUserProfilePresenter
 import com.seasia.prism.util.CheckRuntimePermissions
-import com.seasia.prism.util.DateTimeUtil
 import com.seasia.prism.util.PreferenceKeys
 import com.seasia.prism.util.UtilsFunctions
 import com.seasia.prism.util.UtilsFunctions.showToast
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.AddUpdateImageInput
-import com.seasia.prism.core.BaseActivity
+import com.theartofdev.edmodo.cropper.CropImage
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.api.widget.Widget
+import kotlinx.android.synthetic.main.upload_document_dialog.*
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import android.text.TextWatcher as TextWatcher1
 
 
 class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCallback,
@@ -63,9 +72,11 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     var senderId = ""
     var day = ""
     var month = ""
-    var imageUrl=""
-    var enabeledField="false"
+    var imageUrl = ""
+    var enabeledField = "false"
     var year = ""
+    var tempPath = ""
+    var imageUri1: Uri? = null
     private val REQUEST_PERMISSIONS = 1
     private var mAlbumFiles = ArrayList<AlbumFile>()
     val PERMISSION_READ_STORAGE = arrayOf(
@@ -87,7 +98,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     override fun initViews() {
         binding = viewDataBinding as ActivityUserProfileBinding
         binding!!.includeView.ivBack.setOnClickListener {
-                finish()
+            finish()
         }
         binding!!.etDob.setOnClickListener(this)
         binding!!.btSubmit.setOnClickListener(this)
@@ -106,7 +117,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             if (postedByMail.equals(emailId)) {
                 binding!!.includeView.toolbatTitle.text = "Profile"
                 updateUser = true
-                enabeledField="true"
+                enabeledField = "true"
                 enabledField(true)
                 binding!!.btSubmit.visibility = View.VISIBLE
                 binding!!.btnFlooting.show()
@@ -117,7 +128,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 binding!!.btnFlooting.hide()
                 binding!!.includeView.toolbatTitle.text = "Profile"
                 enabledField(false)
-                enabeledField="false"
+                enabeledField = "false"
                 getUserProfile(postedByMail)
                 senderId = anouterUserId;
             }
@@ -130,7 +141,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         } else {
             binding!!.btnFlooting.hide()
             binding!!.includeView.toolbatTitle.setText("Signup")
-            enabeledField="true"
+            enabeledField = "true"
         }
 
         if (intent.getStringExtra("email") != null) {
@@ -144,7 +155,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         binding!!.etLastName.isEnabled = status
         binding!!.etPhone.isEnabled = status
         binding!!.etDob.isEnabled = status
-      //  binding!!.ivProfile.isEnabled = status
+        //  binding!!.ivProfile.isEnabled = status
         binding!!.rbMale.isClickable = status
         binding!!.rbFemale.isClickable = status
         binding!!.rbNa.isClickable = status
@@ -217,6 +228,11 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             .onResult { result ->
                 mAlbumFiles = result
                 fileUri = mAlbumFiles.get(0).path
+//
+//                CropImage.activity()
+//                    .setGuidelines(CropImageView.Guidelines.ON)
+//
+//                    .start(this);
 
                 val file = File(fileUri)
                 imageFile = file
@@ -262,33 +278,33 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             }
             R.id.iv_profile -> {
 
-
-
-
-                if(enabeledField.equals("false")){
-                    var intent=Intent(this,ProfileImageActivity::class.java)
-                    intent.putExtra("imageUrl",imageUrl)
+                if (enabeledField.equals("false")) {
+                    var intent = Intent(this, ProfileImageActivity::class.java)
+                    intent.putExtra("imageUrl", imageUrl)
                     startActivity(intent)
 
-                } else{
+                } else {
                     if (CheckRuntimePermissions.checkMashMallowPermissions(
                             baseActivity,
                             PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
                         )
                     ) {
-                        if (videoOpenStatus == 0) {
-                            mAlbumFiles = ArrayList()
-                            selectAlbum()
-                            videoOpenStatus = 1
-                        }
+//                        if (videoOpenStatus == 0) {
+//                            mAlbumFiles = ArrayList()
+//                            selectAlbum()
+//                            videoOpenStatus = 1
+//                        }
 
-                        //  selectImage()
+                        // selectImage()
+
+                        uploadImage()
+
+
+//                        var intent=Intent(this,ProfileImageActivity::class.java)
+//                        intent.putExtra("imageUrl",imageUrl)
+//                        startActivity(intent)
                     }
                 }
-
-
-
-
             }
         }
     }
@@ -329,20 +345,137 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 PERMISSION_READ_STORAGE, REQUEST_PERMISSIONS
             )
         ) {
-            val cameraIntent =
-                Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(cameraIntent, CAMERA_REQUEST)
+            try {
+//                val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//                startActivityForResult(cameraIntent, CAMERA_REQUEST)
 
+
+
+
+                val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (cameraIntent.resolveActivity(this!!.packageManager) != null) {
+                    var photoFile: File? = null
+                    try {
+                        photoFile = createImageFile()
+                    } catch (ex: IOException) {
+                    }
+                    if (photoFile != null) {
+                        val builder = StrictMode.VmPolicy.Builder()
+                        StrictMode.setVmPolicy(builder.build())
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile))
+                        startActivityForResult(cameraIntent, CAMERA_REQUEST)
+                    }
+                }
+
+
+
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+
+            }
         }
+    }
+    @SuppressLint("SimpleDateFormat")
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val imageFileName = "JPEG_" + timeStamp + "_"
+        val storageDir = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES
+        )
+        val image = File.createTempFile(
+            imageFileName, // prefix
+            ".jpg", // suffix
+            storageDir      // directory
+        )
+
+        // Save a file: path for use with ACTION_VIEW intents
+        tempPath = "file:" + image.absolutePath
+        return image
+    }
+
+
+
+    fun getImageUriPath(
+        inContext: Context,
+        inImage: Bitmap?
+    ): Uri? {
+        val OutImage =
+            Bitmap.createScaledBitmap(inImage!!, 2000, 2000, false)
+        val path = MediaStore.Images.Media.insertImage(
+            inContext.contentResolver,
+            OutImage,
+            "Title",
+            null
+        )
+        return Uri.parse(path)
+    }
+
+
+    private fun getImageUri(): Uri? {
+        var m_imgUri: Uri? = null
+        val m_file: File
+        try {
+            val m_sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
+            var m_curentDateandTime = m_sdf.format(Date())
+
+
+            //Get File if SD card is present
+//                if (new CheckForSDCard().isSDCardPresent()) {
+//
+//                    apkStorage = new File(Environment.getExternalStorageDirectory() + "/" + "CodePlayon");
+//                } else
+//                    Toast.makeText(context, "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
+
+            //If File is not present create directory
+           var apkStorage = File(Environment.getExternalStorageDirectory(), "SeasiaPrism111")
+
+            if (!apkStorage.exists()) {
+                apkStorage.mkdir()
+            }
+           var outputFile = File(apkStorage, ""+m_curentDateandTime + ".jpg")
+
+            //Create New File if not present
+            if (!outputFile.exists()) {
+                outputFile.createNewFile()
+            }
+
+
+            var m_imagePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                .toString() + File.separator + m_curentDateandTime + ".jpg"
+            m_file = File(m_imagePath)
+
+
+            m_imgUri = FileProvider.getUriForFile(this@UserProfileActivity,
+                "com.example.homefolder.example.provider",  //(use your app signature + ".provider" )
+                m_file
+            )
+
+
+         //   m_imgUri = Uri.fromFile(outputFile)
+        } catch (p_e: java.lang.Exception) {
+        }
+        return m_imgUri
     }
 
 
     fun gallery() {
-        val i = Intent(
-            Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+//        val i = Intent(
+//            Intent.ACTION_PICK,
+//            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+//        )
+//        startActivityForResult(i, RESULT_LOAD_IMAGE)
+
+        val intent = Intent()
+        intent.setTypeAndNormalize("image/*")
+        intent.action = Intent.ACTION_GET_CONTENT
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Video"),
+            RESULT_LOAD_IMAGE
         )
-        startActivityForResult(i, RESULT_LOAD_IMAGE)
     }
 
 
@@ -440,21 +573,33 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode === CAMERA_REQUEST && resultCode === Activity.RESULT_OK) {
-            val extras = data!!.getExtras();
-            val imageBitmap = extras!!.get("data") as Bitmap;
-            val tempUri = getImageUri(getApplicationContext(), imageBitmap);
-            fileUri = getAbsolutePath(this@UserProfileActivity, tempUri)!!
-            val file = File(fileUri)
-            imageFile = file
-            Glide.with(this).load(tempUri).placeholder(R.drawable.user).error(R.drawable.user)
-                .into(binding!!.ivProfile)
+
+            CropImage.activity(Uri.parse(tempPath))
+                .start(this);
+
         } else if (requestCode === RESULT_LOAD_IMAGE && resultCode === Activity.RESULT_OK && null != android.R.attr.data) {
             val selectedImage: Uri = data!!.getData()!!
-            fileUri = getAbsolutePath(this, selectedImage)!!
-            val file = File(fileUri)
-            imageFile = file
-            Glide.with(this).load(fileUri).placeholder(R.drawable.user).error(R.drawable.user)
-                .into(binding!!.ivProfile)
+
+
+            CropImage.activity(selectedImage)
+                .start(this);
+
+//            fileUri = getAbsolutePath(this, selectedImage)!!
+//            val file = File(fileUri)
+//            imageFile = file
+//            Glide.with(this).load(fileUri).placeholder(R.drawable.user).error(R.drawable.user)
+//                .into(binding!!.ivProfile)
+        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (result != null) {
+                val resultUri = result.uri
+                fileUri = getAbsolutePath(this@UserProfileActivity, resultUri)!!
+                val file = File(fileUri)
+                imageFile = file
+                Glide.with(this).load(resultUri).placeholder(R.drawable.user).error(R.drawable.user)
+                    .into(binding!!.ivProfile)
+            }
+
         }
     }
 
@@ -561,8 +706,6 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 binding!!.etFirstName.setText(firstName)
                 binding!!.etLastName.setText(lastName)
 
-
-
                 if (postedByMail.equals(emailId)) {
                     sharedPref!!.saveString(
                         PreferenceKeys.USERNAME,
@@ -601,7 +744,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                     .placeholder(R.drawable.user).error(R.drawable.user)
                     .into(binding!!.ivProfile!!)
 
-                imageUrl=data!!.ResultData!!.ImageUrl!!
+                imageUrl = data!!.ResultData!!.ImageUrl!!
 
                 if (postedByMail.equals(emailId)) {
                     sharedPref!!.saveString(
@@ -622,5 +765,36 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 
     override fun onError() {
         hideDialog()
+    }
+
+    private fun uploadImage() {
+
+        val uploadImage = Dialog(this)
+        uploadImage.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        uploadImage.setContentView(R.layout.upload_document_dialog)
+
+        uploadImage.window!!.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+        uploadImage.setCancelable(true)
+        uploadImage.setCanceledOnTouchOutside(true)
+        uploadImage.window!!.setGravity(Gravity.BOTTOM)
+
+        uploadImage.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        uploadImage.tvGallery.setOnClickListener {
+            uploadImage.dismiss()
+            gallery()
+        }
+        uploadImage.tvCamera.setOnClickListener {
+            uploadImage.dismiss()
+            camera()
+        }
+        uploadImage.tv_cancel.setOnClickListener {
+            uploadImage.dismiss()
+        }
+        uploadImage.show()
+
     }
 }

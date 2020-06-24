@@ -100,7 +100,6 @@ class HobbiesActivity : BaseActivity(), View.OnClickListener, HobbiesCallback {
         }
 
         bundle.putString("userId",userId)
-
         fragment.setArguments(bundle)
         if (leftIn.equals("0")) {
             if(choiceQuestion!=null){

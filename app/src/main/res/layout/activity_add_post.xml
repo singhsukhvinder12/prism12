@@ -44,8 +44,7 @@
                         android:layout_height="@dimen/dp_50"
                         android:layout_marginStart="@dimen/dp_15"
                         android:layout_marginEnd="@dimen/dp_8"
-                        android:src="@drawable/user"
-                        tools:ignore="UnusedAttribute" />
+                        android:src="@drawable/user" />
 
                     <TextView
                         android:id="@+id/userName"
@@ -346,14 +345,14 @@
                         android:layout_marginLeft="@dimen/dp_15"
                         android:layout_marginTop="@dimen/dp_15"
                         android:layout_marginRight="@dimen/dp_15"
-                        android:visibility="gone">
-
+                        android:visibility="gone">4
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvImage"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginTop="@dimen/dp_10" />
+
 
 
                     </RelativeLayout>

@@ -102,10 +102,12 @@
                         android:fontFamily="@font/opensans_regular"
                         android:maxLength="20"
 
+
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
                         android:layout_marginEnd="@dimen/dp_10"
                         android:background="@drawable/rectangle_blue_stroke"
                         android:hint="@string/first_name"
+                        android:textColor="@color/black"
                         android:padding="@dimen/dimen_10dp"
                         android:singleLine="true" />
 
@@ -138,6 +140,7 @@
                         android:layout_marginStart="@dimen/dp_10"
                         android:layout_marginTop="@dimen/dp_10"
                         android:maxLength="20"
+                        android:textColor="@color/black"
                         android:inputType="textPersonName|textCapWords"
                         android:fontFamily="@font/opensans_regular"
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -172,6 +175,7 @@
                         android:background="@drawable/rectangle_blue_stroke"
                         android:hint="@string/phone_number"
                         android:inputType="phone"
+                        android:textColor="@color/black"
                         android:fontFamily="@font/opensans_regular"
                         android:digits="0123456789"
                         android:maxLength="10"
@@ -234,8 +238,7 @@
                             android:layout_weight="1"
                             android:paddingStart="@dimen/dimen_10dp"
                             android:text="@string/male"
-                            android:textColor="@color/color_grey_text"
-                            app:layout_constraintEnd_toStartOf="@+id/rb_female"
+                            android:textColor="@color/black"                            app:layout_constraintEnd_toStartOf="@+id/rb_female"
                             app:layout_constraintStart_toStartOf="parent" />
 
                         <RadioButton
@@ -244,7 +247,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/female"
-                            android:textColor="@color/color_grey_text"
+                            android:textColor="@color/black"
                             app:layout_constraintEnd_toStartOf="@+id/rb_na"
                             app:layout_constraintStart_toEndOf="@+id/rb_male"
                             app:layout_constraintTop_toBottomOf="@+id/tv_gender" />
@@ -255,8 +258,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/other"
-                            android:textColor="@color/color_grey_text"
-                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:textColor="@color/black"                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/rb_female"
                             app:layout_constraintTop_toTopOf="@+id/rb_female" />
@@ -331,6 +333,7 @@
                     android:layout_marginBottom="@dimen/dp_16"
                     android:background="@drawable/rectangle_blue_stroke"
                     android:hint="@string/email"
+                    android:textColor="@color/black"
                     android:singleLine="true"
                     android:padding="@dimen/dimen_10dp"
                     android:fontFamily="@font/opensans_regular"

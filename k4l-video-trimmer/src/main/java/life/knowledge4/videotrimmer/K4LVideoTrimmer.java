@@ -170,14 +170,14 @@ public class K4LVideoTrimmer extends FrameLayout {
                 }
         );
 
-        mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
-                if (mOnTrimVideoListener != null)
-                    mOnTrimVideoListener.onError("Something went wrong reason : " + what);
-                return false;
-            }
-        });
+//        mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+//            @Override
+//            public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
+//                if (mOnTrimVideoListener != null)
+//                    mOnTrimVideoListener.onError("Something went wrong reason : " + what);
+//                return true;
+//            }
+//        });
 
         mVideoView.setOnTouchListener(new View.OnTouchListener() {
             @Override

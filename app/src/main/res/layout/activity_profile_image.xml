@@ -12,6 +12,7 @@
     <include
         android:id="@+id/includeView"
         layout="@layout/toolbar"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,6 +22,8 @@
     <ImageView
         android:layout_below="@+id/includeView"
         android:id="@+id/image"
+        android:layout_marginTop="@dimen/dp_120"
+        android:layout_marginBottom="@dimen/dp_120"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

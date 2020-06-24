@@ -114,9 +114,11 @@ class NewsFeedAdapter(
                                 var url = mList.get(position).lstDocuments!!.get(i).URL
                                 ImagesArray.add(url!!);
                             }
+
                             // var mPager = holder.findViewById(R.id.viewPager) as ViewPager
                             holder.viewPager!!.adapter =
                                 SlidingImage_Adapter(context.activity, ImagesArray)
+
                         }
 
                     } else if (isTYpe.equals("Audio")) {
@@ -159,23 +161,29 @@ class NewsFeedAdapter(
 
                         val url = mList.get(position).lstDocuments!!.get(0).URL
                         var thumbNail=""
-
+                        var documentId= mList.get(position).lstDocuments!!.get(0).DocumentId
 
                         holder.videoView1!!.setOnClickListener {
-                            if (!UtilsFunctions.isNetworkAvailable(App.app)) {
-                                UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
-                            } else {
 
-                                if (videoOpenStatus == 0) {
-                                    videoOpenStatus = 1
-                                    var intent =
-                                        Intent(context.activity, PlayVideoActivity::class.java)
-                                    intent.putExtra("videoPath", url)
-                                    intent.putExtra("thumbNail", thumbNail)
-                                    context.startActivity(intent)
+                            if (CheckRuntimePermissions.checkMashMallowPermissions(
+                                    baseActivity,
+                                    context.PERMISSION_READ_STORAGE, context.REQUEST_PERMISSIONS)) {
+                                if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+                                    UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+                                } else {
+                                    if (videoOpenStatus == 0) {
+                                        videoOpenStatus = 1
+                                        var intent =
+                                            Intent(context.activity, PlayVideoActivity::class.java)
+                                        intent.putExtra("videoPath", url)
+                                        intent.putExtra("thumbNail", thumbNail)
+                                        intent.putExtra("documentId", documentId)
+                                        context.startActivity(intent)
+                                    }
+                                    //baseActivity!!.showDialog()
                                 }
-                                //baseActivity!!.showDialog()
                             }
+
                         }
 
                         try {

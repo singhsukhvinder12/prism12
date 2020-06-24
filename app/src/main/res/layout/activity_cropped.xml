@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".imagecroper.crop.CroppedActivity">
+
+<!--    <FrameLayout-->
+<!--        android:layout_below="@+id/linear_layout"-->
+<!--        android:id="@+id/frame_layout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@color/colorWhite" />-->
+
+    <fragment
+        android:id="@+id/frame_layout12"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+
+        app:navGraph="@navigation/navigation_graph"
+        tools:ignore="FragmentTagUsage" />
+
+</RelativeLayout>

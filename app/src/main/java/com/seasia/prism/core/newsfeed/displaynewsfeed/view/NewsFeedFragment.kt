@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -18,21 +19,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.seasia.prism.App
 import com.seasia.prism.R
-import com.seasia.prism.databinding.FragmentNewsFeedBinding
-import com.seasia.prism.model.DeviceTokenInput
-import com.seasia.prism.util.PreferenceKeys
-import com.seasia.prism.util.UtilsFunctions
-import com.seasia.prism.core.newsfeed.displaynewsfeed.callback.NewsFeedCallback
-import com.seasia.prism.core.newsfeed.displaynewsfeed.pagination.EndlessRecyclerViewScrollListenerImplementation
-import com.seasia.prism.core.newsfeed.displaynewsfeed.callback.LikeInterface
-import com.seasia.prism.core.newsfeed.displaynewsfeed.presenter.LikePresenter
-import com.seasia.prism.core.newsfeed.displaynewsfeed.presenter.NewsFeedPresenter
 import com.seasia.prism.core.BaseFragment
 import com.seasia.prism.core.newsfeed.AddPostActivity
 import com.seasia.prism.core.newsfeed.displaynewsfeed.adapter.NewsFeedAdapter
+import com.seasia.prism.core.newsfeed.displaynewsfeed.callback.LikeInterface
+import com.seasia.prism.core.newsfeed.displaynewsfeed.callback.NewsFeedCallback
 import com.seasia.prism.core.newsfeed.displaynewsfeed.model.*
-
+import com.seasia.prism.core.newsfeed.displaynewsfeed.pagination.EndlessRecyclerViewScrollListenerImplementation
+import com.seasia.prism.core.newsfeed.displaynewsfeed.presenter.LikePresenter
+import com.seasia.prism.core.newsfeed.displaynewsfeed.presenter.NewsFeedPresenter
+import com.seasia.prism.databinding.FragmentNewsFeedBinding
+import com.seasia.prism.model.DeviceTokenInput
+import com.seasia.prism.util.DownloadTask
+import com.seasia.prism.util.PreferenceKeys
+import com.seasia.prism.util.UtilsFunctions
 import kotlinx.android.synthetic.main.fragment_news_feed.*
+import java.io.*
+import java.net.URL
+import java.net.URLConnection
 
 class NewsFeedFragment : BaseFragment(true),
     LikeInterface, View.OnClickListener,EndlessRecyclerViewScrollListenerImplementation.OnScrollPageChangeListener,
@@ -83,14 +87,18 @@ class NewsFeedFragment : BaseFragment(true),
 
 
 
+
     companion object {
         var videoOpenStatus=0
 
+        var url=""
 
         var change = 0
         var commentChange = 0
         var fromIncidentDetailScreen = 0
         var commentsCount = 0
+
+
     }
 
 
@@ -109,6 +117,29 @@ class NewsFeedFragment : BaseFragment(true),
         setupUI()
 
     }
+
+
+    private fun downloadFile(url: String, outputFile: File) {
+        try {
+            val u = URL(url)
+            val conn: URLConnection = u.openConnection()
+            val contentLength: Int = conn.getContentLength()
+            val stream = DataInputStream(u.openStream())
+            val buffer = ByteArray(contentLength)
+            stream.readFully(buffer)
+            stream.close()
+            val fos = DataOutputStream(FileOutputStream(outputFile))
+            fos.write(buffer)
+            fos.flush()
+            fos.close()
+        } catch (e: FileNotFoundException) {
+            return  // swallow a 404
+        } catch (e: IOException) {
+            return  // swallow a 404
+        }
+    }
+
+
 
     fun getFeedData() {
         if (!UtilsFunctions.isNetworkAvailable(App.app)) {

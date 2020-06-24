@@ -547,7 +547,8 @@ public class BaseCameraActivity extends AppCompatActivity {
 //
 //                    }
 //                }
-            } else if (requestCode == 2) {
+            }
+            else if (requestCode == 2) {
                 try {
                     if (data.getStringExtra("filePath") != null) {
                         //Toast.makeText(this,""+data.getStringExtra("filePath"),Toast.LENGTH_LONG).show();

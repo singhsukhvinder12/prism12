@@ -109,13 +109,13 @@ class MainActivity : BaseActivity(), LogoutCallback {
         var btnLogout = dialog.findViewById<TextView>(R.id.tv_delete)
         var btnCancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         btnLogout.setOnClickListener {
-            dialog.hide()
+            dialog.dismiss()
             showDialog()
             logoutPresenter!!.hitApiLogout(userId, "1")
 
         }
         btnCancel.setOnClickListener {
-            dialog.hide()
+            dialog.dismiss()
         }
         dialog.show()
     }

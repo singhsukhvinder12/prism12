@@ -130,7 +130,7 @@
                     android:visibility="gone"
                     android:id="@+id/viewPagerParent"
                     android:layout_width="fill_parent"
-                    android:layout_height="200dp" >
+                    android:layout_height="270dp" >
 
                     <androidx.viewpager.widget.ViewPager
                         android:id="@+id/viewPager"
@@ -158,7 +158,7 @@
                     android:layout_marginTop="6dp"
                     android:id="@+id/parentVideoView"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp">
+                    android:layout_height="270dp">
                     <ImageView
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentRight="true"
@@ -185,7 +185,7 @@
                     android:id="@+id/audioView"
                     android:visibility="gone"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp">
+                    android:layout_height="270dp">
 
                     <ImageView
                         android:id="@+id/audioPlay"

@@ -14,10 +14,11 @@
     <color name="colorGray">#DCDCDC</color>
     <color name="colorGrayDark">#CDC9C9</color>
     <color name="colorBackgroundGrey">#e7e7e7</color>
-
     <color name="color_primary_blue">#40bfff</color>
     <color name="color_navy_blue">#223263</color>
     <color name="color_green">#85EC63</color>
+    <color name="color_green_black">#600E0404</color>
+    <color name="color_green_dark">#128C7E</color>
     <color name="color_grey_toolbar">#ebf0ff</color>
     <color name="color_grey_text">#757575</color>
     <color name="grey">#9098b1</color>
