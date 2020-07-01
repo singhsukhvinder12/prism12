@@ -1,8 +1,6 @@
 package com.seasia.prism.core.fragment
 
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
@@ -21,7 +19,7 @@ import com.seasia.prism.presenter.ChoicePresenter
 import com.seasia.prism.util.PreferenceKeys
 import com.seasia.prism.util.PrefStore
 import com.seasia.prism.util.UtilsFunctions
-import com.seasia.prism.core.auth.HobbiesActivity
+import com.seasia.prism.core.ui.HobbiesActivity
 
 
 class ChoiceFragment : Fragment(),ChoiceCallback, View.OnClickListener {

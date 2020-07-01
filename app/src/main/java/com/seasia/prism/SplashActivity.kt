@@ -1,13 +1,10 @@
 package com.seasia.prism
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import com.seasia.prism.util.UtilsFunctions
 import com.seasia.prism.core.auth.EmailActivity
-import com.seasia.prism.core.auth.HobbiesActivity
 import com.seasia.prism.core.BaseActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId

@@ -3,19 +3,18 @@ package com.seasia.prism.presenter
 import com.seasia.prism.App
 import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
-import com.seasia.prism.core.newsfeed.AddPostActivity
-import com.seasia.prism.core.newsfeed.AddPostInput
-import com.seasia.prism.core.newsfeed.AddPostResponse
+import com.seasia.prism.newsfeed.AddPostActivity
+import com.seasia.prism.newsfeed.AddPostInput
+import com.seasia.prism.newsfeed.AddPostResponse
+import com.seasia.prism.newsfeed.displaynewsfeed.model.AddUpdateImageInput
 import com.seasia.prism.util.UtilsFunctions
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.AddUpdateImageInput
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import java.io.File
-import java.lang.Exception
-import java.util.HashMap
+import java.util.*
 
 class AddPostPresenter(var addPostActivity: AddPostActivity) {
     private var imageParts: Array<MultipartBody.Part?>? = null
@@ -32,6 +31,9 @@ class AddPostPresenter(var addPostActivity: AddPostActivity) {
     fun toRequestBody(value: String): RequestBody {
         return RequestBody.create(MediaType.parse("text/plain"), value)
     }
+
+
+
     fun getPostData(
         addPost: AddPostInput,
         videoFIle: File?,
@@ -48,7 +50,17 @@ class AddPostPresenter(var addPostActivity: AddPostActivity) {
         map["Links"] = toRequestBody(addPost.Links.toString())
         map["NewsLetterIds"] = toRequestBody(addPost.NewsLetterIds.toString())
         map["ParticularId"] = toRequestBody(addPost.ParticularId.toString())
-        map["TypeId"] = toRequestBody(addPost.TypeId.toString())
+        map["DeletedTagIds[0]"] = toRequestBody("0")
+//        map["TagIds[0]"] = toRequestBody("1631")
+
+        if(addPost.TagIds!!.size>0){
+            for (i in 0..addPost.TagIds!!.size-1) {
+                val  requestBody = RequestBody.create(MediaType.parse("text/plain"), addPost.TagIds!!.get(i))
+                map.put("TagIds[$i]", requestBody)
+
+            }
+        }
+
 
 
         if (audioFIle != null) {
@@ -122,7 +134,7 @@ class AddPostPresenter(var addPostActivity: AddPostActivity) {
                     addPostActivity.onError()
                     return
                 }
-                if (response != null) {
+                if (response.body() != null) {
                     addPostActivity.onSuccess(response.body())
 
                 } else {

@@ -1,6 +1,6 @@
 package com.seasia.prism.callbacks
 
-import com.seasia.prism.core.newsfeed.AddPostResponse
+import com.seasia.prism.newsfeed.AddPostResponse
 
 
 interface AddPostCallback {

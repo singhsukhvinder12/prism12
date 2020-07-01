@@ -31,12 +31,13 @@ import com.seasia.prism.MainActivity
 import com.seasia.prism.R
 import com.seasia.prism.callbacks.UserProfileCallback
 import com.seasia.prism.core.BaseActivity
+import com.seasia.prism.core.ui.SearchUserActivity
 import com.seasia.prism.databinding.ActivityUserProfileBinding
 import com.seasia.prism.model.GetUserProfileInput
 import com.seasia.prism.model.GetUserProfileResponse
 import com.seasia.prism.model.UserProfileInput
 import com.seasia.prism.model.UserProfileResponse
-import com.seasia.prism.presenter.UpdateUserProfilePresenter
+import com.seasia.prism.presenter.SignupPresenter
 import com.seasia.prism.util.CheckRuntimePermissions
 import com.seasia.prism.util.PreferenceKeys
 import com.seasia.prism.util.UtilsFunctions
@@ -64,7 +65,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     var userId = "0"
     var emailId = ""
     var updateUser = false
-    var presenter: UpdateUserProfilePresenter? = null
+    var presenter: SignupPresenter? = null
     var status = "0"
     var mytext = ""
     var anouterUserId = ""
@@ -103,10 +104,9 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         binding!!.etDob.setOnClickListener(this)
         binding!!.btSubmit.setOnClickListener(this)
         binding!!.ivProfile.setOnClickListener(this)
-        binding!!.btnFlooting.setOnClickListener(this)
         binding!!.relMain.setOnClickListener(this)
         binding!!.radioGroupGender.setOnCheckedChangeListener(this)
-        presenter = UpdateUserProfilePresenter(this)
+        presenter = SignupPresenter(this)
         if (intent.getStringExtra("comingFrom") != null) {
 
             userId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")!!
@@ -115,31 +115,31 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             postedByMail = intent.getStringExtra("postedByMail")
             anouterUserId = intent.getStringExtra("anotherUser")
             if (postedByMail.equals(emailId)) {
-                binding!!.includeView.toolbatTitle.text = "Profile"
+                binding!!.includeView.toolbatTitle.text = "Edit Profile"
                 updateUser = true
                 enabeledField = "true"
                 enabledField(true)
                 binding!!.btSubmit.visibility = View.VISIBLE
-                binding!!.btnFlooting.show()
                 getUserProfile(emailId)
                 senderId = userId;
             } else {
                 binding!!.btSubmit.visibility = View.GONE
-                binding!!.btnFlooting.hide()
-                binding!!.includeView.toolbatTitle.text = "Profile"
+                binding!!.includeView.toolbatTitle.text = "View Profile"
                 enabledField(false)
                 enabeledField = "false"
                 getUserProfile(postedByMail)
                 senderId = anouterUserId;
             }
-            binding!!.includeView.ivQuestion.visibility = View.VISIBLE
-            binding!!.includeView.ivQuestion.setOnClickListener {
-                var intent = Intent(this@UserProfileActivity, HobbiesActivity::class.java)
-                intent.putExtra("userId", senderId)
-                startActivity(intent)
-            }
+//            binding!!.includeView.ivQuestion.visibility = View.VISIBLE
+//            binding!!.includeView.ivQuestion.setOnClickListener {
+//                var intent = Intent(this@UserProfileActivity, HobbiesActivity::class.java)
+//                intent.putExtra("userId", senderId)
+//                startActivity(intent)
+//            }
+
+            binding!!.etStatus.visibility=View.VISIBLE
         } else {
-            binding!!.btnFlooting.hide()
+            binding!!.etStatus.visibility=View.GONE
             binding!!.includeView.toolbatTitle.setText("Signup")
             enabeledField = "true"
         }
@@ -155,6 +155,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         binding!!.etLastName.isEnabled = status
         binding!!.etPhone.isEnabled = status
         binding!!.etDob.isEnabled = status
+        binding!!.etStatus.isEnabled = status
         //  binding!!.ivProfile.isEnabled = status
         binding!!.rbMale.isClickable = status
         binding!!.rbFemale.isClickable = status
@@ -272,10 +273,6 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 validations()
             }
 
-            R.id.btnFlooting -> {
-                var intent = Intent(this@UserProfileActivity, SearchUserActivity::class.java)
-                startActivity(intent)
-            }
             R.id.iv_profile -> {
 
                 if (enabeledField.equals("false")) {
@@ -541,6 +538,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         input.IFile = ""
         input.imageFile = imageFile
         input.Address = ""
+        input.Bio = binding!!.etStatus.text.toString()
         input.PhoneNo = binding!!.etPhone.text.toString()
         input.ImageUrl = fileUri
 
@@ -662,10 +660,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 data.ResultData!!.Email.toString()
             )
 
-            sharedPref!!.saveString(
-                PreferenceKeys.USER_IMAGE,
-                data.ResultData!!.ImageUrl.toString()
-            )
+            sharedPref!!.saveString(PreferenceKeys.USER_IMAGE, data.ResultData!!.ImageUrl.toString())
 
             var intent = Intent(this@UserProfileActivity, MainActivity::class.java)
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -686,6 +681,8 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 PreferenceKeys.USERNAME,
                 data.ResultData!!.FirstName.toString() + " " + data.ResultData!!.LastName.toString()
             )
+            sharedPref!!.saveString(PreferenceKeys.BIO, data.ResultData!!.Bio.toString())
+
             onBackPressed()
 
         }
@@ -727,12 +724,14 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 
             binding!!.etEmail.setText(data.ResultData!!.Email)
 
-
+            if(data.ResultData!!.Bio!=null){
+                binding!!.etStatus.setText(data.ResultData!!.Bio)
+            }
             try {
                 binding!!.etDob.setText(
                     getLocalDate("yyyy-MM-dd'T'HH:mm:ss", data.ResultData!!.DOB, "yyyy-MM-dd")
                 )
-                gender = data!!.ResultData!!.Gender!!
+                gender = data.ResultData!!.Gender!!
 
             } catch (e: java.lang.Exception) {
 
@@ -747,10 +746,9 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 imageUrl = data!!.ResultData!!.ImageUrl!!
 
                 if (postedByMail.equals(emailId)) {
-                    sharedPref!!.saveString(
-                        PreferenceKeys.USER_IMAGE,
-                        data!!.ResultData!!.ImageUrl.toString()
-                    )
+
+                    sharedPref!!.saveString(PreferenceKeys.USER_IMAGE, data!!.ResultData!!.ImageUrl.toString())
+                    sharedPref!!.saveString(PreferenceKeys.BIO, data.ResultData!!.Bio.toString())
                 }
             }
             if (gender.equals("M", true)) {

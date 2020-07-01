@@ -31,6 +31,7 @@ class GetUserProfileResponse {
         var Gender: String? = null
 
         var StrDOB: String? = null
+        var Bio: String? = null
     }
 
 }

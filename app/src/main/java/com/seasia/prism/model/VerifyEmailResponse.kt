@@ -48,6 +48,7 @@ class VerifyEmailResponse {
         var  LastName:String?=null
 
         var  Password:String?=null
+        var  Bio:String?=null
     }
 
 }

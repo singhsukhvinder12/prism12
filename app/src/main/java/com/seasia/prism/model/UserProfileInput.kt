@@ -15,6 +15,7 @@ class UserProfileInput {
     var DOB:String?=null
     var CityId:String?=null
     var IFile:String?=null
+    var Bio:String?=null
     var Password:String?=null
     var IsRegister:String?=null
     var imageFile: File?=null

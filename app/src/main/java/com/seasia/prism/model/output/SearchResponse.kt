@@ -33,6 +33,8 @@ class SearchResponse {
 
         var  StrDOB:String?=null
         var  UserName:String?=null
+        var  Bio:String?=null
+        var  isSelected="false"
     }
 
 }

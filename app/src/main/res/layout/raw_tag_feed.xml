@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:id="@+id/tagTextView"
+        android:text="my text"
+        android:scrollHorizontally="false"
+        android:singleLine="false"
+        android:textSize="12dp"
+        android:textColor="#1E21DF"
+        android:layout_margin="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

@@ -41,23 +41,25 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
-        <activity android:name=".imagecroper.crop.CroppedActivity"></activity>
+        <activity android:name=".core.ui.TagUsersActivity"></activity>
+        <activity android:name=".core.auth.ProfileActivity" />
+        <activity android:name=".imagecroper.crop.CroppedActivity" />
         <activity android:name=".imagecroper.ImageCropActivity" />
         <activity
             android:name=".core.auth.ProfileImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".core.auth.SearchUserActivity"
+            android:name=".core.ui.SearchUserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".core.auth.HobbiesActivity"
+            android:name=".core.ui.HobbiesActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".core.newsfeed.displaynewsfeed.view.ViewImageActivity"
+            android:name=".newsfeed.displaynewsfeed.view.ViewImageActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".core.auth.UserProfileActivity"
@@ -87,7 +89,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".core.auth.TrimmerActivity"
+            android:name=".core.ui.TrimmerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
@@ -101,50 +103,50 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.newsfeed.displaynewsfeed.view.CommentActivity"
+            android:name=".newsfeed.displaynewsfeed.view.CommentActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".core.newsfeed.audio_record.RecordAudioActivity"
+            android:name=".newsfeed.audio_record.RecordAudioActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".core.newsfeed.AddPostActivity"
+            android:name=".newsfeed.AddPostActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".core.newsfeed.displaynewsfeed.view.LikeListActivity"
+            android:name=".newsfeed.displaynewsfeed.view.LikeListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".core.newsfeed.audioplayer.PlayListActivity"
+            android:name=".newsfeed.audioplayer.PlayListActivity"
             android:screenOrientation="fullSensor"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".core.newsfeed.camera.SquareActivity"
+            android:name=".newsfeed.camera.SquareActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".core.newsfeed.camera.LandscapeActivity"
+            android:name=".newsfeed.camera.LandscapeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
-            android:name=".core.newsfeed.camera.CameraActivity"
+            android:name=".newsfeed.camera.CameraActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".core.newsfeed.displaynewsfeed.view.PlayVideoActivity"
+            android:name=".newsfeed.displaynewsfeed.view.PlayVideoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".core.newsfeed.audioplayer.AndroidBuildingMusicPlayerActivity"
+            android:name=".newsfeed.audioplayer.AndroidBuildingMusicPlayerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> <!-- <activity -->
         <!-- android:name=".camera.VideoTrimActivity" -->

@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
 
         android:focusable="false"
-        tools:context=".core.auth.SearchUserActivity">
+        tools:context=".core.ui.SearchUserActivity">
 
         <include
             android:id="@+id/includeView"
@@ -61,7 +61,7 @@
             android:fontFamily="@font/opensans_regular"
             android:text="No Record Found"
             android:textColor="@color/colorGrayDark"
-            android:textSize="@dimen/_20sdp"
+            android:textSize="18sp"
             android:visibility="gone" />
 
     </RelativeLayout>

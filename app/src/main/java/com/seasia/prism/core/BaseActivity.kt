@@ -3,8 +3,6 @@ package com.seasia.prism.core
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
@@ -14,10 +12,8 @@ import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.core.content.res.ResourcesCompat
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -30,10 +26,7 @@ import com.seasia.prism.R
 import com.seasia.prism.util.PrefStore
 import com.seasia.prism.util.Utils
 import com.seasia.prism.util.UtilsFunctions
-import com.google.firebase.crashlytics.internal.model.CrashlyticsReport
-import com.seasia.prism.core.newsfeed.displaynewsfeed.view.NewsFeedFragment
-import com.wang.avi.AVLoadingIndicatorView
-import java.security.AccessController.getContext
+import com.seasia.prism.newsfeed.displaynewsfeed.view.NewsFeedFragment
 import java.text.SimpleDateFormat
 import java.util.*
 

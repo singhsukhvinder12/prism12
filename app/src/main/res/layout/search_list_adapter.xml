@@ -88,6 +88,17 @@
                 android:layout_height="wrap_content"/>
 
 
+            <ImageView
+                android:id="@+id/tagUserCheck"
+                android:layout_marginRight="@dimen/_20sdp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                android:src="@drawable/ic_check_unselected"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_centerHorizontal="true" />
+
         </RelativeLayout>
     </RelativeLayout>
 

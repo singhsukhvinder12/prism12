@@ -6,7 +6,7 @@ import com.seasia.prism.api.GetRestAdapter
 import com.seasia.prism.model.output.ChoiceResponse
 import com.seasia.prism.model.output.QuestionResponse
 import com.seasia.prism.util.UtilsFunctions
-import com.seasia.prism.core.auth.HobbiesActivity
+import com.seasia.prism.core.ui.HobbiesActivity
 import retrofit2.Call
 import retrofit2.Callback
 

@@ -3,15 +3,14 @@ package com.seasia.prism.presenter
 import com.seasia.prism.App
 import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
-import com.seasia.prism.core.auth.SearchUserActivity
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.GetFeedResponse
+import com.seasia.prism.core.ui.SearchUserActivity
 import com.seasia.prism.model.input.SearchInput
 import com.seasia.prism.model.output.SearchResponse
 import com.seasia.prism.util.UtilsFunctions
 import retrofit2.Call
 import retrofit2.Callback
 
-class SearchPresenter(var searchUserActivity: SearchUserActivity,  var userList: ArrayList<SearchResponse.ResultDataList>) {
+class SearchPresenter(var searchUserActivity: SearchUserActivity, var userList: ArrayList<SearchResponse.ResultDataList>) {
 
 
         fun getData(input: SearchInput) {

@@ -1,9 +1,6 @@
 package com.seasia.prism.core.fragment
 
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -23,7 +20,7 @@ import com.seasia.prism.presenter.QuestionsPresenter
 import com.seasia.prism.util.PreferenceKeys
 import com.seasia.prism.util.PrefStore
 import com.seasia.prism.util.UtilsFunctions
-import com.seasia.prism.core.auth.HobbiesActivity
+import com.seasia.prism.core.ui.HobbiesActivity
 
 class CorridorFragment : Fragment(), QuestionCallback, View.OnClickListener {
     var thisThatAdapter: CorridorAdapter?=null

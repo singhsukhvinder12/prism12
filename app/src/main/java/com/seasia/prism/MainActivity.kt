@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.seasia.prism.callbacks.LogoutCallback
@@ -14,7 +15,9 @@ import com.seasia.prism.util.PreferenceKeys
 import com.seasia.prism.core.auth.EmailActivity
 import com.seasia.prism.core.auth.UserProfileActivity
 import com.seasia.prism.core.BaseActivity
-import com.seasia.prism.core.newsfeed.displaynewsfeed.view.NewsFeedFragment
+import com.seasia.prism.core.auth.ProfileActivity
+import com.seasia.prism.core.ui.SearchUserActivity
+import com.seasia.prism.newsfeed.displaynewsfeed.view.NewsFeedFragment
 
 
 class MainActivity : BaseActivity(), LogoutCallback {
@@ -30,10 +33,15 @@ class MainActivity : BaseActivity(), LogoutCallback {
 
     override fun onResume() {
         super.onResume()
+            Glide.with(this)
+                .load(sharedPref!!.getString(PreferenceKeys.USER_IMAGE, ""))
+                .placeholder(R.drawable.user)
+                .error(R.drawable.user)
+                .into(binding!!.includeView.ivEditProfile)
+
         click = 0
         try {
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-
         } catch (e: Exception) {
 
         }
@@ -43,7 +51,7 @@ class MainActivity : BaseActivity(), LogoutCallback {
         binding = viewDataBinding as ActivityMainBinding
         binding!!.includeView.ivBack.visibility = View.GONE
         binding!!.includeView.ivEditProfile.visibility = View.VISIBLE
-        binding!!.includeView.ivLogout.visibility = View.VISIBLE
+        binding!!.includeView.ivSearch.visibility = View.VISIBLE
         binding!!.includeView.toolbatTitle.setText("Seasia Prism")
         val transaction = supportFragmentManager.beginTransaction()
         logoutPresenter = LogoutPresenter(this)
@@ -52,10 +60,14 @@ class MainActivity : BaseActivity(), LogoutCallback {
         binding!!.includeView.ivEditProfile.setOnClickListener {
 
             if (click == 0) {
-                var intent = Intent(this, UserProfileActivity::class.java)
+               // var intent = Intent(this, UserProfileActivity::class.java)
+                var intent = Intent(this, ProfileActivity::class.java)
                 intent.putExtra("comingFrom", "editProfile")
                 intent.putExtra("postedByMail", sharedPref!!.getString(PreferenceKeys.EMAIL, "")!!)
                 intent.putExtra("anotherUser",sharedPref!!.getString(PreferenceKeys.USER_ID, "")!!)
+                intent.putExtra("profileImage",sharedPref!!.getString(PreferenceKeys.USER_IMAGE, "")!!)
+                intent.putExtra("userName",sharedPref!!.getString(PreferenceKeys.USERNAME, "")!!)
+                intent.putExtra("status",sharedPref!!.getString(PreferenceKeys.BIO, "")!!)
                 startActivityForResult(intent, 205)
                 click = 1
             }
@@ -69,8 +81,11 @@ class MainActivity : BaseActivity(), LogoutCallback {
             .into(binding!!.includeView.ivEditProfile)
 
 
-        binding!!.includeView.ivLogout.setOnClickListener {
-            logoutDialog()
+        binding!!.includeView.ivSearch.setOnClickListener {
+         //   logoutDialog()
+
+            val intent = Intent(this, SearchUserActivity::class.java)
+                startActivity(intent)
         }
 
     }

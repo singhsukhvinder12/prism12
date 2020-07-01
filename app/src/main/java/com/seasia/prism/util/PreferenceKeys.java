@@ -17,5 +17,6 @@ public class PreferenceKeys {
     public static final String USER_IMAGE="ImageUrl";
     public static final String DEVECE_TOKEN="token";
     public static final String EMAIL="email";
-     static final String TOKEN="device_token";
+    public static final String TOKEN="device_token";
+    public static final String BIO="bio";
 }

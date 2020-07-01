@@ -20,7 +20,9 @@ public class GetRestAdapter {
 //     private static final String LOCAL = "https://stgsd.appsndevs.com/ISEASIa/api/";
 
 //     private static final String LOCAL = "http://iseasia.appsndevs.com/api/";  //Live Server
-     private static final String LOCAL = "https://stgsd.appsndevs.com/IEMS/api/";  //Live Server
+//     private static final String LOCAL = "https://stgsd.appsndevs.com/IEMS/api/";
+     private static final String LOCAL = "https://stgsd.appsndevs.com/ISEASIA/api/";
+
 
     private static final String HOST_URL = LOCAL;
     private static final String APPLICATION_JSON = "application/json";
@@ -32,6 +34,7 @@ public class GetRestAdapter {
         GitHubService retrofitInterface = null;
         OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient().newBuilder();
         builder.readTimeout(90000, TimeUnit.SECONDS);
+        builder.writeTimeout(120000, TimeUnit.SECONDS);
         builder.connectTimeout(30000, TimeUnit.SECONDS);
         //Print Api Logs
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();

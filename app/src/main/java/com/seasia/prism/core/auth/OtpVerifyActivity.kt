@@ -102,7 +102,11 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
                     )
 
                     sharedPref!!.saveString(
-                        PreferenceKeys.USER_IMAGE, data.ResultData!!.ImageUrl.toString())
+                        PreferenceKeys.USER_IMAGE, data.ResultData!!.ImageUrl.toString()
+                    )
+
+                    sharedPref!!.saveString(PreferenceKeys.BIO, data.ResultData!!.Bio.toString())
+
 
                     var intent =
                         Intent(

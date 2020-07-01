@@ -1,43 +1,38 @@
 package com.seasia.prism.api;
 
 
-import com.seasia.prism.core.newsfeed.AddPostResponse;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.CommentResponse;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.DeleteCommentInput;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.DeleteCommentResponse;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.DeletePostInput;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.DeletePostResponse;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.GetCommentResponse;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.GetFeedInput;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.GetFeedResponse;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.GetLikeResponse;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.LikeInput;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.LikesResponse;
+import com.seasia.prism.newsfeed.AddPostResponse;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.CommentResponse;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.DeleteCommentInput;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.DeleteCommentResponse;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.DeletePostInput;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.DeletePostResponse;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.GetCommentResponse;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.GetFeedInput;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.GetFeedResponse;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.GetLikeResponse;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.LikeInput;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.LikesResponse;
 import com.seasia.prism.model.DeviceTokenInput;
 import com.seasia.prism.model.DeviceTokenResponse;
 import com.seasia.prism.model.GetUserProfileInput;
 import com.seasia.prism.model.GetUserProfileResponse;
 import com.seasia.prism.model.SignupVerificationResponse;
-import com.seasia.prism.model.UpdateProfileResponse;
-import com.seasia.prism.model.UserProfileInput;
 import com.seasia.prism.model.UserProfileResponse;
 import com.seasia.prism.model.VerifyEmailInput;
 import com.seasia.prism.model.VerifyEmailResponse;
 import com.seasia.prism.model.input.AddChoiceInput;
 import com.seasia.prism.model.input.AskQuestionInput;
-import com.seasia.prism.model.input.LogoutInput;
 import com.seasia.prism.model.input.SearchInput;
 import com.seasia.prism.model.output.AddChoiceResponse;
 import com.seasia.prism.model.output.AskQuestionResponse;
 import com.seasia.prism.model.output.ChoiceResponse;
 import com.seasia.prism.model.output.LogoutResponse;
 import com.seasia.prism.model.output.QuestionResponse;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.model.RepostPostResponse;
+import com.seasia.prism.newsfeed.displaynewsfeed.model.RepostPostResponse;
 import com.seasia.prism.model.output.SearchResponse;
 
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -73,7 +68,11 @@ public interface GitHubService {
 
 
     @POST("Social/GetNewsLetter")
-    Call<GetFeedResponse> getPostDara(@Body GetFeedInput UserId);
+    Call<GetFeedResponse> getPostDara(@Body GetFeedInput input);
+
+    @POST("Social/GetNewsLetter")
+    Call<GetFeedResponse> getUsersPostDara(@Body GetFeedInput input);
+
 
     @POST("User/AddUpdateDeviceDetail")
     Call<DeviceTokenResponse> sendDeviceToken(@Body DeviceTokenInput UserId);

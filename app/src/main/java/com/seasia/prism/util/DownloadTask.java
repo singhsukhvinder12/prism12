@@ -3,38 +3,26 @@ package com.seasia.prism.util;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-
-import com.google.firebase.crashlytics.internal.model.CrashlyticsReport;
 import com.seasia.prism.R;
-import com.seasia.prism.core.auth.TrimmerActivity;
-import com.seasia.prism.core.newsfeed.displaynewsfeed.view.PlayVideoActivity;
+import com.seasia.prism.newsfeed.displaynewsfeed.view.PlayVideoActivity;
 import com.vaibhavlakhera.circularprogressview.CircularProgressView;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 
 public class DownloadTask {
