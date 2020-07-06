@@ -46,7 +46,7 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
     override fun initViews() {
         binding = viewDataBinding as ActivitySearchUserBinding
         binding!!.includeView.toolbatTitle.setText("Users")
-
+        userList=ArrayList()
         binding!!.includeView.ivBack.setOnClickListener {
             onBackPressed()
         }

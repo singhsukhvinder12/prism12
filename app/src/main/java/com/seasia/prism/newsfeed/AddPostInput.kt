@@ -13,4 +13,5 @@ class AddPostInput {
     var TypeId:String?=null
     var TagIds:ArrayList<String>?=null
     var DeletedTagIds:String?=null
+    var ColorCode:String?=null
 }

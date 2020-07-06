@@ -55,6 +55,7 @@ class GetFeedResponse:Serializable {
 
         var LikedBy: String? = null
         var Bio: String? = null
+        var ColorCode: String? = null
 
 
         class lstLikesList :Serializable{

@@ -121,19 +121,26 @@
                     android:layout_marginEnd="8dp"
                     android:fontFamily="@font/opensans_regular"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="14dp" />
 
-                <RelativeLayout
+
+                <TextView
+                    android:id="@+id/txtPostInfoColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="13dp"
                     android:layout_marginTop="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/tagRecyclerView"
-                        android:layout_marginEnd="13dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-                </RelativeLayout>
+                    android:visibility="gone"
+                    android:text="kldkfldkfdkfdlfkd"
+                    android:layout_marginEnd="8dp"
+                    android:padding="@dimen/dp_12"
+                    android:background="@drawable/background_color"
+                    android:fontFamily="@font/opensans_regular"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18dp" />
+
+
+
 
 
                 <RelativeLayout
@@ -182,12 +189,10 @@
                         android:tint="@color/colorWhite"
                         android:id="@+id/btnPlayVideo"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/ic_play_audio"
+                        android:src="@drawable/play_button"
                         android:layout_width="60dp"
                         android:layout_height="60dp"/>
                 </RelativeLayout>
-
-
 
                 <RelativeLayout
                     android:layout_marginTop="6dp"
@@ -220,6 +225,17 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center" />
 
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_marginStart="13dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/tagRecyclerView"
+                        android:layout_marginEnd="13dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
                 </RelativeLayout>
 
 
@@ -272,7 +288,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:tint="@color/colorPrimary"
-                            android:src="@drawable/comment" />
+                            android:src="@drawable/ic_comment" />
 
                         <TextView
                             android:layout_marginBottom="2dp"
@@ -298,7 +314,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:tint="@color/colorPrimary"
-                            android:src="@drawable/share" />
+                            android:src="@drawable/ic_share" />
 
                         <TextView
                             android:layout_width="wrap_content"

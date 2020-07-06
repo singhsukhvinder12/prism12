@@ -50,8 +50,15 @@ class AddPostPresenter(var addPostActivity: AddPostActivity) {
         map["Links"] = toRequestBody(addPost.Links.toString())
         map["NewsLetterIds"] = toRequestBody(addPost.NewsLetterIds.toString())
         map["ParticularId"] = toRequestBody(addPost.ParticularId.toString())
+
         map["DeletedTagIds[0]"] = toRequestBody("0")
 //        map["TagIds[0]"] = toRequestBody("1631")
+
+        if(audioFIle==null && videoFIle==null && imagesList!!.size==0){
+            map["ColorCode"] = toRequestBody(addPost.ColorCode.toString())
+        } else{
+            map["ColorCode"] = toRequestBody("")
+        }
 
         if(addPost.TagIds!!.size>0){
             for (i in 0..addPost.TagIds!!.size-1) {

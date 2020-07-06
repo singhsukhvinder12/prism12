@@ -12,24 +12,25 @@ import android.content.res.Configuration
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.MediaController
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.seasia.prism.App
 import com.seasia.prism.R
+import com.seasia.prism.adapter.PostBackgroundColor
 import com.seasia.prism.adapter.TagAdapter
 import com.seasia.prism.callbacks.AddPostCallback
 import com.seasia.prism.core.BaseActivity
@@ -74,9 +75,11 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     var doubleClick = 0
     var tempPath = ""
     var TAG_USER_CODE = 501
-    var tagList=ArrayList<TagList>()
+    var colorCode=""
+    var tagList = ArrayList<TagList>()
 
-    var tagAdapter:TagAdapter?=null
+    var tagAdapter: TagAdapter? = null
+    var backgroundColor: PostBackgroundColor? = null
 
     private val RESULT_LOAD_IMAGE = 1999
     private val CAMERA_REQUEST = 1888
@@ -122,6 +125,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         doubleClick = 0
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initViews() {
         binding = viewDataBinding as ActivityAddPostBinding
         binding!!.includeView.toolbatTitle.setText("Add Post")
@@ -150,8 +154,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 R.drawable.user
             ).into(binding!!.imgLogo)
 
-
-
         try {
             binding!!.textPost.setOnTouchListener(object : View.OnTouchListener {
                 override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -168,9 +170,62 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         } catch (e: Exception) {
         }
 
-
         setAdapterData()
+        setColorAdapter()
     }
+
+
+    @SuppressLint("ResourceType")
+    fun setColorAdapter() {
+
+        val colorList = ArrayList<String>()
+        colorList.add("" + getResources().getString(R.color.bg0))
+        colorList.add("" + getResources().getString(R.color.bg1))
+        colorList.add("" + getResources().getString(R.color.bg2))
+        colorList.add("" + getResources().getString(R.color.bg3))
+        colorList.add("" + getResources().getString(R.color.bg4))
+        colorList.add("" + getResources().getString(R.color.bg5))
+        colorList.add("" + getResources().getString(R.color.bg6))
+        colorList.add("" + getResources().getString(R.color.bg7))
+        colorList.add("" + getResources().getString(R.color.bg8))
+        colorList.add("" + getResources().getString(R.color.bg9))
+        colorList.add("" + getResources().getString(R.color.bg10))
+        colorList.add("" + getResources().getString(R.color.bg11))
+        colorList.add("" + getResources().getString(R.color.bg12))
+        colorList.add("" + getResources().getString(R.color.bg13))
+        colorList.add("" + getResources().getString(R.color.bg14))
+        colorList.add("" + getResources().getString(R.color.bg15))
+        colorList.add("" + getResources().getString(R.color.bg16))
+        colorList.add("" + getResources().getString(R.color.bg17))
+        colorList.add("" + getResources().getString(R.color.bg18))
+        colorList.add("" + getResources().getString(R.color.bg19))
+        backgroundColor = PostBackgroundColor(this@AddPostActivity, colorList)
+        val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding!!.rvColor.layoutManager = mLayoutManager
+        binding!!.rvColor.adapter = backgroundColor
+    }
+
+
+    fun backgroundColor(color: String, position: Int) {
+
+        if (position == 0) {
+            binding!!.parentWhtsMind.setBackground(ContextCompat.getDrawable(this, R.drawable.rectangle_blue_stroke));
+            colorCode=""
+//            binding!!.parentWhtsMind.setBackgroundResource(R.drawable.rectangle_blue_stroke);
+
+        } else {
+            colorCode=color
+            binding!!.parentWhtsMind!!.getBackground().setColorFilter(Color.parseColor(color), PorterDuff.Mode.SRC_ATOP);
+        }
+    }
+
+
+    fun hideColorLayout(){
+
+        binding!!.parentWhtsMind.setBackground(ContextCompat.getDrawable(this, R.drawable.rectangle_blue_stroke));
+        binding!!.rvColor.visibility=View.GONE
+    }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -258,6 +313,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 }
             }
             R.id.deleteVideo -> {
+                binding!!.rvColor.visibility=View.VISIBLE
                 fileUri = ""
                 videoFIle = null
                 binding!!.parentSelectedMedia.visibility = View.GONE
@@ -269,7 +325,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
             R.id.deleteAudio -> {
                 fileUri = ""
-
+                binding!!.rvColor.visibility=View.VISIBLE
                 audioFIle = null
                 binding!!.parentAudio.visibility = View.GONE
             }
@@ -295,6 +351,8 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                             thumbNailFile
                         )
 
+
+
                     }
 
                 }
@@ -305,14 +363,14 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 startActivity(intent)
             }
 
-            R.id.btnTagUser->{
+            R.id.btnTagUser -> {
 
-                var intent =Intent(this, SearchUserActivity::class.java)
-                intent.putExtra("comingFrom","userTag")
+                var intent = Intent(this, SearchUserActivity::class.java)
+                intent.putExtra("comingFrom", "userTag")
                 val args = Bundle()
-                args.putSerializable("TAGARRAYLIST",tagList)
+                args.putSerializable("TAGARRAYLIST", tagList)
                 intent.putExtra("BUNDLE", args)
-                startActivityForResult(intent,TAG_USER_CODE)
+                startActivityForResult(intent, TAG_USER_CODE)
 
             }
         }
@@ -335,15 +393,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
             .onResult { result ->
                 //1 image 2 video
                 mAlbumFiles = result
-//                for ( i in 0 until  mAlbumFiles.size) {
-//                    Log.e("imagePath",mAlbumFiles.get(i).path)
-//                    imagePath=mAlbumFiles.get(i).path
-////                    Glide.with(this)
-////                        .load(imagePath)
-////                        .placeholder(R.drawable.ic_image_placeholder)
-////                        .error(R.drawable.ic_image_placeholder)
-////                        .into(iv_profile_edit)
-//                }
                 if (imagesList != null) {
                     imagesList!!.clear()
                 }
@@ -504,9 +553,9 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
     fun addPostData(): AddPostInput {
 
-        var list=ArrayList<String>()
+        var list = ArrayList<String>()
 
-        for (i in 0..tagList.size-1){
+        for (i in 0..tagList.size - 1) {
             list.add(tagList.get(i).tagId!!)
         }
 
@@ -522,8 +571,9 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         addPost.NewsLetterIds = "0"
         addPost.ParticularId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")
         addPost.TypeId = "1631"
-        addPost.TagIds=list
-        addPost.DeletedTagIds=="0"
+        addPost.TagIds = list
+        addPost.DeletedTagIds = "0"
+        addPost.ColorCode = colorCode
         return addPost
     }
 
@@ -552,7 +602,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                 val selectedImage: Uri = data!!.getData()!!
                 var imageUri = FileUtils.getPath(this, selectedImage)
 
-                if (!getFileSize(File(imageUri)).equals("0")){
+                if (!getFileSize(File(imageUri)).equals("0")) {
                     var intent = Intent(this, CroppedActivity::class.java)
                     intent.putExtra("imagePath", imageUri)
                     startActivityForResult(intent, 127)
@@ -599,6 +649,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                     list.add(addUpdateImageInput)
                     imagesList!!.addAll(list)
                     imagesAdapter!!.notifyDataSetChanged()
+                    hideColorLayout()
                 }
             }
         } else if (requestCode === CAMERA_REQUEST && resultCode === Activity.RESULT_OK) {
@@ -620,6 +671,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (result != null) {
+                hideColorLayout()
                 binding!!.parentImage.visibility = View.VISIBLE
                 val resultUri = result.uri
                 val selectedVideoPath = getAbsolutePath(this@AddPostActivity, resultUri)!!
@@ -638,6 +690,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         } else if (requestCode == RECODE_AUDIO && resultCode == RESULT_OK) {
 
             if (data != null) {
+                hideColorLayout()
                 val bundle = data!!.getExtras();
                 fileUri = bundle!!.getString("data")!!
                 binding!!.parentSelectedMedia.visibility = View.GONE
@@ -661,7 +714,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                         if (status.equals("1")) {
                             var uri = bundle.getString("filePath")!!
                             fileUri = uri
-
+                            hideColorLayout()
 
                             try {
                                 //  runOnUiThread {
@@ -719,20 +772,20 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        } else if(requestCode==TAG_USER_CODE){
+        } else if (requestCode == TAG_USER_CODE) {
 
             if (data != null) {
-                    tagList= ArrayList()
-                    val args: Bundle = data.getBundleExtra("BUNDLE")
-                    tagList = args.getSerializable("tagList") as ArrayList<TagList>
-                    setAdapterData()
+                tagList = ArrayList()
+                val args: Bundle = data.getBundleExtra("BUNDLE")
+                tagList = args.getSerializable("tagList") as ArrayList<TagList>
+                setAdapterData()
 //                    var tagModel=TagList()
 //                    tagModel.tagId=bundle.getString("userId")
 //                    tagModel.userName=bundle.getString("userName")
 //                    tagModel.userImage=bundle.getString("imageUrl")
 //                    tagList.add(tagModel)
 //                    setAdapterData()
-                    //Toast.makeText(this@AddPostActivity,"success coming",Toast.LENGTH_LONG).show()
+                //Toast.makeText(this@AddPostActivity,"success coming",Toast.LENGTH_LONG).show()
 
             }
 
@@ -742,12 +795,11 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     }
 
 
-
     fun setAdapterData() {
-             tagAdapter = TagAdapter(this@AddPostActivity, tagList)
-             val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
-             binding!!.rvTagUsers.layoutManager=mLayoutManager
-             binding!!.rvTagUsers.adapter = tagAdapter
+        tagAdapter = TagAdapter(this@AddPostActivity, tagList)
+        val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding!!.rvTagUsers.layoutManager = mLayoutManager
+        binding!!.rvTagUsers.adapter = tagAdapter
 
     }
 
@@ -763,8 +815,8 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         val KiB: Long = 1000
         var data = ""
 
-        if (!file.isFile()){
-            data="0"
+        if (!file.isFile()) {
+            data = "0"
         }
         require(file.isFile) {
 //            "Expected a file"
@@ -886,6 +938,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         imagesAdapter!!.notifyDataSetChanged()
         if (imagesList!!.size == 0) {
             binding!!.parentImage.visibility = View.GONE
+            binding!!.rvColor.visibility=View.VISIBLE
         }
     }
 

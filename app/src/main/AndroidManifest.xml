@@ -41,7 +41,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
-        <activity android:name=".core.ui.TagUsersActivity"></activity>
+        <activity android:name=".core.ui.TestActivity"></activity>
+        <activity android:name=".core.ui.TagUsersActivity" />
         <activity android:name=".core.auth.ProfileActivity" />
         <activity android:name=".imagecroper.crop.CroppedActivity" />
         <activity android:name=".imagecroper.ImageCropActivity" />

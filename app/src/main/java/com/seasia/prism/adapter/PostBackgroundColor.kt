@@ -1,36 +1,41 @@
 package com.seasia.prism.adapter
 
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.seasia.prism.R
-import com.seasia.prism.model.output.SearchResponse
-import com.seasia.prism.newsfeed.displaynewsfeed.model.GetCommentResponse
-import com.seasia.prism.newsfeed.displaynewsfeed.view.CommentActivity
+import com.seasia.prism.newsfeed.AddPostActivity
 
-class MentionAdapter(
-    var context: CommentActivity,
-    var studentList: ArrayList<SearchResponse.ResultDataList>?
-) : RecyclerView.Adapter<MentionAdapter.MyViewHolder>() {
+class PostBackgroundColor(
+    var context: AddPostActivity,
+    var studentList: ArrayList<String>?
+) : RecyclerView.Adapter<PostBackgroundColor.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.row_mention_layout, parent, false)
+            .inflate(R.layout.row_color_code, parent, false)
         return MyViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.tagTextView!!.setText(studentList!!.get(position).UserName)
+
+        holder.tagTextView!!.getBackground().setColorFilter(Color.parseColor(studentList!!.get(position)), PorterDuff.Mode.SRC_ATOP);
 
         holder.tagTextView!!.setOnClickListener {
-            context.selectedText(studentList!!.get(position).UserName!!,studentList!!.get(position).UserId)
+            context.backgroundColor(studentList!!.get(position),position)
+        }
+        if(position==0){
+            holder.tagTextView!!.setBackground(ContextCompat.getDrawable(context, R.drawable.rectagle_gray_shap));
         }
     }
 
 
-    fun setData(data: ArrayList<SearchResponse.ResultDataList>) {
+    fun setData(data: ArrayList<String>) {
         this.studentList = data
         notifyDataSetChanged()
     }
@@ -52,7 +57,7 @@ class MentionAdapter(
 
         init {
 
-            tagTextView = itemView.findViewById(R.id.tagTextView)
+            tagTextView = itemView.findViewById(R.id.tvColorView)
         }
     }
 }

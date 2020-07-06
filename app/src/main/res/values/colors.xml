@@ -9,7 +9,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorRed">#E31A0B</color>
     <color name="black">#000000</color>
-    <color name="colorWhite">#ffffff</color>
+    <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="colorGray">#DCDCDC</color>
     <color name="colorGrayDark">#CDC9C9</color>
@@ -22,4 +22,29 @@
     <color name="color_grey_toolbar">#ebf0ff</color>
     <color name="color_grey_text">#757575</color>
     <color name="grey">#9098b1</color>
+
+
+    <color name="bg0">#FFFFFF</color>
+    <color name="bg1">#ffe4b5</color>
+    <color name="bg2">#c1cdc1</color>
+    <color name="bg3">#bdb76b</color>
+    <color name="bg4">#cd5c5c</color>
+    <color name="bg5">#6495ed</color>
+    <color name="bg6">#48d1cc</color>
+    <color name="bg7">#5f9ea0</color>
+    <color name="bg8">#2e8b57</color>
+    <color name="bg9">#3cb371</color>
+    <color name="bg10">#ffe4e1</color>
+    <color name="bg11">#f0e68c</color>
+    <color name="bg12">#eedd82</color>
+    <color name="bg13">#b8860b</color>
+    <color name="bg14">#d3d3d3</color>
+    <color name="bg15">#f4a460</color>
+    <color name="bg16">#ff8c00</color>
+    <color name="bg17">#ff69b4</color>
+    <color name="bg18">#9370db</color>
+    <color name="bg19">#E81606</color>
+
+    
+    
 </resources>

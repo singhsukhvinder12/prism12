@@ -110,6 +110,7 @@ dependencies {
 
     implementation 'com.google.android:flexbox:2.0.1'
 
+    implementation 'com.hendraanggrian.appcompat:socialview-commons:0.2'
 
 }
 

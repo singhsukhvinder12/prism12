@@ -33,9 +33,10 @@
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="85dp"
             android:visibility="gone"
-            android:background="@drawable/rectangle_blue_stroke"
+
+
             android:id="@+id/ans_parent">
             <EditText
                 android:id="@+id/et_ansswer"
@@ -44,38 +45,16 @@
                 android:fontFamily="@font/opensans_regular"
                 android:hint="Write your answer"
                 android:padding="@dimen/dimen_10dp"
+                android:elevation="3dp"
+                android:background="@drawable/rectaggle_gray_shap"
                 android:gravity="start"
                 android:focusable="true"
 
-                android:background="@android:color/transparent"
                 android:layout_gravity="top"
                  android:maxLength="1000"
                 />
+
         </RelativeLayout>
-
-<!--        <RelativeLayout-->
-<!--            android:id="@+id/parent_whts_mind"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="@dimen/dp_120"-->
-<!--            android:layout_below="@+id/parent_name"-->
-<!--            android:layout_marginLeft="@dimen/dp_15"-->
-<!--            android:layout_marginTop="@dimen/dp_15"-->
-<!--            android:layout_marginRight="@dimen/dp_15"-->
-<!--            android:background="@drawable/rectangle_blue_stroke"-->
-<!--            android:padding="@dimen/dp_5">-->
-
-<!--            <EditText-->
-<!--                android:id="@+id/textPost"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_margin="@dimen/dp_5"-->
-<!--                android:fontFamily="@font/opensans_regular"-->
-<!--                android:gravity="start"-->
-<!--                android:inputType="textMultiLine"-->
-<!--                android:background="@android:color/transparent"-->
-<!--                android:hint="Whats on your mind?" />-->
-
-<!--        </RelativeLayout>-->
 
 
         <TextView

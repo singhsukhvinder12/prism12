@@ -9,5 +9,6 @@ class AddUpdateImageInput {
     var fileUrl: File? = null
     var imageFileName: String? = null
     var fileType: String? = null
+    var ColorCode: String? = null
     var attachementFile: Uri? = null
 }

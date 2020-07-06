@@ -56,7 +56,7 @@ class CommentPresenter(var commentActivity: CommentActivity) {
         map["Comment"] = toRequestBody(input.Comment.toString())
         map["DeletedTagIds[0]"] = toRequestBody("0")
 
-        if(input.TagIds!!.size>0){
+        if(input.TagIds!=null && input.TagIds!!.size>0){
             for (i in 0..input.TagIds!!.size-1) {
                 val  requestBody = RequestBody.create(MediaType.parse("text/plain"), input.TagIds!!.get(i))
                 map.put("TagIds[$i]", requestBody)

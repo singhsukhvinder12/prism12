@@ -4,6 +4,8 @@ package com.seasia.prism.newsfeed.displaynewsfeed.adapter
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,8 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.seasia.prism.App
 import com.seasia.prism.R
+import com.seasia.prism.adapter.TagFeedAdapter
+import com.seasia.prism.adapter.TagProfileFeedAdapter
 import com.seasia.prism.util.CheckRuntimePermissions
 import com.seasia.prism.util.PreferenceKeys
 import com.seasia.prism.util.UtilsFunctions
@@ -68,8 +74,43 @@ class UserProfileFeedAdapter(
         try {
 
 
+
+            if(mList.get(position).ColorCode!=null && !mList.get(position).ColorCode!!.isEmpty()){
+                holder.txtPostInfoColor!!.setText(mList.get(position).Description)
+                holder.txtPostInfoColor!!.visibility=View.VISIBLE
+                holder.txtPostInfo!!.visibility=View.GONE
+                try {
+                    if(mList.get(position).ColorCode!!.contains("#")){
+                        if(!mList.get(position).ColorCode.equals("#FFFFFF")){
+                            holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor(mList.get(position).ColorCode), PorterDuff.Mode.SRC_ATOP);
+                        } else{
+                            holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                            holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
+                            holder.txtPostInfoColor!!.setText(mList.get(position).Description)
+                            holder.txtPostInfo!!.visibility=View.GONE
+                            holder.txtPostInfoColor!!.visibility=View.VISIBLE
+                        }
+                    } else{
+                        //  holder.txtPostInfoColor!!.visibility=View.GONE
+                        holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                        holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
+                        holder.txtPostInfoColor!!.setText(mList.get(position).Description)
+                        //  holder.txtPostInfo!!.visibility=View.GONE
+                    }
+                }catch (e:Exception){
+
+                }
+            }else{
+                holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
+                holder.txtPostInfoColor!!.setText(mList.get(position).Description)
+                holder.txtPostInfo!!.visibility=View.GONE
+                holder.txtPostInfoColor!!.visibility=View.VISIBLE
+            }
+
+
+
             holder.txtUserNameForPost!!.setText(mList.get(position).PostedBy)
-            holder.txtPostInfo!!.setText(mList.get(position).Description)
             holder.txtDateForPost!!.setText(mList.get(position).strCreatedDate)
 
 
@@ -102,7 +143,43 @@ class UserProfileFeedAdapter(
                 popup1.menu.getItem(1).setVisible(true)
             }
 
+
+
+            if (mList.get(position).lstTaggedUsers != null) {
+
+                var arrayList = ArrayList<GetFeedResponse.ResultDataList.lstTaggedUsersList>()
+
+                if(arrayList.size>0){
+                    arrayList.clear()
+                }
+
+
+                var myList = GetFeedResponse.ResultDataList.lstTaggedUsersList()
+                myList.Id = ""
+                myList.Name = "Tagged at: "
+                myList.Email = ""
+                myList.ImageUrl = ""
+                arrayList.add(myList)
+                arrayList.addAll(mList.get(position).lstTaggedUsers!!)
+
+                holder.tagRecyclerView!!.visibility = View.VISIBLE
+                val tagFeedAdapter = TagProfileFeedAdapter(context, arrayList)
+                val layoutManager = FlexboxLayoutManager(context)
+                layoutManager.setFlexWrap(FlexWrap.WRAP)
+                holder.tagRecyclerView!!.layoutManager = layoutManager
+                holder.tagRecyclerView!!.adapter = tagFeedAdapter
+            } else {
+                holder.tagRecyclerView!!.visibility = View.GONE
+            }
+
+
+
+
             if (mList.get(position).lstDocuments != null) {
+                holder.txtPostInfo!!.setText(mList.get(position).Description)
+                holder.txtPostInfoColor!!.visibility=View.GONE
+                holder.txtPostInfo!!.visibility=View.VISIBLE
+
                 if (mList.get(position).lstDocuments!!.get(0).Type != null) {
                     var isTYpe = mList.get(position).lstDocuments!!.get(0).Type
                     val ImagesArray = ArrayList<String>()
@@ -416,6 +493,7 @@ class UserProfileFeedAdapter(
         var txtUserNameForPost: TextView? = null
         var txtPostInfo: TextView? = null
         var txtDateForPost: TextView? = null
+        var txtPostInfoColor: TextView? = null
         var txtPostCommentNo: TextView? = null
         var txtPostLikeNo: TextView? = null
         var img: ImageView? = null
@@ -430,6 +508,7 @@ class UserProfileFeedAdapter(
         var btnPlayVideo: ImageView? = null
         var layoutCommentPost: LinearLayout? = null
         var viewPager: ViewPager? = null
+        var tagRecyclerView: RecyclerView? = null
 
         init {
             txtUserNameForPost = itemView.findViewById(R.id.txtUserNameForPost)
@@ -449,6 +528,8 @@ class UserProfileFeedAdapter(
             btnPlayVideo = itemView.findViewById(R.id.btnPlayVideo)
             layoutCommentPost = itemView.findViewById(R.id.layoutCommentPost)
             viewPager = itemView.findViewById(R.id.viewPager)
+            tagRecyclerView = itemView.findViewById(R.id.tagRecyclerView)
+            txtPostInfoColor = itemView.findViewById(R.id.txtPostInfoColor)
         }
     }
 

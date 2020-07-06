@@ -181,7 +181,7 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
     fun noticeBoardInput(itemCount: Int): GetFeedInput {
         var input = GetFeedInput()
         input.UserId = anotherUser
-        input.PageSize = "10"
+        input.PageSize = "20"
         input.Search = ""
         input.Skip = itemCount.toString()
         input.SortColumnDir = ""

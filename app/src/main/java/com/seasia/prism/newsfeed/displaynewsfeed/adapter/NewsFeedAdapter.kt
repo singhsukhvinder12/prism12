@@ -2,6 +2,8 @@ package com.seasia.prism.newsfeed.displaynewsfeed.adapter
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
@@ -70,8 +73,41 @@ class NewsFeedAdapter(
 
         try {
 
+            if(mList.get(position).ColorCode!=null && !mList.get(position).ColorCode!!.isEmpty()){
+                holder.txtPostInfoColor!!.setText(mList.get(position).Description)
+                holder.txtPostInfoColor!!.visibility=View.VISIBLE
+                holder.txtPostInfo!!.visibility=View.GONE
+                try {
+                    if(mList.get(position).ColorCode!!.contains("#")){
+                        if(!mList.get(position).ColorCode.equals("#FFFFFF")){
+                            holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor(mList.get(position).ColorCode), PorterDuff.Mode.SRC_ATOP);
+                        } else{
+                            holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                            holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
+                            holder.txtPostInfoColor!!.setText(mList.get(position).Description)
+                            holder.txtPostInfo!!.visibility=View.GONE
+                            holder.txtPostInfoColor!!.visibility=View.VISIBLE
+                        }
+                    } else{
+                      //  holder.txtPostInfoColor!!.visibility=View.GONE
+                        holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                        holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
+                        holder.txtPostInfoColor!!.setText(mList.get(position).Description)
+                      //  holder.txtPostInfo!!.visibility=View.GONE
+                    }
+                }catch (e:Exception){
+
+                }
+            }else{
+                holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
+                holder.txtPostInfoColor!!.setText(mList.get(position).Description)
+                holder.txtPostInfo!!.visibility=View.GONE
+                holder.txtPostInfoColor!!.visibility=View.VISIBLE
+            }
+
             holder.txtUserNameForPost!!.setText(mList.get(position).PostedBy)
-            holder.txtPostInfo!!.setText(mList.get(position).Description)
+
             holder.txtDateForPost!!.setText(mList.get(position).strCreatedDate)
 
             holder.txtPostLikeNo!!.setText(mList.get(position).TotalLikes)
@@ -130,6 +166,11 @@ class NewsFeedAdapter(
                 holder.tagRecyclerView!!.visibility = View.GONE
             }
             if (mList.get(position).lstDocuments != null) {
+                 holder.txtPostInfo!!.setText(mList.get(position).Description)
+                 holder.txtPostInfoColor!!.visibility=View.GONE
+                 holder.txtPostInfo!!.visibility=View.VISIBLE
+
+
                 if (mList.get(position).lstDocuments!!.get(0).Type != null) {
                     var isTYpe = mList.get(position).lstDocuments!!.get(0).Type
                     val ImagesArray = ArrayList<String>()
@@ -204,8 +245,7 @@ class NewsFeedAdapter(
                                 } else {
                                     if (videoOpenStatus == 0) {
                                         videoOpenStatus = 1
-                                        var intent =
-                                            Intent(context.activity, PlayVideoActivity::class.java)
+                                        var intent = Intent(context.activity, PlayVideoActivity::class.java)
                                         intent.putExtra("videoPath", url)
                                         intent.putExtra("thumbNail", thumbNail)
                                         intent.putExtra("documentId", documentId)
@@ -452,6 +492,7 @@ class NewsFeedAdapter(
         var status = ""
         var txtUserNameForPost: TextView? = null
         var txtPostInfo: TextView? = null
+        var txtPostInfoColor: TextView? = null
         var txtDateForPost: TextView? = null
         var txtPostCommentNo: TextView? = null
         var txtPostLikeNo: TextView? = null
@@ -473,6 +514,7 @@ class NewsFeedAdapter(
         init {
             txtUserNameForPost = itemView.findViewById(R.id.txtUserNameForPost)
             txtPostInfo = itemView.findViewById(R.id.txtPostInfo)
+            txtPostInfoColor = itemView.findViewById(R.id.txtPostInfoColor)
             txtDateForPost = itemView.findViewById(R.id.txtDateForPost)
             txtPostCommentNo = itemView.findViewById(R.id.txtPostCommentNo)
             txtPostLikeNo = itemView.findViewById(R.id.txtPostLikeNo)

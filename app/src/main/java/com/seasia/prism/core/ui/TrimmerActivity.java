@@ -75,7 +75,12 @@ public class TrimmerActivity extends AppCompatActivity implements OnTrimVideoLis
 //        intent.setDataAndType(uri, "video/mp4");
 //        startActivity(intent);
 
-        setResult(Activity.RESULT_OK, getIntent().putExtra("filePath", uri.toString()));
+        Intent intent=new Intent();
+
+        intent.putExtra("onBackPress", "1");
+        intent.putExtra("filePath", uri.toString());
+
+        setResult(Activity.RESULT_OK,intent );
 
         finish();
     }
