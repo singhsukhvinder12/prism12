@@ -1,32 +1,43 @@
 <resources>
     <string name="app_name">Seasia Prism</string>
     <string name="internet_error">No Internet Connection</string>
+    <string name="enter_code">Please enter OTP</string>
+    <string name="invalid_otp">Invalid OTP</string>
     <string name="delete_post">Delete Post</string>
     <string name="no_record_found">No Record Found</string>
     <string name="app_record">Record Video</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
+    <string name="first_name_mandatory">First Name<font color='#000000'>*</font></string>
+    <string name="last_name_mandatory">Last Name<font color='#000000'>*</font></string>
+    <string name="phone_number_mandatory">Phone Number<font color='#000000'>*</font></string>
+    <string name="gender_mandatory">Gender<font color='#000000'>*</font></string>
+    <string name="dob_mandatory">DOB<font color='#000000'>*</font></string>
+    <string name="email_mandatory">Email<font color='#000000'>*</font></string>
     <string name="phone_number">Phone Number</string>
     <string name="gender">Gender</string>
+
     <!--signup form-->
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="other">NA</string>
     <string name="dob">DOB</string>
+
+
     <string name="email">Email</string>
     <string name="enter_first_name">Enter first name</string>
     <string name="enter_last_name">Enter last name</string>
     <string name="first_name_characters">First name has minimum 3 characters</string>
     <string name="last_name_characters">Last name has minimum 3 characters</string>
 
-    <string name="phone_length">Please check phone number length</string>
+    <string name="phone_length">Please enter 10 digits phone number</string>
     <string name="enter_phone_number">Enter phone number</string>
     <string name="select_gender">Select Gender</string>
     <string name="select_dob">Select DOB</string>
     <string name="please_add_a_comment">Please add your comment</string>
     <string name="max_five_photos">Max 5 photos can selected for a single post</string>
     <string name="account_verification">Account Verification</string>
-    <string name="seasia_in_seasiainfotech_com">seasia.in/seasiainfotech.com</string>
+    <string name="seasia_in_seasiainfotech_com"> seasia.in/seasiainfotech.com</string>
     <string name="video_playing">Video Player</string>
     <string name="upload">Upload</string>
     <string name="submit">Submit</string>
@@ -37,6 +48,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="tag_users"><u>Tag Users</u></string>
+    <string name="tag_users">Tag Users</string>
 
 </resources>

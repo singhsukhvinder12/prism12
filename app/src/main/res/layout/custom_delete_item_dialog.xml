@@ -11,7 +11,7 @@
 
     <ImageView
         android:layout_marginLeft="20dp"
-        android:src="@drawable/ic_appicon"
+        android:src="@drawable/logout_popup_icon"
         android:layout_width="80dp"
         android:id="@+id/iv_delete"
         android:layout_height="80dp"/>
@@ -24,7 +24,7 @@
         android:id="@+id/std_name"
         android:fontFamily="@font/opensans_regular"
 
-        android:textSize="@dimen/dp_20"
+        android:textSize="@dimen/sp_20"
         android:layout_toRightOf="@+id/iv_delete"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_5"
@@ -33,7 +33,7 @@
     <TextView
         android:text="Are you sure you want to delete?"
         android:layout_below="@+id/std_name"
-        android:textSize="@dimen/dp_16"
+        android:textSize="@dimen/sp_16"
         android:fontFamily="@font/opensans_regular"
 
         android:layout_toRightOf="@+id/iv_delete"
@@ -65,7 +65,7 @@
             android:layout_marginLeft="@dimen/dp_20"
             android:text="Cancel"
             android:textColor="@color/color_navy_blue"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp_16" />
 
         <TextView
             android:layout_width="@dimen/dp_100"
@@ -81,7 +81,7 @@
             android:text="Delete"
 
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp_16" />
 
 
     </RelativeLayout>

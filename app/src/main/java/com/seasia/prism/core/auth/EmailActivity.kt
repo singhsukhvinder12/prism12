@@ -2,6 +2,7 @@ package com.seasia.prism.core.auth
 
 import android.content.Intent
 import android.view.View
+import android.widget.Toast
 import com.seasia.prism.App
 import com.seasia.prism.R
 import com.seasia.prism.callbacks.EmailVeryfyCallback
@@ -44,6 +45,8 @@ class EmailActivity : BaseActivity(), View.OnClickListener, EmailVeryfyCallback 
 
                 else if ((!Utils.emailValidator(binding!!.edEmail.text.toString())) && (!Utils.emailValidatorSecond(
                         binding!!.edEmail.text.toString()
+                    )) && (!Utils.emailValidatorThired(
+                        binding!!.edEmail.text.toString()
                     ))
                 ) {
                     binding!!.edEmail.error = "Please check email"
@@ -76,11 +79,17 @@ class EmailActivity : BaseActivity(), View.OnClickListener, EmailVeryfyCallback 
     override fun onSuccess(body: SignupVerificationResponse) {
         hideDialog()
         if (body.ResultData != null) {
-            var intent = Intent(this@EmailActivity, OtpVerifyActivity::class.java)
-            intent.putExtra("OtpId", body.ResultData)
-            intent.putExtra("email", binding!!.edEmail.text!!.toString())
-            binding!!.edEmail.setText("")
-            startActivity(intent)
+
+            if(!body.ResultData.equals("0")){
+                var intent = Intent(this@EmailActivity, OtpVerifyActivity::class.java)
+                intent.putExtra("OtpId", body.ResultData)
+                intent.putExtra("email", binding!!.edEmail.text!!.toString())
+                binding!!.edEmail.setText("")
+                startActivity(intent)
+            } else{
+                Toast.makeText(this,"Somthing went wrong please try again",Toast.LENGTH_LONG).show()
+            }
+
         }
     }
 

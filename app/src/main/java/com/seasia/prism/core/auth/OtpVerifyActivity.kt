@@ -2,6 +2,7 @@ package com.seasia.prism.core.auth
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.text.Html
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -32,7 +33,6 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
         return R.layout.activity_otp_verify
     }
 
-    @SuppressLint("SetTextI18n")
     override fun initViews() {
         binding = viewDataBinding as ActivityOtpVerifyBinding
         binding!!.btnSubmit.setOnClickListener(this)
@@ -47,7 +47,8 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
         }
         if (intent.getStringExtra("email") != null) {
             email = intent.getStringExtra("email")!!;
-            binding!!.emailCodeTxt.setText("Please enter the code that has been sent to you at " + email)
+            val text=   "Please enter the code that has been sent to you at " + "<font color='#000000'><b>"+email + "</b></font>"
+            binding!!.emailCodeTxt.setText(Html.fromHtml(text))
 
         }
     }
@@ -57,7 +58,11 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
         hideKeyboard()
         when (p0!!.id) {
             R.id.btnSubmit -> {
-                if (binding!!.otpPin.value.length >= 6) {
+                if(binding!!.otpPin.value.length==0){
+                    UtilsFunctions.showToastError(App.app.getString(R.string.enter_code))
+                }
+
+              else if (binding!!.otpPin.value.length >= 6) {
                     var input = VerifyEmailInput()
                     input.Otp = binding!!.otpPin.value
                     input.OtpId = OtpId
@@ -67,6 +72,8 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
                         return
                     }
                     otpVerifyPresenter!!.emailVarified(input)
+                } else{
+                    UtilsFunctions.showToastError(App.app.getString(R.string.invalid_otp))
                 }
             }
 
@@ -115,6 +122,7 @@ class OtpVerifyActivity : BaseActivity(), View.OnClickListener, VerifyOtpCallbac
                         )
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
+                    UtilsFunctions.showToastError(data.Message)
                 } else {
                     var intent = Intent(this@OtpVerifyActivity, UserProfileActivity::class.java)
                     intent.putExtra("email", email)

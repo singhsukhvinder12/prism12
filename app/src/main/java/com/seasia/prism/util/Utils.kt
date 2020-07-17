@@ -254,7 +254,7 @@ class Utils {
             val pattern: Pattern
             val matcher: Matcher
             val EMAIL_PATTERN =
-                "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@seasiainfotech+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
+                "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@seasiainfotech+(\\.[A-Za-z0-9]+)*(\\.[com]{2,})$"
             pattern = Pattern.compile(EMAIL_PATTERN)
             matcher = pattern.matcher(email)
             return matcher.matches()
@@ -264,12 +264,21 @@ class Utils {
             val pattern: Pattern
             val matcher: Matcher
             val EMAIL_PATTERN =
-                "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@seasia+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
+                "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@seasia+(\\.[A-Za-z0-9]+)*(\\.[in]{2,})$"
             pattern = Pattern.compile(EMAIL_PATTERN)
             matcher = pattern.matcher(email)
             return matcher.matches()
         }
 
+        fun emailValidatorThired(email: String?): Boolean {
+            val pattern: Pattern
+            val matcher: Matcher
+            val EMAIL_PATTERN =
+                "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@cerebrum+(\\.[A-Za-z0-9]+)*(\\.[com]{2,})$"
+            pattern = Pattern.compile(EMAIL_PATTERN)
+            matcher = pattern.matcher(email)
+            return matcher.matches()
+        }
 
 
 

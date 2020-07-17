@@ -1,14 +1,17 @@
 package com.seasia.prism.core.fragment
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.seasia.prism.App
+import com.seasia.prism.MainActivity
 import com.seasia.prism.R
 import com.seasia.prism.adapter.ThisThatAdapter
 import com.seasia.prism.callbacks.ChoiceCallback
@@ -31,6 +34,7 @@ class ChoiceFragment : Fragment(),ChoiceCallback, View.OnClickListener {
     var btnSubmit:Button?=null
     var sharedPref: PrefStore? = null
     var dialog: Dialog? = null
+    var btnPress=""
 
     var input:AddChoiceInput?=null
     var arrayList: ArrayList<ChoiceResponse.ResultDataList>? = null
@@ -84,6 +88,7 @@ class ChoiceFragment : Fragment(),ChoiceCallback, View.OnClickListener {
     ) {
         input=AddChoiceInput()
         input!!.UserId=userId
+        input!!.TypeId="2"
         input!!.ChoiceQuestionAnswers=option
         arrayList!!.get(position).Selected=selected
         (activity as HobbiesActivity?)!!.myMethod(arrayList!!)
@@ -97,6 +102,13 @@ class ChoiceFragment : Fragment(),ChoiceCallback, View.OnClickListener {
     override fun onSuccess(body: AddChoiceResponse) {
      Toast.makeText(activity,""+body.Message,Toast.LENGTH_LONG).show()
         (activity as HobbiesActivity?)!!.progressHide()
+        if(btnPress.equals("yes")){
+            var intent = Intent(activity, MainActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+            (activity as HobbiesActivity?)!!.finish()
+            (activity as HobbiesActivity?)!!.finish()
+        }
 
     }
 
@@ -112,10 +124,37 @@ class ChoiceFragment : Fragment(),ChoiceCallback, View.OnClickListener {
                     UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
                     return
                 }
-                presenter!!.getData(input!!)
-                (activity as HobbiesActivity?)!!.progressDialog()
+                memoriytDialog()
+
             }
         }
     }
+
+
+    fun memoriytDialog() {
+
+        var dialog = Dialog(activity!!)
+        dialog.setContentView(R.layout.memory_dialog);
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.getWindow()!!.setBackgroundDrawableResource(android.R.color.transparent);
+        var btnLogout = dialog.findViewById<TextView>(R.id.tv_delete)
+        var btnCancel = dialog.findViewById<TextView>(R.id.tv_cancel)
+        btnLogout.setOnClickListener {
+            dialog.dismiss()
+            input!!.TypeId="2"
+            presenter!!.getData(input!!)
+            (activity as HobbiesActivity?)!!.progressDialog()
+            btnPress="yes"
+        }
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+            input!!.TypeId="0"
+            presenter!!.getData(input!!)
+            (activity as HobbiesActivity?)!!.progressDialog()
+            btnPress="no"
+        }
+        dialog.show()
+    }
+
 
 }

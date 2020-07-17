@@ -54,6 +54,7 @@ class CommentActivity : BaseActivity(), View.OnClickListener,
     var position = "";
     var userList = ArrayList<SearchResponse.ResultDataList>()
     var tagArrayList: ArrayList<String>? = null
+    var mLayoutManager:LinearLayoutManager?=null
     override fun getLayoutId(): Int {
         return R.layout.activity_comment
     }
@@ -61,7 +62,7 @@ class CommentActivity : BaseActivity(), View.OnClickListener,
     override fun initViews() {
         binding = viewDataBinding as ActivityCommentBinding
         binding!!.btnSend.setOnClickListener(this)
-        binding!!.includeView.toolbatTitle.setText("Comment")
+        binding!!.includeView.toolbatTitle.setText("Comments")
         binding!!.includeView.ivBack.setOnClickListener(this)
         userId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")!!
         searchUsers = ArrayList()
@@ -85,6 +86,8 @@ class CommentActivity : BaseActivity(), View.OnClickListener,
             commentPresenter!!.getComment(postId)
 
         }
+         mLayoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
+        binding!!.mentionRecyclerview.layoutManager = mLayoutManager
         setAdapterData()
         searchUer()
     }
@@ -224,7 +227,12 @@ class CommentActivity : BaseActivity(), View.OnClickListener,
     }
 
     override fun onSuccess(body: ArrayList<SearchResponse.ResultDataList>?) {
-            setMentionAdapterData(body)
+          // setMentionAdapterData(body)
+     //   if(body!!.size>0){
+            mentionAdapter.setData(body!!)
+//        }else{
+//            binding!!.mentionRecyclerview.visibility = View.GONE
+//        }
 
     }
 
@@ -282,7 +290,7 @@ class CommentActivity : BaseActivity(), View.OnClickListener,
                                         MentionUsersPresenter(this@CommentActivity, userList)
                                     searchPresenter!!.getData(searchInput(0, token))
                                 } else {
-                                    binding!!.mentionRecyclerview.visibility = View.GONE
+                                        binding!!.mentionRecyclerview.visibility = View.GONE
                                 }
                             } else {
                                 binding!!.mentionRecyclerview.visibility = View.VISIBLE
@@ -291,10 +299,13 @@ class CommentActivity : BaseActivity(), View.OnClickListener,
                                 searchPresenter!!.getData(searchInput(0, ""))
                             }
                         } else {
+                            runOnUiThread {
+                                binding!!.mentionRecyclerview.visibility = View.GONE
+                            }                        }
+                    } else {
+                        runOnUiThread {
                             binding!!.mentionRecyclerview.visibility = View.GONE
                         }
-                    } else {
-                        binding!!.mentionRecyclerview.visibility = View.GONE
                     }
                 }
             }
@@ -306,11 +317,15 @@ class CommentActivity : BaseActivity(), View.OnClickListener,
 
         //   if (arrayList!!.size > 0) {
 
-        val mLayoutManager = LinearLayoutManager(this)
-        //   mLayoutManager.setStackFromEnd(true);
-        binding!!.mentionRecyclerview.layoutManager = mLayoutManager
-        mentionAdapter = MentionAdapter(this@CommentActivity, arrayList)
-        binding!!.mentionRecyclerview.adapter = mentionAdapter
+
+         runOnUiThread {
+
+             //   mLayoutManager.setStackFromEnd(true);
+
+             mentionAdapter = MentionAdapter(this@CommentActivity, arrayList)
+             binding!!.mentionRecyclerview.adapter = mentionAdapter
+         }
+
         //mentionAdapter.notifyDataSetChanged()
 
     }

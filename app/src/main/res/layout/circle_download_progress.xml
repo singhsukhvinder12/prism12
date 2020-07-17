@@ -16,7 +16,7 @@
         app:progressColor="@color/color_green_dark"
         app:progressRoundCap="true"
         app:progressTextEnabled="true"
-        app:progressTextSize="15sp"
+        app:progressTextSize="@dimen/sp_15"
         app:progressTextType="percent"
         app:progressWidth="8dp"
         app:startAngle="0"

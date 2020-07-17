@@ -19,7 +19,9 @@ import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.MediaController
@@ -65,7 +67,7 @@ import kotlin.collections.ArrayList
 
 
 @Suppress("INACCESSIBLE_TYPE")
-class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
+class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback, TextWatcher {
     var binding: ActivityAddPostBinding? = null
     private var mSeekPosition = 0
     private var cachedHeight = 0
@@ -75,7 +77,7 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     var doubleClick = 0
     var tempPath = ""
     var TAG_USER_CODE = 501
-    var colorCode=""
+    var colorCode="#FFFFFF"
     var tagList = ArrayList<TagList>()
 
     var tagAdapter: TagAdapter? = null
@@ -137,12 +139,18 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         binding!!.deleteVideo.setOnClickListener(this)
         binding!!.deleteAudio.setOnClickListener(this)
         binding!!.btnUpload.setOnClickListener(this)
+        binding!!.imgUpdatePost.setOnClickListener(this)
         binding!!.parent.setOnClickListener(this)
         binding!!.parent.setOnClickListener(this)
         binding!!.btnTagUser.setOnClickListener(this)
+
+        binding!!.textPost.addTextChangedListener(this);
         presenter = AddPostPresenter(this)
         setImagesAdapter()
 
+
+//        binding!!.includeView.icUpload.visibility=View.VISIBLE
+//        binding!!.btnUpload.visibility=View.GONE
 
 
         mediaPlayer = MediaPlayer()
@@ -172,6 +180,11 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
         setAdapterData()
         setColorAdapter()
+
+
+
+
+
     }
 
 
@@ -209,20 +222,19 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
     fun backgroundColor(color: String, position: Int) {
 
         if (position == 0) {
-            binding!!.parentWhtsMind.setBackground(ContextCompat.getDrawable(this, R.drawable.rectangle_blue_stroke));
-            colorCode=""
+            binding!!.parentWhtsMind.setBackground(ContextCompat.getDrawable(this, R.drawable.rectagle_gray_shap));
+            colorCode="#FFFFFF"
 //            binding!!.parentWhtsMind.setBackgroundResource(R.drawable.rectangle_blue_stroke);
-
         } else {
             colorCode=color
-            binding!!.parentWhtsMind!!.getBackground().setColorFilter(Color.parseColor(color), PorterDuff.Mode.SRC_ATOP);
+            binding!!.parentWhtsMind.getBackground().setColorFilter(Color.parseColor(color), PorterDuff.Mode.SRC_ATOP);
         }
     }
 
 
     fun hideColorLayout(){
 
-        binding!!.parentWhtsMind.setBackground(ContextCompat.getDrawable(this, R.drawable.rectangle_blue_stroke));
+        binding!!.parentWhtsMind.setBackground(ContextCompat.getDrawable(this, R.drawable.rectagle_gray_shap));
         binding!!.rvColor.visibility=View.GONE
     }
 
@@ -350,9 +362,6 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                             imagesList,
                             thumbNailFile
                         )
-
-
-
                     }
 
                 }
@@ -587,6 +596,15 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
             binding!!.videoView1.requestFocus()
             binding!!.videoView1.start()
 
+
+            binding!!.parent.getViewTreeObserver()
+                .addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener {
+                    override fun onScrollChanged() {
+                        mediaController!!.hide()
+                    }
+                })
+
+
         } catch (e: Exception) {
         }
 
@@ -668,6 +686,8 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 ////                .setMaxCropResultSize(  5000, 1200)
 //                .setMinCropWindowSize(50000, 700)
 //                .start(this);
+
+
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (result != null) {
@@ -732,8 +752,9 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
                                             if (thumb != null) {
                                                 val tempUri =
                                                     getImageUri(getApplicationContext(), thumb!!);
-                                                val thumPath =
-                                                    getAbsolutePath(baseActivity!!, tempUri)!!
+                                               // val thumPath = getAbsolutePath(baseActivity!!, tempUri)!!
+                                                var thumPath = FileUtils.getPath(this@AddPostActivity, tempUri)
+
                                                 val file = File(thumPath)
                                                 thumbNailFile = file
                                             } else {
@@ -978,7 +999,8 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
 
     private fun uploadImage() {
 
-        val uploadImage = Dialog(this)
+//        val uploadImage = Dialog(this)
+        val uploadImage = Dialog(this,R.style.Theme_Dialog);
         uploadImage.requestWindowFeature(Window.FEATURE_NO_TITLE)
         uploadImage.setContentView(R.layout.upload_document_dialog)
 
@@ -1069,6 +1091,22 @@ class AddPostActivity : BaseActivity(), View.OnClickListener, AddPostCallback {
         )
 
 
+    }
+
+    override fun afterTextChanged(p0: Editable?) {
+    }
+
+    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+    }
+
+    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//      if(!binding!!.textPost.text.trim().isEmpty()){
+//          binding!!.imgUpdatePostDesabled.visibility=View.GONE
+//          binding!!.imgUpdatePost.visibility=View.VISIBLE
+//      } else{
+//          binding!!.imgUpdatePostDesabled.visibility=View.VISIBLE
+//          binding!!.imgUpdatePost.visibility=View.GONE
+//      }
     }
 
 }

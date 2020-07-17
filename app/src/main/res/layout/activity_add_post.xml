@@ -25,7 +25,6 @@
 
             >
 
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -34,7 +33,7 @@
                     android:id="@+id/parent_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_15">
+                    android:layout_marginTop="@dimen/dp_8">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/img_logo"
@@ -42,7 +41,11 @@
                         android:layout_height="@dimen/dp_50"
                         android:layout_marginStart="@dimen/dp_15"
                         android:layout_marginEnd="@dimen/dp_8"
-                        android:src="@drawable/user" />
+                        android:background="@color/colorWhite"
+                        android:backgroundTint="@color/albumTransparent"
+                        android:src="@drawable/user"
+                        app:civ_border_color="@color/colorGray"
+                        app:civ_border_width="1dp" />
 
                     <TextView
                         android:id="@+id/userName"
@@ -57,36 +60,39 @@
                         android:textSize="@dimen/dp_18"
                         android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/btnTagUser"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-
-                        android:layout_marginRight="@dimen/_20sdp"
-                        android:src="@drawable/ic_tag_user"
-                        android:text="@string/tag_users"
-                        android:textColor="#1E21DF" />
                 </RelativeLayout>
 
+                <TextView
+                    android:id="@+id/btnTagUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/parent_name"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:background="@drawable/shadow_green_background"
+                    android:paddingLeft="@dimen/dp_6"
+                    android:paddingTop="4dp"
+                    android:paddingRight="@dimen/dp_6"
+                    android:paddingBottom="4dp"
+                    android:text="@string/tag_users"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="10dp" />
 
                 <RelativeLayout
                     android:id="@+id/taggedUser"
                     android:layout_width="match_parent"
 
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/parent_name"
-                    android:layout_marginLeft="@dimen/dp_15"
-                    android:layout_marginTop="@dimen/dp_15"
+                    android:layout_below="@+id/btnTagUser"
+                    android:layout_marginLeft="@dimen/dp_10"
                     android:layout_marginRight="@dimen/dp_15">
-
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvTagUsers"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5sdp" />
+
+                        />
 
 
                 </RelativeLayout>
@@ -100,7 +106,7 @@
                     android:layout_marginLeft="@dimen/dp_15"
                     android:layout_marginTop="@dimen/dp_10"
                     android:layout_marginRight="@dimen/dp_15"
-                    android:background="@drawable/rectaggle_gray_shap"
+                    android:background="@drawable/rectagle_gray_shap"
                     android:padding="@dimen/dp_5">
 
                     <EditText
@@ -117,251 +123,257 @@
 
                 </RelativeLayout>
 
+
+                <!--                <RelativeLayout-->
+                <!--                    android:id="@+id/parent_media"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="@dimen/dp_140"-->
+                <!--                    android:layout_below="@+id/rvColor"-->
+                <!--                    android:layout_marginLeft="@dimen/dp_15"-->
+                <!--                    android:layout_marginTop="@dimen/dp_15"-->
+                <!--                    android:layout_marginRight="@dimen/dp_15"-->
+                <!--                    android:background="@drawable/rectangle_blue_stroke"-->
+                <!--                    android:padding="@dimen/dp_10"-->
+                <!--                    android:visibility="gone">-->
+
+                <!--                    <RelativeLayout-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_centerVertical="true">-->
+
+                <!--                        <RelativeLayout-->
+
+                <!--                            android:id="@+id/photo"-->
+                <!--                            android:layout_width="match_parent"-->
+                <!--                            android:layout_height="wrap_content">-->
+
+                <!--                            <de.hdodenhof.circleimageview.CircleImageView-->
+                <!--                                android:id="@+id/img"-->
+                <!--                                android:layout_width="@dimen/dp_30"-->
+                <!--                                android:layout_height="@dimen/dp_30"-->
+                <!--                                android:layout_marginEnd="@dimen/dp_8"-->
+                <!--                                android:src="@drawable/ic_image"-->
+                <!--                                tools:ignore="UnusedAttribute" />-->
+
+                <!--                            <TextView-->
+                <!--                                android:layout_width="wrap_content"-->
+                <!--                                android:layout_height="wrap_content"-->
+                <!--                                android:layout_centerVertical="true"-->
+                <!--                                android:layout_toRightOf="@+id/img"-->
+                <!--                                android:fontFamily="@font/opensans_regular"-->
+                <!--                                android:text="Photo (Max 5)"-->
+                <!--                                android:textColor="@color/black"-->
+
+                <!--                                android:textSize="13dp" />-->
+
+                <!--                            <TextView-->
+                <!--                                android:id="@+id/btnChooseImage"-->
+                <!--                                android:layout_width="@dimen/dp_70"-->
+                <!--                                android:layout_height="@dimen/dp_30"-->
+                <!--                                android:layout_alignParentRight="true"-->
+                <!--                                android:layout_centerVertical="true"-->
+                <!--                                android:background="@drawable/rectangle_blue"-->
+                <!--                                android:fontFamily="@font/opensans_regular"-->
+                <!--                                android:gravity="center"-->
+                <!--                                android:paddingBottom="@dimen/dp_2"-->
+                <!--                                android:text="Choose"-->
+                <!--                                android:textColor="@color/colorWhite" />-->
+                <!--                        </RelativeLayout>-->
+
+
+                <!--                        <RelativeLayout-->
+                <!--                            android:id="@+id/video"-->
+                <!--                            android:layout_width="match_parent"-->
+                <!--                            android:layout_height="wrap_content"-->
+
+                <!--                            android:layout_below="@+id/photo"-->
+                <!--                            android:layout_marginTop="@dimen/dp_10">-->
+
+                <!--                            <de.hdodenhof.circleimageview.CircleImageView-->
+                <!--                                android:id="@+id/img_video"-->
+                <!--                                android:layout_width="@dimen/dp_30"-->
+                <!--                                android:layout_height="@dimen/dp_30"-->
+                <!--                                android:layout_marginEnd="@dimen/dp_8"-->
+                <!--                                android:src="@drawable/ic_video"-->
+                <!--                                tools:ignore="UnusedAttribute" />-->
+
+                <!--                            <TextView-->
+                <!--                                android:layout_width="wrap_content"-->
+                <!--                                android:layout_height="wrap_content"-->
+                <!--                                android:layout_marginTop="@dimen/dp_5"-->
+                <!--                                android:layout_toRightOf="@+id/img_video"-->
+                <!--                                android:fontFamily="@font/opensans_regular"-->
+                <!--                                android:text="Video (Max 1 minute)"-->
+                <!--                                android:textColor="@color/black"-->
+                <!--                                android:textSize="13dp" />-->
+
+                <!--                            <TextView-->
+                <!--                                android:id="@+id/btnChooseVideo"-->
+                <!--                                android:layout_width="@dimen/dp_70"-->
+                <!--                                android:layout_height="@dimen/dp_30"-->
+                <!--                                android:layout_alignParentRight="true"-->
+                <!--                                android:background="@drawable/rectangle_blue"-->
+                <!--                                android:fontFamily="@font/opensans_regular"-->
+                <!--                                android:gravity="center"-->
+
+                <!--                                android:paddingBottom="@dimen/dp_2"-->
+                <!--                                android:text="Choose"-->
+                <!--                                android:textColor="@color/colorWhite" />-->
+                <!--                        </RelativeLayout>-->
+
+
+                <!--                        <RelativeLayout-->
+                <!--                            android:id="@+id/audio"-->
+                <!--                            android:layout_width="match_parent"-->
+                <!--                            android:layout_height="wrap_content"-->
+
+                <!--                            android:layout_below="@+id/video"-->
+                <!--                            android:layout_marginTop="@dimen/dp_10">-->
+
+                <!--                            <de.hdodenhof.circleimageview.CircleImageView-->
+                <!--                                android:id="@+id/img_audio"-->
+                <!--                                android:layout_width="@dimen/dp_30"-->
+                <!--                                android:layout_height="@dimen/dp_30"-->
+                <!--                                android:layout_marginEnd="@dimen/dp_8"-->
+                <!--                                android:src="@drawable/ic_audio"-->
+                <!--                                tools:ignore="UnusedAttribute" />-->
+
+                <!--                            <TextView-->
+                <!--                                android:layout_width="wrap_content"-->
+                <!--                                android:layout_height="wrap_content"-->
+                <!--                                android:layout_marginTop="@dimen/dp_5"-->
+                <!--                                android:layout_toRightOf="@+id/img_audio"-->
+                <!--                                android:text="Audio (Max 1 minute)"-->
+                <!--                                android:textColor="@color/black"-->
+                <!--                                android:textSize="13dp" />-->
+
+                <!--                            <TextView-->
+                <!--                                android:id="@+id/btnChooseAudio"-->
+                <!--                                android:layout_width="@dimen/dp_70"-->
+                <!--                                android:layout_height="@dimen/dp_30"-->
+                <!--                                android:layout_alignParentRight="true"-->
+                <!--                                android:layout_centerVertical="true"-->
+                <!--                                android:background="@drawable/rectangle_blue"-->
+                <!--                                android:fontFamily="@font/opensans_regular"-->
+                <!--                                android:gravity="center"-->
+                <!--                                android:paddingBottom="@dimen/dp_2"-->
+                <!--                                android:text="Record"-->
+                <!--                                android:textColor="@color/colorWhite" />-->
+                <!--                        </RelativeLayout>-->
+
+
+                <!--                    </RelativeLayout>-->
+
+
+                <!--                </RelativeLayout>-->
+
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvColor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/parent_whts_mind"
-                    android:layout_marginLeft="@dimen/dp_15"
+                    android:layout_marginLeft="@dimen/dp_10"
                     android:layout_marginTop="@dimen/dp_10"
                     android:layout_marginRight="@dimen/dp_15" />
 
-
-<!--                <RelativeLayout-->
-<!--                    android:id="@+id/parent_media"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="@dimen/dp_140"-->
-<!--                    android:layout_below="@+id/rvColor"-->
-<!--                    android:layout_marginLeft="@dimen/dp_15"-->
-<!--                    android:layout_marginTop="@dimen/dp_15"-->
-<!--                    android:layout_marginRight="@dimen/dp_15"-->
-<!--                    android:background="@drawable/rectangle_blue_stroke"-->
-<!--                    android:padding="@dimen/dp_10"-->
-<!--                    android:visibility="gone">-->
-
-<!--                    <RelativeLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_centerVertical="true">-->
-
-<!--                        <RelativeLayout-->
-
-<!--                            android:id="@+id/photo"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content">-->
-
-<!--                            <de.hdodenhof.circleimageview.CircleImageView-->
-<!--                                android:id="@+id/img"-->
-<!--                                android:layout_width="@dimen/dp_30"-->
-<!--                                android:layout_height="@dimen/dp_30"-->
-<!--                                android:layout_marginEnd="@dimen/dp_8"-->
-<!--                                android:src="@drawable/ic_image"-->
-<!--                                tools:ignore="UnusedAttribute" />-->
-
-<!--                            <TextView-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_centerVertical="true"-->
-<!--                                android:layout_toRightOf="@+id/img"-->
-<!--                                android:fontFamily="@font/opensans_regular"-->
-<!--                                android:text="Photo (Max 5)"-->
-<!--                                android:textColor="@color/black"-->
-
-<!--                                android:textSize="13dp" />-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/btnChooseImage"-->
-<!--                                android:layout_width="@dimen/dp_70"-->
-<!--                                android:layout_height="@dimen/dp_30"-->
-<!--                                android:layout_alignParentRight="true"-->
-<!--                                android:layout_centerVertical="true"-->
-<!--                                android:background="@drawable/rectangle_blue"-->
-<!--                                android:fontFamily="@font/opensans_regular"-->
-<!--                                android:gravity="center"-->
-<!--                                android:paddingBottom="@dimen/dp_2"-->
-<!--                                android:text="Choose"-->
-<!--                                android:textColor="@color/colorWhite" />-->
-<!--                        </RelativeLayout>-->
-
-
-<!--                        <RelativeLayout-->
-<!--                            android:id="@+id/video"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-
-<!--                            android:layout_below="@+id/photo"-->
-<!--                            android:layout_marginTop="@dimen/dp_10">-->
-
-<!--                            <de.hdodenhof.circleimageview.CircleImageView-->
-<!--                                android:id="@+id/img_video"-->
-<!--                                android:layout_width="@dimen/dp_30"-->
-<!--                                android:layout_height="@dimen/dp_30"-->
-<!--                                android:layout_marginEnd="@dimen/dp_8"-->
-<!--                                android:src="@drawable/ic_video"-->
-<!--                                tools:ignore="UnusedAttribute" />-->
-
-<!--                            <TextView-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_marginTop="@dimen/dp_5"-->
-<!--                                android:layout_toRightOf="@+id/img_video"-->
-<!--                                android:fontFamily="@font/opensans_regular"-->
-<!--                                android:text="Video (Max 1 minute)"-->
-<!--                                android:textColor="@color/black"-->
-<!--                                android:textSize="13dp" />-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/btnChooseVideo"-->
-<!--                                android:layout_width="@dimen/dp_70"-->
-<!--                                android:layout_height="@dimen/dp_30"-->
-<!--                                android:layout_alignParentRight="true"-->
-<!--                                android:background="@drawable/rectangle_blue"-->
-<!--                                android:fontFamily="@font/opensans_regular"-->
-<!--                                android:gravity="center"-->
-
-<!--                                android:paddingBottom="@dimen/dp_2"-->
-<!--                                android:text="Choose"-->
-<!--                                android:textColor="@color/colorWhite" />-->
-<!--                        </RelativeLayout>-->
-
-
-<!--                        <RelativeLayout-->
-<!--                            android:id="@+id/audio"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-
-<!--                            android:layout_below="@+id/video"-->
-<!--                            android:layout_marginTop="@dimen/dp_10">-->
-
-<!--                            <de.hdodenhof.circleimageview.CircleImageView-->
-<!--                                android:id="@+id/img_audio"-->
-<!--                                android:layout_width="@dimen/dp_30"-->
-<!--                                android:layout_height="@dimen/dp_30"-->
-<!--                                android:layout_marginEnd="@dimen/dp_8"-->
-<!--                                android:src="@drawable/ic_audio"-->
-<!--                                tools:ignore="UnusedAttribute" />-->
-
-<!--                            <TextView-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_marginTop="@dimen/dp_5"-->
-<!--                                android:layout_toRightOf="@+id/img_audio"-->
-<!--                                android:text="Audio (Max 1 minute)"-->
-<!--                                android:textColor="@color/black"-->
-<!--                                android:textSize="13dp" />-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/btnChooseAudio"-->
-<!--                                android:layout_width="@dimen/dp_70"-->
-<!--                                android:layout_height="@dimen/dp_30"-->
-<!--                                android:layout_alignParentRight="true"-->
-<!--                                android:layout_centerVertical="true"-->
-<!--                                android:background="@drawable/rectangle_blue"-->
-<!--                                android:fontFamily="@font/opensans_regular"-->
-<!--                                android:gravity="center"-->
-<!--                                android:paddingBottom="@dimen/dp_2"-->
-<!--                                android:text="Record"-->
-<!--                                android:textColor="@color/colorWhite" />-->
-<!--                        </RelativeLayout>-->
-
-
-<!--                    </RelativeLayout>-->
-
-
-<!--                </RelativeLayout>-->
-
-
                 <RelativeLayout
+                    android:id="@+id/mediaLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rvColor"
                     android:layout_marginLeft="@dimen/dp_15"
                     android:layout_marginTop="@dimen/dp_10"
                     android:layout_marginRight="@dimen/dp_15"
-                    android:id="@+id/mediaLayout"
                     android:background="@drawable/shadow_search_user"
-                    android:padding="12dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/rvColor">
+                    android:padding="12dp">
 
-                    <LinearLayout
-
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true">
 
                         <RelativeLayout
+                            android:layout_marginLeft="@dimen/dp_10"
                             android:id="@+id/btnChooseImage"
-                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <de.hdodenhof.circleimageview.CircleImageView
-
                                 android:id="@+id/img_camera"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
+                                android:background="@color/colorWhite"
+                                android:backgroundTint="@color/colorWhite"
                                 android:src="@drawable/ic_image" />
 
                             <TextView
-                                android:textSize="@dimen/_12sdp"
-                                android:layout_marginLeft="@dimen/_10sdp"
-                                android:layout_centerVertical="true"
-                                android:layout_toRightOf="@+id/img_camera"
-                                android:text="Photos"
-
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/dp_10"
+                                android:layout_toRightOf="@+id/img_camera"
+
+                                android:text="Photos"
+                                android:textSize="@dimen/dp_12" />
 
                         </RelativeLayout>
 
                         <RelativeLayout
                             android:id="@+id/btnChooseVideo"
-                            android:layout_weight="1"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_centerInParent="true"
+                            android:layout_height="wrap_content"
+                            >
 
                             <de.hdodenhof.circleimageview.CircleImageView
-
                                 android:id="@+id/img_gallery"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
+                                android:background="@color/colorWhite"
+                                android:backgroundTint="@color/colorWhite"
                                 android:src="@drawable/ic_video" />
 
                             <TextView
-                                android:textSize="@dimen/_12sdp"
-                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/dp_10"
                                 android:layout_toRightOf="@+id/img_gallery"
                                 android:text="Videos"
-                                android:layout_centerVertical="true"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:textSize="@dimen/dp_12" />
 
                         </RelativeLayout>
 
                         <RelativeLayout
+                            android:layout_marginRight="@dimen/dp_10"
                             android:id="@+id/btnChooseAudio"
-                            android:layout_weight="1"
+                            android:layout_alignParentRight="true"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                            <de.hdodenhof.circleimageview.CircleImageView
+                            android:layout_height="wrap_content"
+                          >
 
+                            <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/img_audio1"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
+                                android:background="@color/colorWhite"
+                                android:backgroundTint="@color/colorWhite"
                                 android:src="@drawable/ic_audio" />
 
                             <TextView
-                                android:textSize="@dimen/_12sdp"
-                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/dp_10"
                                 android:layout_toRightOf="@+id/img_audio1"
                                 android:text="Audio"
-                                android:layout_centerVertical="true"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:textSize="@dimen/dp_12" />
 
                         </RelativeLayout>
 
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
 
                 </RelativeLayout>
@@ -500,18 +512,60 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/allmediaParent"
-                    android:layout_marginLeft="@dimen/dp_15"
+                    android:layout_marginLeft="13dp"
                     android:layout_marginTop="@dimen/dp_15"
                     android:layout_marginRight="@dimen/dp_15"
                     android:background="@drawable/rectangle_blue"
                     android:fontFamily="@font/opensans_regular"
                     android:text="@string/upload"
+                    android:visibility="visible"
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/dp_16"
                     android:textStyle="bold" />
             </RelativeLayout>
         </ScrollView>
+
+
+        <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+        <!--            android:id="@+id/imgUpdatePost"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_alignParentRight="true"-->
+        <!--            android:layout_alignParentBottom="true"-->
+        <!--            android:layout_gravity="bottom|right"-->
+        <!--            android:layout_margin="@dimen/dp_30"-->
+        <!--            android:visibility="gone"-->
+        <!--            app:backgroundTint="@color/colorPrimary"-->
+        <!--            app:srcCompat="@drawable/ic_check_img"-->
+        <!--            app:tint="@android:color/white" />-->
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgUpdatePost"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/dp_30"
+            android:src="@drawable/ic_cloud_removebg_preview"
+            android:visibility="gone" />
+
+
+        <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+        <!--            android:id="@+id/imgUpdatePostDesabled"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_alignParentRight="true"-->
+        <!--            android:layout_alignParentBottom="true"-->
+        <!--            android:layout_gravity="bottom|right"-->
+        <!--            android:layout_margin="@dimen/dp_30"-->
+        <!--            app:backgroundTint="#D6D9DA"-->
+        <!--            app:srcCompat="@drawable/ic_check_img"-->
+        <!--            app:tint="@android:color/white" />-->
+
+
+
+
     </RelativeLayout>
 
 </layout>

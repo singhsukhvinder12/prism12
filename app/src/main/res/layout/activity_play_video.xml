@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         />
     <RelativeLayout
-        android:layout_marginBottom="@dimen/_30sdp"
+        android:layout_marginBottom="@dimen/dp_30"
         android:layout_below="@+id/includeView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -45,8 +45,8 @@
         android:indeterminate="true"
         android:layout_centerInParent="true"
         android:indeterminateBehavior="repeat"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
         android:layout_gravity="center">
     </ProgressBar>
 

@@ -31,6 +31,7 @@ import com.seasia.prism.newsfeed.audioplayer.AndroidBuildingMusicPlayerActivity
 import com.seasia.prism.core.BaseActivity
 import com.seasia.prism.core.auth.ProfileActivity
 import com.seasia.prism.core.auth.ProfileActivity.Companion.clickStatus
+import com.seasia.prism.core.ui.HobbiesActivity
 import com.seasia.prism.newsfeed.displaynewsfeed.model.GetFeedResponse
 import com.seasia.prism.newsfeed.displaynewsfeed.model.LikeInput
 import com.seasia.prism.newsfeed.displaynewsfeed.view.CommentActivity
@@ -74,38 +75,60 @@ class UserProfileFeedAdapter(
         try {
 
 
+            if(mList.get(position).TypeId!=null){
+                if(!mList.get(position).TypeId.equals("0")){
+                    holder.parentLayout!!.visibility=View.GONE
+                    holder.btnMemories!!.visibility=View.VISIBLE
+                    holder.btnMemories!!.setOnClickListener {
+                        var intent = Intent(context, HobbiesActivity::class.java)
+                        intent.putExtra("userId", mList.get(position).PostedById)
+                        intent.putExtra("typeId", mList.get(position).TypeId)
+                        context.startActivity(intent)
+                    }
+
+                } else{
+                    holder.parentLayout!!.visibility=View.VISIBLE
+                    holder.btnMemories!!.visibility=View.GONE
+                }
+            }
+
 
             if(mList.get(position).ColorCode!=null && !mList.get(position).ColorCode!!.isEmpty()){
-                holder.txtPostInfoColor!!.setText(mList.get(position).Description)
-                holder.txtPostInfoColor!!.visibility=View.VISIBLE
+
                 holder.txtPostInfo!!.visibility=View.GONE
                 try {
                     if(mList.get(position).ColorCode!!.contains("#")){
                         if(!mList.get(position).ColorCode.equals("#FFFFFF")){
                             holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor(mList.get(position).ColorCode), PorterDuff.Mode.SRC_ATOP);
-                        } else{
-                            holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-                            holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
+                            holder.txtPostInfoWithoutPadding!!.visibility=View.GONE
                             holder.txtPostInfoColor!!.setText(mList.get(position).Description)
-                            holder.txtPostInfo!!.visibility=View.GONE
                             holder.txtPostInfoColor!!.visibility=View.VISIBLE
+
+                        } else{
+//                            holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                            holder.txtPostInfoWithoutPadding!!.setTextColor(Color.parseColor("#000000"))
+                            holder.txtPostInfoWithoutPadding!!.setText(mList.get(position).Description)
+                            holder.txtPostInfoColor!!.visibility=View.GONE
+                            holder.txtPostInfoWithoutPadding!!.visibility=View.VISIBLE
                         }
                     } else{
                         //  holder.txtPostInfoColor!!.visibility=View.GONE
-                        holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-                        holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
-                        holder.txtPostInfoColor!!.setText(mList.get(position).Description)
-                        //  holder.txtPostInfo!!.visibility=View.GONE
+                        //  holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                        holder.txtPostInfoWithoutPadding!!.setTextColor(Color.parseColor("#000000"))
+                        holder.txtPostInfoWithoutPadding!!.setText(mList.get(position).Description)
+                        holder.txtPostInfoWithoutPadding!!.visibility=View.VISIBLE
+                        holder.txtPostInfoColor!!.visibility=View.GONE
                     }
                 }catch (e:Exception){
 
                 }
             }else{
-                holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-                holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
-                holder.txtPostInfoColor!!.setText(mList.get(position).Description)
+//                holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                holder.txtPostInfoWithoutPadding!!.setTextColor(Color.parseColor("#000000"))
+                holder.txtPostInfoWithoutPadding!!.setText(mList.get(position).Description)
                 holder.txtPostInfo!!.visibility=View.GONE
-                holder.txtPostInfoColor!!.visibility=View.VISIBLE
+                holder.txtPostInfoColor!!.visibility=View.GONE
+                holder.txtPostInfoWithoutPadding!!.visibility=View.VISIBLE
             }
 
 
@@ -147,23 +170,23 @@ class UserProfileFeedAdapter(
 
             if (mList.get(position).lstTaggedUsers != null) {
 
-                var arrayList = ArrayList<GetFeedResponse.ResultDataList.lstTaggedUsersList>()
-
-                if(arrayList.size>0){
-                    arrayList.clear()
-                }
-
-
-                var myList = GetFeedResponse.ResultDataList.lstTaggedUsersList()
-                myList.Id = ""
-                myList.Name = "Tagged at: "
-                myList.Email = ""
-                myList.ImageUrl = ""
-                arrayList.add(myList)
-                arrayList.addAll(mList.get(position).lstTaggedUsers!!)
+//                var arrayList = ArrayList<GetFeedResponse.ResultDataList.lstTaggedUsersList>()
+//
+//                if(arrayList.size>0){
+//                    arrayList.clear()
+//                }
+//
+//
+//                var myList = GetFeedResponse.ResultDataList.lstTaggedUsersList()
+//                myList.Id = ""
+//                myList.Name = "Tagged at: "
+//                myList.Email = ""
+//                myList.ImageUrl = ""
+//                arrayList.add(myList)
+//                arrayList.addAll(mList.get(position).lstTaggedUsers!!)
 
                 holder.tagRecyclerView!!.visibility = View.VISIBLE
-                val tagFeedAdapter = TagProfileFeedAdapter(context, arrayList)
+                val tagFeedAdapter = TagProfileFeedAdapter(context, mList.get(position).lstTaggedUsers)
                 val layoutManager = FlexboxLayoutManager(context)
                 layoutManager.setFlexWrap(FlexWrap.WRAP)
                 holder.tagRecyclerView!!.layoutManager = layoutManager
@@ -178,6 +201,7 @@ class UserProfileFeedAdapter(
             if (mList.get(position).lstDocuments != null) {
                 holder.txtPostInfo!!.setText(mList.get(position).Description)
                 holder.txtPostInfoColor!!.visibility=View.GONE
+                holder.txtPostInfoWithoutPadding!!.visibility=View.GONE
                 holder.txtPostInfo!!.visibility=View.VISIBLE
 
                 if (mList.get(position).lstDocuments!!.get(0).Type != null) {
@@ -275,8 +299,8 @@ class UserProfileFeedAdapter(
                                     .load(thumbNail)
                                     .timeout(60000)
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .placeholder(R.drawable.video_thumbnail)
-                                    .error(R.drawable.video_thumbnail)
+                                    .placeholder(R.drawable.video_bg)
+                                    .error(R.drawable.video_bg)
                                     .into(holder.videoView1!!);
                             } else{
                                 Glide.with(context)
@@ -284,8 +308,8 @@ class UserProfileFeedAdapter(
                                     .load(url)
                                     .timeout(60000)
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .placeholder(R.drawable.video_thumbnail)
-                                    .error(R.drawable.video_thumbnail)
+                                    .placeholder(R.drawable.video_bg)
+                                    .error(R.drawable.video_bg)
                                     .into(holder!!.videoView1!!);
                             }
 
@@ -509,8 +533,13 @@ class UserProfileFeedAdapter(
         var layoutCommentPost: LinearLayout? = null
         var viewPager: ViewPager? = null
         var tagRecyclerView: RecyclerView? = null
+        var txtPostInfoWithoutPadding: TextView? = null
+        var parentLayout: LinearLayout? = null
+        var btnMemories: ImageView? = null
 
         init {
+            btnMemories = itemView.findViewById(R.id.btnMemories)
+            parentLayout = itemView.findViewById(R.id.parentLayout)
             txtUserNameForPost = itemView.findViewById(R.id.txtUserNameForPost)
             txtPostInfo = itemView.findViewById(R.id.txtPostInfo)
             txtDateForPost = itemView.findViewById(R.id.txtDateForPost)
@@ -530,6 +559,8 @@ class UserProfileFeedAdapter(
             viewPager = itemView.findViewById(R.id.viewPager)
             tagRecyclerView = itemView.findViewById(R.id.tagRecyclerView)
             txtPostInfoColor = itemView.findViewById(R.id.txtPostInfoColor)
+            txtPostInfoWithoutPadding = itemView.findViewById(R.id.txtPostInfoWithoutPadding)
+
         }
     }
 

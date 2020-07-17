@@ -8,6 +8,7 @@ import com.seasia.prism.core.auth.EmailActivity
 import com.seasia.prism.core.BaseActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import com.seasia.prism.core.auth.UserProfileActivity
 import com.seasia.prism.util.PreferenceKeys as PreferenceKeys1
 
 class SplashActivity : BaseActivity() {
@@ -62,8 +63,7 @@ class SplashActivity : BaseActivity() {
                         startActivity(intent)
                     } else {
                         val intent = Intent(this@SplashActivity, MainActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                         finish()
                     }

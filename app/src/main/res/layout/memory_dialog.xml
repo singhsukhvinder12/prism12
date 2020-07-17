@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:background="@drawable/white_round_corner"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_marginTop="@dimen/dp_5"
+        android:id="@+id/relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_90">
+
+        <ImageView
+            android:layout_marginLeft="@dimen/dp_20"
+            android:src="@drawable/logout_popup_icon"
+            android:layout_width="@dimen/album_dp_80"
+            android:id="@+id/iv_delete"
+            android:layout_height="@dimen/album_dp_80"/>
+
+        <TextView
+            android:text="@string/app_name"
+            android:textStyle="bold"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/color_navy_blue"
+            android:id="@+id/std_name"
+            android:fontFamily="@font/opensans_regular"
+
+            android:textSize="@dimen/sp_20"
+            android:layout_toRightOf="@+id/iv_delete"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="Would you like to share this update on the wall?"
+            android:layout_below="@+id/std_name"
+            android:textSize="@dimen/sp_14"
+            android:fontFamily="@font/opensans_regular"
+
+            android:layout_toRightOf="@+id/iv_delete"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <View
+        android:layout_centerInParent="true"
+        android:background="#EDE7E7"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <RelativeLayout
+        android:layout_below="@+id/relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_90">
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_centerVertical="true"
+            android:background="@drawable/delete_shape"
+            android:gravity="center"
+            android:fontFamily="@font/opensans_regular"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:text="No"
+            android:textColor="@color/color_navy_blue"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_40"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_centerVertical="true"
+            android:background="@drawable/rectangle_blue"
+            android:gravity="center"
+            android:fontFamily="@font/opensans_regular"
+            android:id="@+id/tv_delete"
+            android:layout_marginRight="@dimen/dp_20"
+            android:text="Yes"
+
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/sp_16" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

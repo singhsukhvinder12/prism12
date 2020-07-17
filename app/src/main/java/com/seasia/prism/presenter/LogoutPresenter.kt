@@ -4,12 +4,13 @@ import com.seasia.prism.App
 import com.seasia.prism.MainActivity
 import com.seasia.prism.R
 import com.seasia.prism.api.GetRestAdapter
+import com.seasia.prism.core.auth.UserProfileActivity
 import com.seasia.prism.model.output.LogoutResponse
 import com.seasia.prism.util.UtilsFunctions
 import retrofit2.Call
 import retrofit2.Callback
 
-class LogoutPresenter(var mainActivity: MainActivity) {
+class LogoutPresenter(var mainActivity: UserProfileActivity) {
 
     fun hitApiLogout(userId: String, deviceType: String) {
         val call = GetRestAdapter.getRestAdapter(true).logout(userId,deviceType)

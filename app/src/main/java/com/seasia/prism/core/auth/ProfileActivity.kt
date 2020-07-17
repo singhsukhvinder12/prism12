@@ -1,6 +1,7 @@
 package com.seasia.prism.core.auth
 
 import android.Manifest
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -63,8 +64,6 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
         Manifest.permission.RECORD_AUDIO
     )
     var REQUEST_PERMISSIONS = 1
-
-
     var feedPresenter: UserProfileFeedPresenter? = null
     var horizontalLayoutManager: LinearLayoutManager? = null
 
@@ -86,6 +85,8 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
     var profileImage = ""
     var userName = ""
     var status = ""
+    var imageCode = "0"
+    var particularId = "0"
 
 
     companion object {
@@ -115,7 +116,7 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
 //        UserId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")!!
         binding!!.includeView.toolbatTitle.text = "Profile"
         binding!!.includeView.ivBack.setOnClickListener {
-            finish()
+            onBackPressed()
         }
 
         comingFrom = intent.getStringExtra("comingFrom")!!
@@ -129,8 +130,10 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
         }
         if (sharedPref!!.getString(PreferenceKeys.USER_ID, "").equals(anotherUser)) {
             binding!!.btnEditProfile.setText("Edit Profile")
+            particularId="0"
         } else {
             binding!!.btnEditProfile.setText("View Profile")
+            particularId=sharedPref!!.getString(PreferenceKeys.USER_ID, "").toString()
         }
 
         binding!!.btnEditProfile.setOnClickListener {
@@ -153,13 +156,11 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
         binding!!.status.setText(status)
 
 
-
-
-
         binding!!.includeView.ivQuestion.visibility = View.VISIBLE
         binding!!.includeView.ivQuestion.setOnClickListener {
             var intent = Intent(this@ProfileActivity, HobbiesActivity::class.java)
             intent.putExtra("userId", anotherUser)
+            intent.putExtra("typeId", "2")
             startActivity(intent)
         }
 
@@ -186,7 +187,7 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
         input.Skip = itemCount.toString()
         input.SortColumnDir = ""
         input.SortColumn = ""
-        input.ParticularId = "0"
+        input.ParticularId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")
         return input
     }
 
@@ -208,22 +209,6 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
         feedPresenter = UserProfileFeedPresenter(this, feedList)
         getFeedData()
 
-        //  getFeedData()
-
-//        itemsswipetorefresh.setProgressBackgroundColorSchemeColor(
-//            ContextCompat.getColor(
-//                activity!!,
-//                R.color.color_primary_blue
-//            )
-//        )
-//        itemsswipetorefresh.setColorSchemeColors(Color.WHITE)
-
-//        itemsswipetorefresh.setOnRefreshListener {
-//            pageCount = 1
-//            endlessScrollListener?.resetState()
-//            getFeedData()
-//            itemsswipetorefresh.isRefreshing = false
-//        }
     }
 
     override fun onResume() {
@@ -232,7 +217,12 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
 
         if (sharedPref!!.getString(PreferenceKeys.USER_ID, "").equals(anotherUser)) {
             binding!!.userName.setText(sharedPref!!.getString(PreferenceKeys.USERNAME, ""))
-            binding!!.status.setText(sharedPref!!.getString(PreferenceKeys.BIO, ""))
+            if(sharedPref!!.getString(PreferenceKeys.BIO, "").equals("null")){
+                binding!!.status.setText("")
+            } else{
+                binding!!.status.setText(sharedPref!!.getString(PreferenceKeys.BIO, ""))
+
+            }
             Glide.with(this)
                 .load(sharedPref!!.getString(PreferenceKeys.USER_IMAGE, ""))
                 .placeholder(R.drawable.user)
@@ -311,32 +301,27 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
                 binding!!.noRecordFound.visibility = View.GONE
                 adapter!!.setList(complaints)
                 adapter!!.notifyDataSetChanged()
-
             } else {
                 binding!!.noRecordFound.visibility = View.VISIBLE
             }
 
-
-//             baseActivity!!.runOnUiThread {
-//                complaints = resultData
-//                 if(setAdapter==1){
-//                     setAdapter()
-//                     setAdapter=0
-//                 } else{
-//                     adapter!!.setList(complaints)
-//                     adapter!!.notifyDataSetChanged()
-//                 }
-//            }
         }
         baseActivity!!.hideDialog()
     }
-
     override fun onLikeSuccess(body: LikesResponse) {
         baseActivity!!.hideDialog()
         if (body.ResultData != null) {
             item!!.get(index!!).TotalLikes = body.ResultData
             txtPostLikeNo!!.setText(item!!.get(index!!).TotalLikes)
+            imageCode="1"
         }
+    }
+
+    override fun onBackPressed() {
+        var intent = Intent()
+        intent.putExtra("imageCode", imageCode)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     override fun onError() {
@@ -354,13 +339,16 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
             complaints.removeAt(deleteItemIndex.toInt())
             adapter!!.notifyDataSetChanged()
             //  getFeedData()
+            imageCode="1"
         }
+
     }
 
     override fun onRepostPost(data: RepostPostResponse) {
         baseActivity!!.hideDialog()
         if (data != null) {
             Toast.makeText(this, data.Message, Toast.LENGTH_LONG).show()
+            imageCode="1"
         }
     }
 
@@ -370,6 +358,26 @@ class ProfileActivity : BaseActivity(), LikeInterface, View.OnClickListener,
     }
 
     override fun onClick(p0: View?) {
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+         if (requestCode == 588 && resultCode == Activity.RESULT_OK && null != data) {
+
+            try {
+                if (data != null) {
+                    if (!data.getStringExtra("updatedCount").isEmpty()) {
+                        var position = data.getStringExtra("position")
+                        var count = data.getStringExtra("updatedCount")
+                        complaints.get(position.toInt()).TotalComments = count
+                        adapter!!.notifyDataSetChanged()
+                        imageCode="1"
+                    }
+                }
+
+            } catch (e: Exception) {
+            }
+        }
     }
 
 }

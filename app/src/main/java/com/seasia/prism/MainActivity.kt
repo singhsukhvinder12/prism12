@@ -20,9 +20,8 @@ import com.seasia.prism.core.ui.SearchUserActivity
 import com.seasia.prism.newsfeed.displaynewsfeed.view.NewsFeedFragment
 
 
-class MainActivity : BaseActivity(), LogoutCallback {
+class MainActivity : BaseActivity() {
     var newsFeedFragment: NewsFeedFragment = NewsFeedFragment()
-    var logoutPresenter: LogoutPresenter? = null
     var click = 0
     var binding: ActivityMainBinding? = null
     var userImage = ""
@@ -54,7 +53,6 @@ class MainActivity : BaseActivity(), LogoutCallback {
         binding!!.includeView.ivSearch.visibility = View.VISIBLE
         binding!!.includeView.toolbatTitle.setText("Seasia Prism")
         val transaction = supportFragmentManager.beginTransaction()
-        logoutPresenter = LogoutPresenter(this)
         transaction.replace(R.id.frame_layout, newsFeedFragment)
         transaction.commit()
         binding!!.includeView.ivEditProfile.setOnClickListener {
@@ -115,39 +113,4 @@ class MainActivity : BaseActivity(), LogoutCallback {
         }
     }
 
-    fun logoutDialog() {
-
-        var dialog = Dialog(baseActivity!!)
-        dialog.setContentView(R.layout.logout_dialog);
-        dialog.setCanceledOnTouchOutside(false)
-        dialog.getWindow()!!.setBackgroundDrawableResource(android.R.color.transparent);
-        var btnLogout = dialog.findViewById<TextView>(R.id.tv_delete)
-        var btnCancel = dialog.findViewById<TextView>(R.id.tv_cancel)
-        btnLogout.setOnClickListener {
-            dialog.dismiss()
-            showDialog()
-            logoutPresenter!!.hitApiLogout(userId, "1")
-
-        }
-        btnCancel.setOnClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
-
-    override fun onSuccess(data: LogoutResponse) {
-        hideDialog()
-        if (data != null) {
-            if(data.StatusCode == "200" || data.StatusCode == "400" ){
-                sharedPref!!.cleanPref()
-                val intent = Intent(this@MainActivity, EmailActivity::class.java)
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intent)
-            }
-        }
-    }
-
-    override fun onFailer() {
-        hideDialog()
-    }
 }

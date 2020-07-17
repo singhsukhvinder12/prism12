@@ -20,14 +20,14 @@
             <ImageView
                 android:id="@+id/iv_back"
                 android:src="@drawable/ic_keyboard_arrow_left_black_48dp"
-                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:layout_centerVertical="true"
                 android:layout_width="30dp"
                 android:layout_height="30dp"/>
             <TextView
                 android:text="Crop Image"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="@dimen/sp_18"
                 android:fontFamily="@font/opensans_regular"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:id="@+id/crop_btn"
-                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/dp_10"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:text="crop"

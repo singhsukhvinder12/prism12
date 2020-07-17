@@ -59,6 +59,7 @@ class SearchAdapter(
 
             if(comingFrom.equals("userTag")) {
                 holder.tagUserCheck!!.visibility=View.VISIBLE
+                holder.tagUserParent!!.visibility=View.VISIBLE
 
                 if(studentList.get(position).isSelected.equals("true")){
                     holder.tagUserCheck!!.setImageResource(R.drawable.ic_check_selected)
@@ -66,7 +67,7 @@ class SearchAdapter(
                     holder.tagUserCheck!!.setImageResource(R.drawable.ic_check_unselected)
                 }
 
-                holder.tagUserCheck!!.setOnClickListener {
+                holder.tagUserParent!!.setOnClickListener {
                     if(tagList!!.size<5){
                         if(studentList.get(position).isSelected.equals("true")){
                             studentList.get(position).isSelected="false"
@@ -106,6 +107,7 @@ class SearchAdapter(
                             Toast.makeText(context,"You can tag only 5 users",Toast.LENGTH_LONG).show()
                         }
                     }
+
                 }
             }
             holder.parentLayout!!.setOnClickListener {
@@ -145,6 +147,7 @@ class SearchAdapter(
 
         var ivTitle: TextView? = null
         var parentLayout: RelativeLayout? = null
+        var tagUserParent: RelativeLayout? = null
         var linearLayout: ImageView? = null
         var linearLayoutDummy: ImageView? = null
         var tvName: TextView? = null
@@ -152,6 +155,7 @@ class SearchAdapter(
 
         init {
             ivTitle = itemView.findViewById(R.id.iv_title)
+            tagUserParent = itemView.findViewById(R.id.tagUserParent)
             parentLayout = itemView.findViewById(R.id.parentLayout)
             linearLayout = itemView.findViewById(R.id.tv_page_title)
             linearLayoutDummy = itemView.findViewById(R.id.tv_page)

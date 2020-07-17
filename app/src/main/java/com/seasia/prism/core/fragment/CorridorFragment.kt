@@ -1,14 +1,17 @@
 package com.seasia.prism.core.fragment
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.seasia.prism.App
+import com.seasia.prism.MainActivity
 
 import com.seasia.prism.R
 import com.seasia.prism.adapter.CorridorAdapter
@@ -27,6 +30,7 @@ class CorridorFragment : Fragment(), QuestionCallback, View.OnClickListener {
     var receylerView: RecyclerView?=null
     var presenter:QuestionsPresenter?=null
     var UserId=""
+    var btnPress=""
     var choiceAnsArray:ArrayList<QuestionResponse.ResultDataList>?=null
     var sharedPref: PrefStore? = null
     var btnSubmit:Button?=null
@@ -76,6 +80,13 @@ class CorridorFragment : Fragment(), QuestionCallback, View.OnClickListener {
     override fun onSuccess(body: AskQuestionResponse) {
         (activity as HobbiesActivity?)!!.progressHide()
         Toast.makeText(activity,""+body.Message,Toast.LENGTH_LONG).show()
+        if(btnPress.equals("yes")){
+            var intent = Intent(activity, MainActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+            (activity as HobbiesActivity?)!!.finish()
+        }
+
     }
 
     override fun onError() {
@@ -87,18 +98,54 @@ class CorridorFragment : Fragment(), QuestionCallback, View.OnClickListener {
 
             R.id.btnSubmit->{
                 if(thisThatAdapter!=null) {
-                    var addQuestion = AskQuestionInput()
-                    addQuestion.UserId = UserId
-                    addQuestion!!.QuestionAnswers = thisThatAdapter!!.getAnswer()
-                    if (!UtilsFunctions.isNetworkAvailable(App.app)) {
-                        UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
-                        return
-                    }
-                    presenter!!.getData(addQuestion)
-                    (activity as HobbiesActivity?)!!.progressDialog()
-                    (activity as HobbiesActivity?)!!.myQuestionList(choiceAnsArray!!)
+                    memoriytDialog()
                 }
             }
         }
+    }
+
+    fun memoriytDialog() {
+
+        var dialog = Dialog(activity!!)
+        dialog.setContentView(R.layout.memory_dialog);
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.getWindow()!!.setBackgroundDrawableResource(android.R.color.transparent);
+        val btnLogout = dialog.findViewById<TextView>(R.id.tv_delete)
+        val btnCancel = dialog.findViewById<TextView>(R.id.tv_cancel)
+        btnLogout.setOnClickListener {
+            dialog.dismiss()
+            val addQuestion = AskQuestionInput()
+            addQuestion.UserId = UserId
+            addQuestion.TypeId = "1"
+            addQuestion.QuestionAnswers = thisThatAdapter!!.getAnswer()
+            if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+                UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+
+            } else{
+                presenter!!.getData(addQuestion)
+                (activity as HobbiesActivity?)!!.progressDialog()
+                (activity as HobbiesActivity?)!!.myQuestionList(choiceAnsArray!!)
+            }
+            btnPress="yes"
+
+        }
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+            val addQuestion = AskQuestionInput()
+            addQuestion.UserId = UserId
+            addQuestion.TypeId = "0"
+            addQuestion.QuestionAnswers = thisThatAdapter!!.getAnswer()
+            if (!UtilsFunctions.isNetworkAvailable(App.app)) {
+                UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
+
+            } else{
+                presenter!!.getData(addQuestion)
+                (activity as HobbiesActivity?)!!.progressDialog()
+                (activity as HobbiesActivity?)!!.myQuestionList(choiceAnsArray!!)
+            }
+            btnPress="no"
+
+        }
+        dialog.show()
     }
 }

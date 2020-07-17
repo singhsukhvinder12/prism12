@@ -1,8 +1,5 @@
 package com.naver.android.helloyako.imagecropsample.crop
-
 import android.app.Activity
-import android.content.Intent
-import android.content.Intent.getIntent
 import android.graphics.Bitmap
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -12,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.naver.android.helloyako.imagecrop.model.ViewState

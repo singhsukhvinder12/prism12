@@ -12,18 +12,17 @@ import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.bumptech.glide.Glide
 import com.seasia.prism.App
 import com.seasia.prism.R
 import com.seasia.prism.core.BaseFragment
-import com.seasia.prism.core.ui.SearchUserActivity
 import com.seasia.prism.databinding.FragmentNewsFeedBinding
 import com.seasia.prism.model.DeviceTokenInput
 import com.seasia.prism.newsfeed.AddPostActivity
@@ -129,26 +128,6 @@ class NewsFeedFragment : BaseFragment(true),
         fabCloseAnimation = AnimationUtils.loadAnimation(activity, R.anim.fab_close)
     }
 
-    fun closeFloating() {
-        ViewCompat.animate(baseFloatingActionButton).rotation(45.0F).withLayer().setDuration(300)
-            .setInterpolator(OvershootInterpolator(10.0F)).start();
-        createLayout.startAnimation(fabOpenAnimation);
-        shareLayout.startAnimation(fabOpenAnimation);
-        addPost.setClickable(true);
-        searchUsers.setClickable(true);
-        isFabMenuOpen = true;
-    }
-
-    fun openFloating() {
-        ViewCompat.animate(baseFloatingActionButton).rotation(0.0F).withLayer().setDuration(300)
-            .setInterpolator(OvershootInterpolator(10.0F)).start();
-        createLayout.startAnimation(fabCloseAnimation);
-        shareLayout.startAnimation(fabCloseAnimation);
-        addPost.setClickable(false);
-        searchUsers.setClickable(false);
-        isFabMenuOpen = false;
-    }
-
 
     fun getFeedData() {
         if (!UtilsFunctions.isNetworkAvailable(App.app)) {
@@ -168,7 +147,7 @@ class NewsFeedFragment : BaseFragment(true),
         input.Skip = itemCount.toString()
         input.SortColumnDir = ""
         input.SortColumn = ""
-        input.ParticularId = "0"
+        input.ParticularId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")
         return input
     }
 
@@ -178,14 +157,18 @@ class NewsFeedFragment : BaseFragment(true),
 
     fun setAdapter() {
         adapter = NewsFeedAdapter(this@NewsFeedFragment, complaints, baseActivity)
-        horizontalLayoutManager = LinearLayoutManager(baseActivity)
+        horizontalLayoutManager = LinearLayoutManager(baseActivity,LinearLayoutManager.VERTICAL,false)
         rvPublic?.layoutManager = horizontalLayoutManager
         endlessScrollListener = EndlessRecyclerViewScrollListenerImplementation(
             horizontalLayoutManager, this
         )
         endlessScrollListener?.setmLayoutManager(horizontalLayoutManager)
         rvPublic.addOnScrollListener(endlessScrollListener!!)
+
         rvPublic?.adapter = adapter
+
+
+
 
     }
 
@@ -365,7 +348,6 @@ class NewsFeedFragment : BaseFragment(true),
         return R.layout.fragment_news_feed
     }
 
-
     fun likeHitApi(
         input: LikeInput,
         txtPostLikeNo: TextView,
@@ -498,4 +480,7 @@ class NewsFeedFragment : BaseFragment(true),
         baseActivity?.showDialog()
         feedPresenter!!.fetchComplaints(noticeBoardInput(adapter!!.itemCount))
     }
+
+
+
 }

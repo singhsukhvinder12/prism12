@@ -60,7 +60,7 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
 
         if (intent.getStringExtra("comingFrom") != null) {
             if (intent.getStringExtra("comingFrom")!!.equals("userTag")) {
-                binding!!.includeView.toolbatTitle.setText("Tag User")
+                binding!!.includeView.toolbatTitle.setText("Tag Users")
                 comingFrom = intent.getStringExtra("comingFrom")!!
                 val args: Bundle = intent.getBundleExtra("BUNDLE")!!
                 tagList = args.getSerializable("TAGARRAYLIST") as ArrayList<TagList>
@@ -79,6 +79,15 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
         }
 
 
+        binding!!.includeView.icCheck.setOnClickListener {
+            val intent = Intent()
+            val args = Bundle()
+            args.putSerializable("tagList",tagList)
+            intent.putExtra("BUNDLE", args)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
+
 
 
         searchList = ArrayList()
@@ -94,11 +103,13 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 searchItem = p0.toString()
                 if (searchItem.equals("")) {
-                    if (!comingFrom.equals("userTag")) {
-                        searchPresenter!!.getData(searchInput(0, searchItem))
-                    } else {
-                        binding!!.noRecordFound.visibility = View.GONE
-                    }
+
+                    searchPresenter!!.getData(searchInput(0, searchItem))
+//                    if (!comingFrom.equals("userTag")) {
+//                        searchPresenter!!.getData(searchInput(0, searchItem))
+//                    } else {
+//                        binding!!.noRecordFound.visibility = View.GONE
+//                    }
                 }
             }
         })
@@ -162,9 +173,6 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
             rvPublic.addOnScrollListener(endlessScrollListener!!)
             binding!!.rvPublic.adapter = adapter
 
-
-
-
         }
     }
 
@@ -176,7 +184,6 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
                     if (searchList!!.get(i).UserId.equals(tagList!!.get(j).tagId)){
                         searchList!!.get(i).isSelected="true"
                     }
-
                 }
             }
             adapter!!.notifyDataSetChanged()
@@ -185,6 +192,11 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
 
     fun updatedTagList(tagList: ArrayList<TagList>) {
         this.tagList= tagList
+        if(tagList.size>0){
+            binding!!.includeView.icCheck.visibility=View.VISIBLE
+        } else{
+            binding!!.includeView.icCheck.visibility=View.GONE
+        }
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
@@ -192,8 +204,11 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
             UtilsFunctions.showToastError(App.app.getString(R.string.internet_error))
             return
         }
-        showDialog()
-        searchPresenter!!.getData(searchInput(adapter!!.itemCount, ""))
+
+        if(adapter!!.itemCount>=10){
+            showDialog()
+            searchPresenter!!.getData(searchInput(adapter!!.itemCount, ""))
+        }
     }
 
     fun tagUsersList(userId: String?, imageUrl: String?, userName: String?) {
@@ -208,15 +223,8 @@ class SearchUserActivity : BaseActivity(), SearchUsersCallback,
     }
 
     override fun onBackPressed() {
-        //super.onBackPressed()
-        val intent = Intent()
+        super.onBackPressed()
 
-        val args = Bundle()
-        args.putSerializable("tagList",tagList)
-        intent.putExtra("BUNDLE", args)
-
-        setResult(Activity.RESULT_OK, intent)
-        finish()
 
     }
 

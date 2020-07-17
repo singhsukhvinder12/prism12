@@ -31,22 +31,21 @@ class TagProfileFeedAdapter(
 
 
 
-        if(position==0){
-            holder.tagTextView!!.setTextColor(Color.parseColor("#000000"))
-            holder.tagTextView!!.setText(studentList!!.get(position).Name)
-        }
-        else  if(studentList!!.size==position+1){
-            holder.tagTextView!!.setText(studentList!!.get(position).Name)
-        } else{
-            holder.tagTextView!!.setText(studentList!!.get(position).Name+",")
-        }
+//        if(position==0){
+//            holder.tagTextView!!.setTextColor(Color.parseColor("#000000"))
+//            holder.tagTextView!!.setText(studentList!!.get(position).Name)
+//        }
+//          if(studentList!!.size==position+1){
+//            holder.tagTextView!!.setText(studentList!!.get(position).Name)
+//        } else{
+//            holder.tagTextView!!.setText(studentList!!.get(position).Name+",")
+//        }
 
+        holder.tagTextView!!.setText("@"+studentList!!.get(position).Name)
 
 
         holder.tagTextView!!.setOnClickListener {
-
-            if(position!=0){
-                val intent = Intent(context, ProfileActivity::class.java)
+             val intent = Intent(context, ProfileActivity::class.java)
                 intent.putExtra("comingFrom", "editProfile")
                 intent.putExtra("postedByMail", studentList!!.get(position).Email)
                 intent.putExtra("anotherUser", studentList!!.get(position).Id)
@@ -54,8 +53,6 @@ class TagProfileFeedAdapter(
                 intent.putExtra("userName", studentList!!.get(position).Name)
                 intent.putExtra("status", studentList!!.get(position).Bio)
                 context.startActivityForResult(intent, 205)
-            }
-
         }
     }
 

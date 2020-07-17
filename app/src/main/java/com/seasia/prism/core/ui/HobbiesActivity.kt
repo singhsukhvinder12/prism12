@@ -27,6 +27,7 @@ class HobbiesActivity : BaseActivity(), View.OnClickListener, HobbiesCallback {
     var tab2 = false
     var leftIn = "2"
     var userId=""
+    var typeId=""
     var fragmentManager:FragmentManager?=null
     var hobbiesPresenter: HobbiesPresenter? = null
     var choiceQuestion:ArrayList<ChoiceResponse.ResultDataList>?=null
@@ -45,6 +46,7 @@ class HobbiesActivity : BaseActivity(), View.OnClickListener, HobbiesCallback {
         binding!!.btnThis.setOnClickListener(this)
         if(intent.getStringExtra("userId")!=null){
             userId=  intent.getStringExtra("userId")
+            typeId=  intent.getStringExtra("typeId")
         }
         fragmentManager = supportFragmentManager
         tab1 = true
@@ -124,6 +126,29 @@ class HobbiesActivity : BaseActivity(), View.OnClickListener, HobbiesCallback {
         fragmentTransaction.addToBackStack("h")
         fragmentTransaction.commit()
     }
+
+
+
+
+    fun replaceFragmetWithoutAmination(fragment: Fragment) {
+
+        val fragmentTransaction: FragmentTransaction = fragmentManager!!.beginTransaction()
+
+        val bundle = Bundle()
+
+            if(questionList!=null){
+                bundle.putSerializable("questionListt", questionList)
+            }
+            bundle.putString("userId",userId)
+             fragment.setArguments(bundle)
+
+        fragmentTransaction.replace(R.id.frame_layout, fragment, "h")
+        fragmentTransaction.addToBackStack("h")
+        fragmentTransaction.commit()
+    }
+
+
+
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
@@ -133,7 +158,11 @@ class HobbiesActivity : BaseActivity(), View.OnClickListener, HobbiesCallback {
         hideDialog()
         if(body.ResultData!=null){
             choiceQuestion=body.ResultData
-            replaceFragmetn(ChoiceFragment())
+
+            if(typeId.equals("2")){
+                replaceFragmetn(ChoiceFragment())
+            }
+
         }
     }
 
@@ -143,6 +172,16 @@ class HobbiesActivity : BaseActivity(), View.OnClickListener, HobbiesCallback {
 
     override fun onSuccessQuestion(body: QuestionResponse) {
         questionList=body.ResultData!!
+        if(typeId.equals("1")){
+            leftIn="1"
+            tab2 = true
+            tab1 = false
+            binding!!.btnThis.setBackgroundResource(R.color.colorPrimary)
+            binding!!.btnCoridor.setBackgroundResource(R.color.colorPrimaryDarkMore)
+            replaceFragmetWithoutAmination(CorridorFragment())
+
+        }
+
         hideDialog()
     }
 
@@ -162,6 +201,5 @@ class HobbiesActivity : BaseActivity(), View.OnClickListener, HobbiesCallback {
     fun myQuestionList(arrayList: ArrayList<QuestionResponse.ResultDataList>) {
         questionList=arrayList
     }
-
 
 }

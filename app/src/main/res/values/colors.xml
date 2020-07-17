@@ -2,9 +2,12 @@
 <resources>
     <!-- <color name="colorPrimary">#E01F0D</color>-->
     <!--<color name="colorPrimaryDark">#A4101E</color>-->
-    <color name="colorPrimary">#40bfff</color>
-    <color name="colorPrimaryDark">#08A4DD</color>
-    <color name="colorPrimaryDarkMore">#0692C5</color>
+<!--    <color name="colorPrimary">#40bfff</color>-->
+    <color name="colorPrimary">#2fae76</color>
+<!--    <color name="colorPrimaryDark">#08A4DD</color>-->
+    <color name="colorPrimaryDark">#299C69</color>
+<!--    <color name="colorPrimaryDarkMore">#0692C5</color>-->
+    <color name="colorPrimaryDarkMore">#218156</color>
 
     <color name="colorAccent">#D81B60</color>
     <color name="colorRed">#E31A0B</color>
@@ -14,7 +17,8 @@
     <color name="colorGray">#DCDCDC</color>
     <color name="colorGrayDark">#CDC9C9</color>
     <color name="colorBackgroundGrey">#e7e7e7</color>
-    <color name="color_primary_blue">#40bfff</color>
+<!--    <color name="color_primary_blue">#40bfff</color>-->
+    <color name="color_primary_blue">#2fae76</color>
     <color name="color_navy_blue">#223263</color>
     <color name="color_green">#85EC63</color>
     <color name="color_green_black">#600E0404</color>
@@ -22,6 +26,7 @@
     <color name="color_grey_toolbar">#ebf0ff</color>
     <color name="color_grey_text">#757575</color>
     <color name="grey">#9098b1</color>
+    <color name="colorGreen">#97d729</color>
 
 
     <color name="bg0">#FFFFFF</color>

@@ -24,6 +24,7 @@ import com.seasia.prism.R
 import com.seasia.prism.adapter.TagFeedAdapter
 import com.seasia.prism.core.BaseActivity
 import com.seasia.prism.core.auth.ProfileActivity
+import com.seasia.prism.core.ui.HobbiesActivity
 import com.seasia.prism.newsfeed.audioplayer.AndroidBuildingMusicPlayerActivity
 import com.seasia.prism.newsfeed.displaynewsfeed.model.GetFeedResponse
 import com.seasia.prism.newsfeed.displaynewsfeed.model.LikeInput
@@ -73,37 +74,58 @@ class NewsFeedAdapter(
 
         try {
 
+            if(mList.get(position).TypeId!=null){
+                if(!mList.get(position).TypeId.equals("0")){
+                    holder.parentLayout!!.visibility=View.GONE
+                    holder.btnMemories!!.visibility=View.VISIBLE
+                    holder.btnMemories!!.setOnClickListener {
+                        var intent = Intent(context.activity, HobbiesActivity::class.java)
+                        intent.putExtra("userId", mList.get(position).PostedById)
+                        intent.putExtra("typeId", mList.get(position).TypeId)
+                        context.startActivity(intent)
+                    }
+
+                } else{
+                    holder.parentLayout!!.visibility=View.VISIBLE
+                    holder.btnMemories!!.visibility=View.GONE
+                }
+            }
+
+
             if(mList.get(position).ColorCode!=null && !mList.get(position).ColorCode!!.isEmpty()){
-                holder.txtPostInfoColor!!.setText(mList.get(position).Description)
-                holder.txtPostInfoColor!!.visibility=View.VISIBLE
                 holder.txtPostInfo!!.visibility=View.GONE
                 try {
                     if(mList.get(position).ColorCode!!.contains("#")){
                         if(!mList.get(position).ColorCode.equals("#FFFFFF")){
                             holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor(mList.get(position).ColorCode), PorterDuff.Mode.SRC_ATOP);
-                        } else{
-                            holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-                            holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
+                            holder.txtPostInfoWithoutPadding!!.visibility=View.GONE
                             holder.txtPostInfoColor!!.setText(mList.get(position).Description)
-                            holder.txtPostInfo!!.visibility=View.GONE
                             holder.txtPostInfoColor!!.visibility=View.VISIBLE
+                        } else{
+//                            holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                            holder.txtPostInfoWithoutPadding!!.setTextColor(Color.parseColor("#000000"))
+                            holder.txtPostInfoWithoutPadding!!.setText(mList.get(position).Description)
+                            holder.txtPostInfoColor!!.visibility=View.GONE
+                            holder.txtPostInfoWithoutPadding!!.visibility=View.VISIBLE
                         }
                     } else{
                       //  holder.txtPostInfoColor!!.visibility=View.GONE
-                        holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-                        holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
-                        holder.txtPostInfoColor!!.setText(mList.get(position).Description)
-                      //  holder.txtPostInfo!!.visibility=View.GONE
+                      //  holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                        holder.txtPostInfoWithoutPadding!!.setTextColor(Color.parseColor("#000000"))
+                        holder.txtPostInfoWithoutPadding!!.setText(mList.get(position).Description)
+                        holder.txtPostInfoWithoutPadding!!.visibility=View.VISIBLE
+                        holder.txtPostInfoColor!!.visibility=View.GONE
                     }
                 }catch (e:Exception){
 
                 }
             }else{
-                holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-                holder.txtPostInfoColor!!.setTextColor(Color.parseColor("#000000"))
-                holder.txtPostInfoColor!!.setText(mList.get(position).Description)
+//                holder.txtPostInfoColor!!.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                holder.txtPostInfoWithoutPadding!!.setTextColor(Color.parseColor("#000000"))
+                holder.txtPostInfoWithoutPadding!!.setText(mList.get(position).Description)
                 holder.txtPostInfo!!.visibility=View.GONE
-                holder.txtPostInfoColor!!.visibility=View.VISIBLE
+                holder.txtPostInfoColor!!.visibility=View.GONE
+                holder.txtPostInfoWithoutPadding!!.visibility=View.VISIBLE
             }
 
             holder.txtUserNameForPost!!.setText(mList.get(position).PostedBy)
@@ -140,24 +162,24 @@ class NewsFeedAdapter(
             }
 
             if (mList.get(position).lstTaggedUsers != null) {
-
-              var arrayList = ArrayList<GetFeedResponse.ResultDataList.lstTaggedUsersList>()
-
-                if(arrayList.size>0){
-                    arrayList.clear()
-                }
-
-
-                var myList = GetFeedResponse.ResultDataList.lstTaggedUsersList()
-                myList.Id = ""
-                myList.Name = "Tagged at: "
-                myList.Email = ""
-                myList.ImageUrl = ""
-                arrayList.add(myList)
-                arrayList.addAll(mList.get(position).lstTaggedUsers!!)
+//
+//              var arrayList = ArrayList<GetFeedResponse.ResultDataList.lstTaggedUsersList>()
+//
+//                if(arrayList.size>0){
+//                    arrayList.clear()
+//                }
+//
+//
+//                var myList = GetFeedResponse.ResultDataList.lstTaggedUsersList()
+//                myList.Id = ""
+//                myList.Name = "Tagged at: "
+//                myList.Email = ""
+//                myList.ImageUrl = ""
+//                arrayList.add(myList)
+//                arrayList.addAll(mList.get(position).lstTaggedUsers!!)
 
                 holder.tagRecyclerView!!.visibility = View.VISIBLE
-                val tagFeedAdapter = TagFeedAdapter(context, arrayList)
+                val tagFeedAdapter = TagFeedAdapter(context, mList.get(position).lstTaggedUsers)
                 val layoutManager = FlexboxLayoutManager(context.activity)
                 layoutManager.setFlexWrap(FlexWrap.WRAP)
                 holder.tagRecyclerView!!.layoutManager = layoutManager
@@ -168,6 +190,7 @@ class NewsFeedAdapter(
             if (mList.get(position).lstDocuments != null) {
                  holder.txtPostInfo!!.setText(mList.get(position).Description)
                  holder.txtPostInfoColor!!.visibility=View.GONE
+                 holder.txtPostInfoWithoutPadding!!.visibility=View.GONE
                  holder.txtPostInfo!!.visibility=View.VISIBLE
 
 
@@ -267,8 +290,8 @@ class NewsFeedAdapter(
                                     .load(thumbNail)
                                     .timeout(60000)
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .placeholder(R.drawable.video_thumbnail)
-                                    .error(R.drawable.video_thumbnail)
+                                    .placeholder(R.drawable.video_bg)
+                                    .error(R.drawable.video_bg)
                                     .into(holder.videoView1!!);
                             } else {
                                 Glide.with(context)
@@ -276,8 +299,8 @@ class NewsFeedAdapter(
                                     .load(url)
                                     .timeout(60000)
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .placeholder(R.drawable.video_thumbnail)
-                                    .error(R.drawable.video_thumbnail)
+                                    .placeholder(R.drawable.video_bg)
+                                    .error(R.drawable.video_bg)
                                     .into(holder!!.videoView1!!);
                             }
 
@@ -493,8 +516,10 @@ class NewsFeedAdapter(
         var txtUserNameForPost: TextView? = null
         var txtPostInfo: TextView? = null
         var txtPostInfoColor: TextView? = null
+        var txtPostInfoWithoutPadding: TextView? = null
         var txtDateForPost: TextView? = null
         var txtPostCommentNo: TextView? = null
+        var btnMemories: ImageView? = null
         var txtPostLikeNo: TextView? = null
         var tagUsers: TextView? = null
         var img: ImageView? = null
@@ -508,13 +533,17 @@ class NewsFeedAdapter(
         var parentVideoView: RelativeLayout? = null
         var btnPlayVideo: ImageView? = null
         var layoutCommentPost: LinearLayout? = null
+        var parentLayout: LinearLayout? = null
         var viewPager: ViewPager? = null
         var tagRecyclerView: RecyclerView? = null
 
         init {
             txtUserNameForPost = itemView.findViewById(R.id.txtUserNameForPost)
             txtPostInfo = itemView.findViewById(R.id.txtPostInfo)
+            parentLayout = itemView.findViewById(R.id.parentLayout)
+            btnMemories = itemView.findViewById(R.id.btnMemories)
             txtPostInfoColor = itemView.findViewById(R.id.txtPostInfoColor)
+            txtPostInfoWithoutPadding = itemView.findViewById(R.id.txtPostInfoWithoutPadding)
             txtDateForPost = itemView.findViewById(R.id.txtDateForPost)
             txtPostCommentNo = itemView.findViewById(R.id.txtPostCommentNo)
             txtPostLikeNo = itemView.findViewById(R.id.txtPostLikeNo)

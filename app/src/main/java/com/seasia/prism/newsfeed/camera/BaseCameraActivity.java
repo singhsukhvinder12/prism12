@@ -101,6 +101,7 @@ public class BaseCameraActivity extends AppCompatActivity {
 
                 if (recordBtn.getText().equals(getString(R.string.app_record))) {
                     try {
+                        cameraRecord.setEnabled(false);
                         filepath = getVideoFilePath();
                         cameraRecorder.start(filepath);
                         recordBtn.setText("Stop");
@@ -111,6 +112,10 @@ public class BaseCameraActivity extends AppCompatActivity {
                             public void onTick(long millisUntilFinished) {
                                 milisecont = millisUntilFinished / 1000;
                                 mTIme.setText("00:" + millisUntilFinished / 1000);
+
+                                if(milisecont<59){
+                                    cameraRecord.setEnabled(true);
+                                }
                             }
 
                             public void onFinish() {
@@ -130,11 +135,13 @@ public class BaseCameraActivity extends AppCompatActivity {
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    cameraRecord.setEnabled(true);
                                 }
                             }
                         }.start();
                     } catch (Exception e) {
                         e.printStackTrace();
+                        cameraRecord.setEnabled(true);
                     }
 
                 } else {

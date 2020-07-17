@@ -1,5 +1,5 @@
-package com.seasia.prism.core.auth
 
+package com.seasia.prism.core.auth
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -24,11 +24,13 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.seasia.prism.App
 import com.seasia.prism.MainActivity
 import com.seasia.prism.R
+import com.seasia.prism.callbacks.LogoutCallback
 import com.seasia.prism.callbacks.UserProfileCallback
 import com.seasia.prism.core.BaseActivity
 import com.seasia.prism.core.ui.SearchUserActivity
@@ -37,6 +39,8 @@ import com.seasia.prism.model.GetUserProfileInput
 import com.seasia.prism.model.GetUserProfileResponse
 import com.seasia.prism.model.UserProfileInput
 import com.seasia.prism.model.UserProfileResponse
+import com.seasia.prism.model.output.LogoutResponse
+import com.seasia.prism.presenter.LogoutPresenter
 import com.seasia.prism.presenter.SignupPresenter
 import com.seasia.prism.util.CheckRuntimePermissions
 import com.seasia.prism.util.PreferenceKeys
@@ -55,6 +59,7 @@ import java.util.*
 
 
 class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCallback,
+    LogoutCallback,
     RadioGroup.OnCheckedChangeListener {
     var binding: ActivityUserProfileBinding? = null
     var strDOB = ""
@@ -71,6 +76,11 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
     var anouterUserId = ""
     var videoOpenStatus = 0
     var senderId = ""
+    var logoutPresenter: LogoutPresenter? = null
+    var mYear: Int? = null
+    var mMonth: Int? = null
+    var mDay: Int? = null
+    var mcurrentDate: Calendar? = null
     var day = ""
     var month = ""
     var imageUrl = ""
@@ -107,6 +117,10 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         binding!!.relMain.setOnClickListener(this)
         binding!!.radioGroupGender.setOnCheckedChangeListener(this)
         presenter = SignupPresenter(this)
+        logoutPresenter = LogoutPresenter(this)
+        binding!!.includeView.ivLogout.setOnClickListener {
+            logoutDialog()
+        }
         if (intent.getStringExtra("comingFrom") != null) {
 
             userId = sharedPref!!.getString(PreferenceKeys.USER_ID, "")!!
@@ -120,26 +134,27 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 enabeledField = "true"
                 enabledField(true)
                 binding!!.btSubmit.visibility = View.VISIBLE
+                binding!!.ivEdit.visibility = View.VISIBLE
                 getUserProfile(emailId)
                 senderId = userId;
+                binding!!.includeView.ivLogout.visibility = View.VISIBLE
             } else {
                 binding!!.btSubmit.visibility = View.GONE
+                binding!!.ivEdit.visibility = View.GONE
                 binding!!.includeView.toolbatTitle.text = "View Profile"
                 enabledField(false)
                 enabeledField = "false"
                 getUserProfile(postedByMail)
                 senderId = anouterUserId;
             }
-//            binding!!.includeView.ivQuestion.visibility = View.VISIBLE
-//            binding!!.includeView.ivQuestion.setOnClickListener {
-//                var intent = Intent(this@UserProfileActivity, HobbiesActivity::class.java)
-//                intent.putExtra("userId", senderId)
-//                startActivity(intent)
-//            }
 
             binding!!.etStatus.visibility=View.VISIBLE
+            binding!!.txtStatus.visibility=View.VISIBLE
         } else {
+            binding!!.btSubmit.visibility = View.VISIBLE
+            binding!!.ivEdit.visibility = View.VISIBLE
             binding!!.etStatus.visibility=View.GONE
+            binding!!.txtStatus.visibility=View.GONE
             binding!!.includeView.toolbatTitle.setText("Signup")
             enabeledField = "true"
         }
@@ -175,16 +190,49 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 
     }
 
+
+    fun logoutDialog() {
+
+        var dialog = Dialog(baseActivity!!)
+        dialog.setContentView(R.layout.logout_dialog);
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.getWindow()!!.setBackgroundDrawableResource(android.R.color.transparent);
+        var btnLogout = dialog.findViewById<TextView>(R.id.tv_delete)
+        var btnCancel = dialog.findViewById<TextView>(R.id.tv_cancel)
+        btnLogout.setOnClickListener {
+            dialog.dismiss()
+            showDialog()
+            logoutPresenter!!.hitApiLogout(userId, "1")
+
+        }
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+
+
     fun selectDatePicker() {
 
+
         try {
-            val mYear: Int
-            val mMonth: Int
-            val mDay: Int
-            val mcurrentDate = Calendar.getInstance()
-            mYear = mcurrentDate[Calendar.YEAR]
-            mMonth = mcurrentDate[Calendar.MONTH]
-            mDay = mcurrentDate[Calendar.DAY_OF_MONTH]
+            mcurrentDate = Calendar.getInstance()
+            var selectedDate = binding!!.etDob.text
+
+            if (selectedDate != null && !selectedDate.isEmpty()) {
+                val separated: ArrayList<String> = selectedDate.split("-") as ArrayList<String>
+                mYear = separated.get(0).toInt()
+                mMonth = separated.get(1).toInt()-1
+                mDay = separated.get(2).toInt()
+            } else {
+
+                mYear = mcurrentDate!![Calendar.YEAR]
+                mMonth = mcurrentDate!![Calendar.MONTH]
+                mDay = mcurrentDate!![Calendar.DAY_OF_MONTH]
+            }
+
+
             val mDatePicker = DatePickerDialog(
                 baseActivity!!, R.style.DialogTheme,
                 DatePickerDialog.OnDateSetListener { datepicker, selectedyear, selectedmonth, selectedday ->
@@ -196,15 +244,15 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                     if ((selectedmonth + 1).toString().length == 1)
                         month = "0" + (selectedmonth + 1).toString()
                     else month = (selectedmonth + 1).toString()
-
                     year = selectedyear.toString()
                     strDOB = year + "-" + month + "-" + day
                     binding!!.etDob.setText(strDOB)
+                    hideFcuss()
 
-                }, mYear - 13, mMonth, mDay
+                }, mYear!!, mMonth!!, mDay!!
             )
-            mcurrentDate[mYear - 13, mMonth] = mDay
-            val value = mcurrentDate.timeInMillis
+            mcurrentDate!![mcurrentDate!![Calendar.YEAR]!! - 13, mMonth!!] = mDay!!
+            val value = mcurrentDate!!.timeInMillis
             mDatePicker.datePicker.maxDate = value
             if (!mDatePicker.isShowing) {
                 mDatePicker.show()
@@ -214,6 +262,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 
         }
     }
+
 
 
     private fun selectAlbum() {
@@ -427,12 +476,12 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 //                    Toast.makeText(context, "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
 
             //If File is not present create directory
-           var apkStorage = File(Environment.getExternalStorageDirectory(), "SeasiaPrism111")
+            var apkStorage = File(Environment.getExternalStorageDirectory(), "SeasiaPrism111")
 
             if (!apkStorage.exists()) {
                 apkStorage.mkdir()
             }
-           var outputFile = File(apkStorage, ""+m_curentDateandTime + ".jpg")
+            var outputFile = File(apkStorage, ""+m_curentDateandTime + ".jpg")
 
             //Create New File if not present
             if (!outputFile.exists()) {
@@ -451,7 +500,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
             )
 
 
-         //   m_imgUri = Uri.fromFile(outputFile)
+            //   m_imgUri = Uri.fromFile(outputFile)
         } catch (p_e: java.lang.Exception) {
         }
         return m_imgUri
@@ -554,6 +603,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 
     override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
         val checkedRadioButton = group!!.findViewById(checkedId) as RadioButton
+        hideFcuss()
         when (checkedRadioButton.text.toString()) {
             "Male" -> {
                 gender = "m"
@@ -565,6 +615,14 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 gender = "o"
             }
         }
+    }
+
+    fun hideFcuss(){
+        binding!!.etPhone.clearFocus()
+        binding!!.etStatus.clearFocus()
+        binding!!.etEmail.clearFocus()
+        binding!!.etFirstName.clearFocus()
+        binding!!.etLastName.clearFocus()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -724,8 +782,11 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 
             binding!!.etEmail.setText(data.ResultData!!.Email)
 
-            if(data.ResultData!!.Bio!=null){
+            if(data.ResultData!!.Bio!=null && !data.ResultData!!.Bio.equals("null")){
                 binding!!.etStatus.setText(data.ResultData!!.Bio)
+                sharedPref!!.saveString(PreferenceKeys.BIO, data.ResultData!!.Bio.toString())
+            } else{
+                sharedPref!!.saveString(PreferenceKeys.BIO, "")
             }
             try {
                 binding!!.etDob.setText(
@@ -748,7 +809,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
                 if (postedByMail.equals(emailId)) {
 
                     sharedPref!!.saveString(PreferenceKeys.USER_IMAGE, data!!.ResultData!!.ImageUrl.toString())
-                    sharedPref!!.saveString(PreferenceKeys.BIO, data.ResultData!!.Bio.toString())
+
                 }
             }
             if (gender.equals("M", true)) {
@@ -767,7 +828,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
 
     private fun uploadImage() {
 
-        val uploadImage = Dialog(this)
+        val uploadImage = Dialog(this,R.style.Theme_Dialog);
         uploadImage.requestWindowFeature(Window.FEATURE_NO_TITLE)
         uploadImage.setContentView(R.layout.upload_document_dialog)
 
@@ -795,4 +856,24 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener, UserProfileCal
         uploadImage.show()
 
     }
+
+
+
+    override fun onSuccess(data: LogoutResponse) {
+        hideDialog()
+        if (data != null) {
+            if (data.StatusCode == "200" || data.StatusCode == "400") {
+                sharedPref!!.cleanPref()
+                val intent = Intent(this@UserProfileActivity, EmailActivity::class.java)
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+            }
+        }
+    }
+
+    override fun onFailer() {
+        hideDialog()
+    }
+
 }
+

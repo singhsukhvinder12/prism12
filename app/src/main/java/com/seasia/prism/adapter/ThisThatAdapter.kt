@@ -29,12 +29,15 @@ var btnTwoSelect=false
         holder.btnOne!!.setText(arrayList!!.get(position).Option1)
         holder.btnTwo!!.setText(arrayList!!.get(position).Option2)
         var input=AddChoiceInput.ChoiceQuestionAnswersList()
+        input.Option=""
+        input.ChoiceQuestionId=arrayList!!.get(position).ChoiceQuestionId
         choiceAnsArray!!.add(input)
 
 
       if(holder!!.btnOne!!.text.equals(arrayList!!.get(position).Selected)){
           arrayList!!.get(position).selectOne=true
-          arrayList!!.get(position).selectTwo = false
+          arrayList!!.get(position).selectTwo =
+              false
           holder.btnOne!!.setBackgroundResource(R.drawable.gredent_color)
           holder.btnTwo!!.setBackgroundResource(R.drawable.delete_shape)
           var listInput=AddChoiceInput.ChoiceQuestionAnswersList()

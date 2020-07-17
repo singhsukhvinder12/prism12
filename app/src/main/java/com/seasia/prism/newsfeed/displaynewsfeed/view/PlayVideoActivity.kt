@@ -68,8 +68,8 @@ class PlayVideoActivity : BaseActivity() {
                 .load(thumbNail)
                 .timeout(60000)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.drawable.video_thumbnail)
-                .error(R.drawable.video_thumbnail)
+                .placeholder(R.drawable.video_bg)
+                .error(R.drawable.video_bg)
                 .into(binding!!.imageView);
             binding!!.imageView.visibility = View.VISIBLE
         }

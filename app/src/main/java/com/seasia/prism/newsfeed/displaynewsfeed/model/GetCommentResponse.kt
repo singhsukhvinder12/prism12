@@ -11,6 +11,9 @@ class GetCommentResponse {
     var ResourceType: String? = null
 
     var StatusCode: String? = null
+
+
+
     public class ResultDataModel{
         var Count: String? = null
 
@@ -35,7 +38,16 @@ class GetCommentResponse {
             var CommentId: String? = null
 
             var PostedBy: String? = null
+
+            var lstTaggedUser: ArrayList<lstTaggedUsers>? = null
+
+            class lstTaggedUsers{
+                var Id: String? = null
+                var Name: String? = null
+            }
+
         }
+
 
     }
 }

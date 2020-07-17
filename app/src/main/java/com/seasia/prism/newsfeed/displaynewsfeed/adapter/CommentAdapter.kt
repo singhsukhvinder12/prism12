@@ -1,6 +1,10 @@
 package com.seasia.prism.newsfeed.displaynewsfeed.adapter
 
+import android.graphics.Typeface
+import android.text.Html
+import android.text.SpannableStringBuilder
 import android.text.TextUtils
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +19,6 @@ import com.seasia.prism.newsfeed.displaynewsfeed.view.CommentActivity
 import com.seasia.prism.util.PreferenceKeys
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class CommentAdapter(
     var context: CommentActivity,
@@ -31,15 +34,16 @@ class CommentAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.tvName!!.setText(studentList.get(position).CommentedBy)
         holder.tvComment!!.setText(studentList.get(position).Comment)
+        if(studentList.get(position).lstTaggedUser!=null && studentList!!.get(position).lstTaggedUser!!.size>0){
+            var taggedName=   studentList.get(position).lstTaggedUser!!.get(0).Name
+            if(studentList.get(position).Comment!!.contains(taggedName!!)){
+                var text =   holder!!.tvComment!!.getText().toString().replace("@"+taggedName, "<font color='#000000'><b>" +"@"+ taggedName + "</b></font>")
+                holder.tvComment!!.setText(Html.fromHtml(text))
+            }
+        }
 
-//        if (!studentList.get(position).dummyDate) {
-//            holder.tvDate!!.setText(getLocalDate("yyyy-MM-dd'T'HH:mm:ss", studentList.get(position).CreatedDate, "yyyy-MM-dd")
-//            )
-//        } else {
-//            holder.tvDate!!.setText(studentList.get(position).CreatedDate.toString())
-//        }
+
         holder.tvDate!!.setText(studentList.get(position).strCreatedDate.toString())
-
 
 
         if (!TextUtils.isEmpty(studentList.get(position).ImageUrl)) {
@@ -70,6 +74,9 @@ class CommentAdapter(
             context.deleteComment(studentList.get(position).CommentId, position,studentList.get(position).CommentedById)
         }
     }
+
+
+
 
     override fun getItemViewType(position: Int): Int {
         return position

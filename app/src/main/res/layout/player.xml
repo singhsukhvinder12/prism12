@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="#04b3d2"
-            android:textSize="20dp"
+            android:textSize="@dimen/sp_20"
             android:layout_gravity="center"
             android:gravity="center"
             android:paddingLeft="10dp"
@@ -87,32 +87,32 @@
                 android:visibility="gone"
                 android:id="@+id/btnPrevious"
                 android:src="@drawable/btn_previous"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
                 android:background="@null"/>
             <!-- Backward Button -->
             <ImageView
                 android:layout_marginLeft="5dp"
                 android:id="@+id/btnBackward"
                 android:src="@drawable/btn_backward"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
                 android:background="@null"/>
             <!-- Play Button -->
             <ImageView
                 android:layout_marginLeft="5dp"
                 android:id="@+id/btnPlay"
                 android:src="@drawable/btn_play"
-                android:layout_width="@dimen/_60sdp"
-                android:layout_height="@dimen/_60sdp"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
                 android:background="@null"/>
             <!-- Forward Button -->
             <ImageView
                 android:layout_marginLeft="5dp"
                 android:id="@+id/btnForward"
                 android:src="@drawable/btn_forward"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
                 android:background="@null"/>
             <!-- Next Button -->
             <ImageView
@@ -120,8 +120,8 @@
                 android:layout_marginLeft="5dp"
                 android:id="@+id/btnNext"
                 android:src="@drawable/btn_next"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
                 android:background="@null"/>
         </LinearLayout>
     </LinearLayout>

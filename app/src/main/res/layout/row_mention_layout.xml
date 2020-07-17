@@ -2,12 +2,13 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/colorGray"
     android:layout_height="wrap_content">
     <TextView
-        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_marginLeft="@dimen/dp_5"
         android:id="@+id/tagTextView"
         android:text="my text"
-        android:padding="@dimen/_5sdp"
+        android:padding="@dimen/dp_5"
         android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

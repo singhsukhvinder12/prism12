@@ -24,7 +24,12 @@ class VerifyOtpPresenter(var otpVerifyActivity: OtpVerifyActivity) {
                     otpVerifyActivity.onFailer()
                 } else if (response.body() != null && response.body().StatusCode == "200") {
                     otpVerifyActivity.onOTPSucess(response!!.body())
-                } else if (response.body() != null) {
+                }
+                else if (response.body() != null && response.body().StatusCode == "411"){
+                    UtilsFunctions.showToastError("Invalid OTP")
+                    otpVerifyActivity.onFailer()
+                }
+                else if (response.body() != null) {
                     UtilsFunctions.showToastError(response.body().Message)
                     otpVerifyActivity.onFailer()
                 } else {

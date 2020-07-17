@@ -93,7 +93,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 //        intent!!.putExtra("message", message)
         intent!!.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-        val icon1 = BitmapFactory.decodeResource(resources, R.mipmap.ic_icon)
+        val icon1 = BitmapFactory.decodeResource(resources, R.drawable.ic_app_icon)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = Notification.Builder(applicationContext)
                 .setSmallIcon(notificationIcon).setLargeIcon(icon1)
@@ -124,7 +124,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private val notificationIcon: Int
          get() {
             val useWhiteIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-            return if (useWhiteIcon) R.mipmap.ic_icon else R.mipmap.ic_icon
+            return if (useWhiteIcon) R.drawable.logout_popup_icon else R.drawable.ic_app_icon
         }
 
     companion object {
